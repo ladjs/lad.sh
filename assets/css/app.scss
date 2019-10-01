@@ -1,0 +1,50 @@
+// variables
+@import '_variables';
+
+// bootstrap
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+// override sweetalert 2 styles with bootstraps
+$success: theme-color('primary');
+$error: theme-color('danger');
+$warning: theme-color('warning');
+$info: theme-color('info');
+$question: theme-color('light');
+
+// sweetalert2
+@import 'node_modules/sweetalert2/src/sweetalert2';
+
+// font awesome
+@import 'node_modules/font-awesome/scss/font-awesome';
+
+// bootstrap-social
+@import 'node_modules/@ladjs/bootstrap-social/_custom';
+
+// spinkit loading spinner
+@import 'node_modules/@ladjs/assets/scss/spinner';
+
+// support custom file inputs
+@import 'node_modules/@ladjs/assets/scss/custom-file-input';
+
+// used on the register-or-login view to provide a horizontal rule
+// with the text "or" in between the horizontal rule line
+// (e.g. "------ or ------" that stretches full width)
+@import 'node_modules/@ladjs/assets/scss/hr-text';
+
+// bootstrap fixes and add-ons
+@import 'node_modules/@ladjs/assets/scss/bootstrap';
+
+// image helpers for emails, jquery-lazy, etc.
+@import 'node_modules/@ladjs/assets/scss/image-helpers';
+
+// sticky footer
+@import '_sticky-footer';
+
+// hljs
+@import '_hljs';
+
+// email styling
+@import '_email';
+
+// custom app styling
+@import '_custom';

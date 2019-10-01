@@ -1,0 +1,31 @@
+
+extends layout
+
+block body
+  //- Main jumbotron for a primary marketing message or call to action
+  .jumbotron.rounded-0
+    .container
+      h1.display-3: :translate(locale) Hello, world!
+      p
+        :translate(locale)
+          This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.
+      p
+        a.btn.btn-success.btn-lg(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= `${t('Create an account')} »`
+  .container
+    //- Example row of columns
+    .row
+      .col-md-4
+        h2: :translate(locale) Heading
+        p: :translate(locale) This is a paragraph of placeholder text that will be automatically translated.
+        p
+          a.btn.btn-secondary(href="#", role="button")= `${t('View details')} »`
+      .col-md-4
+        h2: :translate(locale) Heading
+        p: :translate(locale) This is a paragraph of placeholder text that will be automatically translated.
+        p
+          a.btn.btn-secondary(href="#", role="button")= `${t('View details')} »`
+      .col-md-4
+        h2: :translate(locale) Heading
+        p: :translate(locale) This is a paragraph of placeholder text that will be automatically translated.
+        p
+          a.btn.btn-secondary(href="#", role="button")= `${t('View details')} »`

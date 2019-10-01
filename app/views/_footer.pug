@@ -1,0 +1,15 @@
+
+footer.footer
+  .container.text-center
+    ul.m-0.p-0.text-muted
+      li.d-inline: small!= `&copy; ${moment().format('YYYY')} ${config.appName}`
+      li.d-inline.mx-1: small &bull;
+      li.d-inline: small= t('All Rights Reserved')
+      li.d-inline.mx-1: small &bull;
+      li.d-inline: small: a(href=l('/support'))= t('Support')
+      li.d-inline.mx-1: small &bull;
+      li.d-inline: small: a(href=l('/about'))= t('About')
+      li.d-inline.mx-1: small &bull;
+      li.d-inline: small: a(href=l('/privacy'))= t('Privacy')
+      li.d-inline.mx-1: small &bull;
+      li.d-inline: small: a(href=l('/terms'))= t('Terms')
