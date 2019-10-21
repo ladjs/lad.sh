@@ -59,8 +59,7 @@ const config = {
               log: 30
             }
           })
-        : new Signale(),
-    capture: false
+        : new Signale()
   },
   livereload: {
     port: env.LIVERELOAD_PORT
