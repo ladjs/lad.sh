@@ -31,7 +31,7 @@
   "dependencies": {
     "@hapi/boom": "^8.0.1",
     "@koa/router": "^8.0.2",
-    "@ladjs/api": "^0.2.23",
+    "@ladjs/api": "^0.2.24",
     "@ladjs/assets": "^0.0.12",
     "@ladjs/bootstrap-social": "^7.0.2",
     "@ladjs/bull": "^1.0.3",
@@ -44,7 +44,7 @@
     "@ladjs/policies": "^0.0.2",
     "@ladjs/proxy": "^1.0.0",
     "@ladjs/store-ip-address": "^0.0.6",
-    "@ladjs/web": "^0.4.1",
+    "@ladjs/web": "^0.4.2",
     "accounting": "^0.4.1",
     "aws-sdk": "^2.568.0",
     "axe": "^4.0.4",
@@ -99,7 +99,7 @@
     "signale": "^1.4.0",
     "stacktrace-js": "^2.0.1",
     "strength": "^0.1.4",
-    "sweetalert2": "^9.1.6",
+    "sweetalert2": "^9.2.0",
     "titleize": "^2.1.0",
     "uncaught": "^0.0.5",
     "uuid": "^3.3.3",
@@ -165,13 +165,13 @@
     "postcss-unprefix": "^2.1.4",
     "pug-lint": "^2.6.0",
     "rc": "^1.2.8",
-    "remark-cli": "^7.0.0",
+    "remark-cli": "^7.0.1",
     "remark-preset-github": "^0.0.16",
     "stylelint": "11.1.1",
     "stylelint-config-recommended-scss": "^4.0.0",
     "stylelint-scss": "^3.12.1",
     "tinyify": "https://github.com/niftylettuce/tinyify",
-    "xo": "^0.25.3"
+    "xo": "0.24"
   },
   "engines": {
     "node": ">=8.9.0"
