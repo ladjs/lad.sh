@@ -1,5 +1,6 @@
 const Email = require('email-templates');
 
+const { logger } = require('../helpers');
 const config = require('../config');
 
 const email = new Email(config.email);

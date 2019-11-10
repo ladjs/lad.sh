@@ -10,7 +10,7 @@ block body
           input(type='hidden', name='_method', value='PUT')
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .card.card-bg-light
-            h4.card-header= user.id
+            h4.card-header= result.id
             .card-body
               .form-group.row
                 label.control-label.col-md-4.col-form-label.text-md-right= t('First name')
@@ -28,8 +28,8 @@ block body
                 label.control-label.col-md-4.col-form-label.text-md-right= t('Group')
                 .col-md-8
                   select(name='group', required).form-control
-                    option(value='user', selected=user.group === 'user') User
-                    option(value='admin', selected=user.group === 'admin') Admin
+                    option(value='user', selected=result.group === 'user') User
+                    option(value='admin', selected=result.group === 'admin') Admin
             .card-footer.text-right
               button(type='reset').btn.btn-secondary= t('Reset')
               button(type='submit').btn.btn-primary= t('Save')
