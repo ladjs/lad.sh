@@ -52,6 +52,8 @@ const config = {
   logger: {
     showStack: env.SHOW_STACK,
     name: env.APP_NAME,
+    level: 'debug',
+    capture: false,
     logger:
       env === 'production'
         ? pino({
@@ -193,7 +195,7 @@ config.email.lastLocaleField = config.lastLocaleField;
 // meta support for SEO
 config.meta = meta(config);
 
-// add i18n filter to views `:translate(locale)`
+// add i18n api to views
 const logger = new Axe(config.logger);
 const i18n = new I18N({
   ...config.i18n,
@@ -209,11 +211,6 @@ config.views.locals.manifest = manifestRev({
       : '/',
   manifest: config.manifest
 });
-
-// add pug filter for easy translation of nested blocks
-config.views.locals.filters.translate = function(...args) {
-  return i18n.api.t(...args);
-};
 
 // add global `config` object to be used by views
 config.views.locals.config = config;

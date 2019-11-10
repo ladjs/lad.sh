@@ -12,11 +12,8 @@ const queues = [
         concurrency: 10
       }
     ]
-  }
-];
-
-if (process.env.GOOGLE_TRANSLATE_KEY)
-  queues.push({
+  },
+  {
     name: 'mandarin',
     options: {
       attempts: 1
@@ -27,6 +24,7 @@ if (process.env.GOOGLE_TRANSLATE_KEY)
         concurrency: 1
       }
     ]
-  });
+  }
+];
 
 module.exports = queues;
