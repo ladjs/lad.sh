@@ -50,7 +50,10 @@ if (boolean(process.env.AUTH_GOOGLE_ENABLED)) {
     passport.authenticate('google', {
       accessType: 'offline',
       prompt: 'consent', // See google strategy in passport helper
-      scope: []
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile'
+      ]
     })
   );
 }

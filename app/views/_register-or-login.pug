@@ -41,7 +41,7 @@ mixin registerOrLogin(verb, isModal = false)
           i.fa.fa-fw.fa-cc-stripe
           = ` ${titleize(verb)} ${t('with Stripe')}`
       if boolean(process.env.AUTH_FACEBOOK_ENABLED) || boolean(process.env.AUTH_TWITTER_ENABLED) || boolean(process.env.AUTH_GOOGLE_ENABLED) || boolean(process.env.AUTH_GITHUB_ENABLED) || boolean(process.env.AUTH_LINKEDIN_ENABLED) || boolean(process.env.AUTH_INSTAGRAM_ENABLED) || boolean(process.env.AUTH_STRIPE_ENABLED)
-        .hr-text.d-flex.text-secondary.align-items-center or
+        .hr-text.d-flex.text-secondary.align-items-center= t('or')
       - const action = verb === 'sign up' ? '/register' : '/login'
       form.ajax-form(action=ctx.session.redirectTo ? l(action) : `${l(action)}?redirect_to=${l(config.passportCallbackOptions.successReturnToOrRedirect)}`, method="POST")
         input(type="hidden", name="_csrf", value=ctx.csrf)
