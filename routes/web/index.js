@@ -7,9 +7,11 @@ const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
 
-const router = new Router({ prefix: '/:locale' });
+const router = new Router();
 
-router
+const localeRouter = new Router({ prefix: '/:locale' });
+
+localeRouter
   .get('/', web.auth.homeOrDashboard)
   .get(
     '/dashboard',
@@ -34,8 +36,10 @@ router
   .get('/register', policies.ensureLoggedOut, web.auth.registerOrLogin)
   .post('/register', policies.ensureLoggedOut, web.auth.register);
 
+localeRouter.use(myAccount.routes());
+localeRouter.use(admin.routes());
+
 router.use(auth.routes());
-router.use(myAccount.routes());
-router.use(admin.routes());
+router.use(localeRouter.routes());
 
 module.exports = router;

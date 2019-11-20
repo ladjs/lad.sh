@@ -93,12 +93,20 @@ obj[fields.avatarURL] = {
   trim: true,
   validate: val => validator.isURL(val)
 };
+// google
 obj[fields.googleProfileID] = {
   type: String,
   index: true
 };
 obj[fields.googleAccessToken] = String;
 obj[fields.googleRefreshToken] = String;
+// github
+obj[fields.githubProfileID] = {
+  type: String,
+  index: true
+};
+obj[fields.githubAccessToken] = String;
+obj[fields.githubRefreshToken] = String;
 
 // shared field names with @ladjs/i18n and email-templates
 obj[config.lastLocaleField] = {

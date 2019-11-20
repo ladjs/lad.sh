@@ -2,7 +2,6 @@ const path = require('path');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
-const I18N = require('@ladjs/i18n');
 const _ = require('lodash');
 const base64ToS3 = require('nodemailer-base64-to-s3');
 const boolean = require('boolean');
@@ -75,7 +74,8 @@ const config = {
     // but for complete configuration reference please see:
     // <https://github.com/mashpie/i18n-node#list-of-all-configuration-options>
     phrases,
-    directory: path.join(__dirname, '..', 'locales')
+    directory: path.join(__dirname, '..', 'locales'),
+    ignoredRedirectGlobs: ['/auth/**/*']
   },
 
   // <https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property>
@@ -125,7 +125,10 @@ const config = {
       avatarURL: 'avatar_url',
       googleProfileID: 'google_profile_id',
       googleAccessToken: 'google_access_token',
-      googleRefreshToken: 'google_refresh_token'
+      googleRefreshToken: 'google_refresh_token',
+      githubProfileID: 'github_profile_id',
+      githubAccessToken: 'github_access_token',
+      githubRefreshToken: 'github_refresh_token'
     }
   },
 
@@ -197,10 +200,6 @@ config.meta = meta(config);
 
 // add i18n api to views
 const logger = new Axe(config.logger);
-const i18n = new I18N({
-  ...config.i18n,
-  logger
-});
 
 // add manifest helper for rev-manifest.json support
 config.manifest = path.join(config.buildDir, 'rev-manifest.json');

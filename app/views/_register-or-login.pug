@@ -10,37 +10,17 @@ mixin registerOrLogin(verb, isModal = false)
           else
             = t('Welcome back!')
             = ' '
-            = emoji('beers')
+            = emoji('wave')
     div(class=isModal ? '' : 'col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3')
-      if boolean(process.env.AUTH_FACEBOOK_ENABLED)
-        a.btn.btn-block.btn-lg.btn-social.btn-facebook(href='/auth/facebook', role="button")
-          i.fa.fa-fw.fa-facebook
-          = ` ${titleize(verb)} ${t('with Facebook')}`
-      if boolean(process.env.AUTH_TWITTER_ENABLED)
-        a.btn.btn-block.btn-lg.btn-social.btn-twitter(href='/auth/twitter', role="button")
-          i.fa.fa-fw.fa-twitter
-          = ` ${titleize(verb)} ${t('with Twitter')}`
       if boolean(process.env.AUTH_GOOGLE_ENABLED)
         a.btn.btn-block.btn-lg.btn-social.btn-google(href='/auth/google', role="button")
-          i.fa.fa-fw.fa-google-plus
-          = ` ${titleize(verb)} ${t('with Google')}`
+          i.fa.fa-fw.fa-google
+          = t('Sign in with Google')
       if boolean(process.env.AUTH_GITHUB_ENABLED)
         a.btn.btn-block.btn-lg.btn-social.btn-github(href='/auth/github', role="button")
           i.fa.fa-fw.fa-github
-          = ` ${titleize(verb)} ${t('with GitHub')}`
-      if boolean(process.env.AUTH_LINKEDIN_ENABLED)
-        a.btn.btn-block.btn-lg.btn-social.btn-linkedin(href='/auth/linkedin', role="button")
-          i.fa.fa-fw.fa-linkedin
-          = ` ${titleize(verb)} ${t('with LinkedIn')}`
-      if boolean(process.env.AUTH_INSTAGRAM_ENABLED)
-        a.btn.btn-block.btn-lg.btn-social.btn-instagram(href='/auth/instagram', role="button")
-          i.fa.fa-fw.fa-instagram
-          = ` ${titleize(verb)} ${t('with Instagram')}`
-      if boolean(process.env.AUTH_STRIPE_ENABLED)
-        a.btn.btn-block.btn-lg.btn-social.btn-stripe(href='/auth/stripe', role="button")
-          i.fa.fa-fw.fa-cc-stripe
-          = ` ${titleize(verb)} ${t('with Stripe')}`
-      if boolean(process.env.AUTH_FACEBOOK_ENABLED) || boolean(process.env.AUTH_TWITTER_ENABLED) || boolean(process.env.AUTH_GOOGLE_ENABLED) || boolean(process.env.AUTH_GITHUB_ENABLED) || boolean(process.env.AUTH_LINKEDIN_ENABLED) || boolean(process.env.AUTH_INSTAGRAM_ENABLED) || boolean(process.env.AUTH_STRIPE_ENABLED)
+          = t('Sign in with GitHub')
+      if boolean(process.env.AUTH_GOOGLE_ENABLED) || boolean(process.env.AUTH_GITHUB_ENABLED)
         .hr-text.d-flex.text-secondary.align-items-center= t('or')
       - const action = verb === 'sign up' ? '/register' : '/login'
       form.ajax-form(action=ctx.session.redirectTo ? l(action) : `${l(action)}?redirect_to=${l(config.passportCallbackOptions.successReturnToOrRedirect)}`, method="POST")
