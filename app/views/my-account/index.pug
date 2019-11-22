@@ -11,10 +11,11 @@ block body
           input(type="hidden", name="_csrf", value=ctx.csrf)
           input(type='hidden', name='change_password', value='true')
           .modal-body
-            .form-group.row
-              label.control-label.col-md-4.col-form-label.text-md-right= t('Old password')
-              .col-md-8
-                input(type='password', name='old_password', required).form-control
+            if ctx.state.user.has_set_password
+              .form-group.row
+                label.control-label.col-md-4.col-form-label.text-md-right= t('Old password')
+                .col-md-8
+                  input(type='password', name='old_password', required).form-control
             .form-group.row
               label.control-label.col-md-4.col-form-label.text-md-right= t('Password')
               .col-md-8
