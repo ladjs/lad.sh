@@ -12,7 +12,13 @@ async function create(ctx) {
     return ctx.throw(Boom.badRequest(ctx.translate('INVALID_PASSWORD')));
 
   // register the user
-  const user = await Users.register({ email: body.email }, body.password);
+  const user = await Users.register(
+    {
+      email: body.email,
+      has_set_password: true
+    },
+    body.password
+  );
 
   // send the response
   ctx.body = {

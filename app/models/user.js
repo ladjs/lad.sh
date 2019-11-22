@@ -64,7 +64,11 @@ const User = new mongoose.Schema({
 
   // password reset
   reset_token_expires_at: Date,
-  reset_token: String
+  reset_token: String,
+  has_set_password: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // additional variable based properties to add to the schema
