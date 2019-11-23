@@ -44,7 +44,7 @@ async function registerOrLogin(ctx) {
   // prevents lad being used as a open redirect
   if (
     ctx.session.returnTo &&
-    ctx.session.returnTo.indexOf('://') !== -1 &&
+    ctx.session.returnTo.includes('://') &&
     ctx.session.returnTo.indexOf(config.urls.web) !== 0
   ) {
     ctx.logger.warn(
@@ -101,8 +101,8 @@ async function login(ctx, next) {
     if (user) {
       try {
         await ctx.login(user);
-      } catch (err2) {
-        throw err2;
+      } catch (err_) {
+        throw err_;
       }
 
       let greeting = 'Good morning';
