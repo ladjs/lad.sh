@@ -1,22 +1,29 @@
 const path = require('path');
 
+const ms = require('ms');
+
 const queues = [
   {
     name: 'email',
     options: {
-      attempts: 5
+      attempts: 2
     },
     processors: [
       {
         processor: path.join(__dirname, 'email.js'),
-        concurrency: 10
+        concurrency: 3
       }
     ]
   },
   {
     name: 'mandarin',
     options: {
-      attempts: 1
+      attempts: 1,
+      defaultJobOptions: {
+        repeat: {
+          every: ms('5s')
+        }
+      }
     },
     processors: [
       {

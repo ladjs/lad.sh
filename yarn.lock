@@ -952,13 +952,13 @@
     path-to-regexp "^1.1.1"
     urijs "^1.19.0"
 
-"@ladjs/api@^0.2.25":
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-0.2.25.tgz#603d6220217e027a2d3d73d35cd8753867dad2aa"
-  integrity sha512-LArt+lgwA5zZ1oB4TGzUMQODt0fNofCCdFEYMI7dxurDEQWwcJcp6DzJnVDqyZmy1qdQq9hRMWyD/QIuJ0nlIA==
+"@ladjs/api@^0.2.26":
+  version "0.2.26"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-0.2.26.tgz#3a7f3f63efb6ec9f750d3c13a38969db259e5677"
+  integrity sha512-vNbVPBzaqn5v08nejg+ENFnDnOYWu5r1QZKYXhU3sXbfahYWpZdoJsry060LJiiACsjhLNX6oDPneX7WCiRdjA==
   dependencies:
     "@koa/router" "^8.0.2"
-    "@ladjs/i18n" "^1.2.2"
+    "@ladjs/i18n" "^2.0.0"
     "@ladjs/redis" "^1.0.3"
     "@ladjs/shared-config" "^0.0.10"
     "@ladjs/store-ip-address" "^0.0.6"
@@ -997,11 +997,6 @@
     spinkit "1.x"
     sweetalert2 "8.x"
     url-parse "^1.4.7"
-
-"@ladjs/bootstrap-social@^7.0.2":
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/@ladjs/bootstrap-social/-/bootstrap-social-7.0.2.tgz#26421482bfaf6ff102f5cefee1dec33956a8a688"
-  integrity sha512-59cZz1cLjfqdQq1Fj5XMZuGwwKz1h1VztTP0jKg5wrEwCq8OuwT8RqfYGdF0tM7Bp6sqowgYZNVikDmbRjvZZA==
 
 "@ladjs/browserslist-config@^0.0.1":
   version "0.0.1"
@@ -1049,10 +1044,27 @@
   dependencies:
     debug "^4.1.1"
 
-"@ladjs/i18n@^1.2.1", "@ladjs/i18n@^1.2.2":
+"@ladjs/i18n@^1.2.1":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-1.2.2.tgz#0c59f791a00e7f9f8395c87382ea04aa307a9c4e"
   integrity sha512-2teRRSM1QSm8A9s0To/thDqmLjuwJvxn6pKczqGxSXylgRsqa/qhDdM27+cEPxYJTP4lNFMxqf35tPaL7dKEUQ==
+  dependencies:
+    "@hapi/boom" "^8.0.1"
+    boolean "1.0.0"
+    country-language "^0.1.7"
+    debug "^4.1.1"
+    i18n "^0.8.4"
+    i18n-locales "^0.0.2"
+    lodash "^4.17.15"
+    moment "^2.24.0"
+    multimatch "^4.0.0"
+    qs "^6.9.1"
+    titleize "^2.1.0"
+
+"@ladjs/i18n@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-2.0.0.tgz#0235d989a8600bb9b230264261a99dfce4b0aae3"
+  integrity sha512-2h9bVJ818dcCfuV8kUEAA4B5jDyDsPilhGkBKgR1W1vt+QZFueIKBolJ/FJKr5ExHySmFKF5sOTC6f3S0+3KHA==
   dependencies:
     "@hapi/boom" "^8.0.1"
     boolean "1.0.0"
@@ -1156,14 +1168,14 @@
     debug "^4.1.1"
     validator "^11.1.0"
 
-"@ladjs/web@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.4.3.tgz#0a7b394e3beb3ebd06f458ad4c350aa1c5e3b361"
-  integrity sha512-EF/fT4JnEwrRPv22FEtAB/bFc7HWpQkEaXdk/7hAU1cgWGAc/ma/Er5YfNhaEyQu6cMz7g5zhTX6NFlyFgZ1xg==
+"@ladjs/web@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.4.4.tgz#3be2345cb4a18eaf945a300e1285468a92f9f0db"
+  integrity sha512-VouCB51UpYWzEX8zqb7oi17caoAry07nIdLjvNV9YheZL13nC1IO3DMuz5Gq7bueZvvm2gR/rFSqcDXT/EIE5w==
   dependencies:
     "@hapi/boom" "^8.0.1"
     "@koa/router" "^8.0.2"
-    "@ladjs/i18n" "^1.2.2"
+    "@ladjs/i18n" "^2.0.0"
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/redis" "^1.0.3"
     "@ladjs/shared-config" "^0.0.10"
@@ -1336,6 +1348,11 @@
   integrity sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==
   dependencies:
     defer-to-connect "^1.0.1"
+
+"@tkrotoff/bootstrap-floating-label@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@tkrotoff/bootstrap-floating-label/-/bootstrap-floating-label-0.4.0.tgz#102144e26664e02c9b3e267260eb2bf8857fe4ae"
+  integrity sha512-dwCHbZg+4NTgPg8fsUj61W7D+JjWBdA5X6CJoHxGFMlnP2xP3VZJUrf5IHaOZYsteqP9DCF+hVfzwz7pb+3Uzw==
 
 "@types/babel-types@*", "@types/babel-types@^7.0.0":
   version "7.0.7"

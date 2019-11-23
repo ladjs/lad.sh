@@ -1,7 +1,7 @@
 - const isRegisterOrLogin = ['/register', '/login'].includes(ctx.pathWithoutLocale)
 if !user && !registerOrLogin
   include _register-or-login
-  each verb in [ 'sign up', 'log in' ]
+  each verb in [ 'sign up', 'sign in' ]
     .modal.fade(tabindex='-1', role='dialog', id=`modal-${dashify(verb)}`, aria-labelledby=`modal-${dashify(verb)}-title`, aria-hidden='true')
       .modal-dialog(role='document')
         .modal-content
