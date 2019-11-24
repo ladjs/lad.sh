@@ -21,7 +21,7 @@ const queues = [
       attempts: 1,
       defaultJobOptions: {
         repeat: {
-          every: ms('5s')
+          every: ms('24hr')
         }
       }
     },
