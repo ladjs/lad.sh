@@ -1,5 +1,6 @@
 const StoreIPAddress = require('@ladjs/store-ip-address');
 const captainHook = require('captain-hook');
+const customFonts = require('custom-fonts-in-emails');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
@@ -147,13 +148,22 @@ User.plugin(captainHook);
 User.postCreate(async (user, next) => {
   // add welcome email job
   try {
+    const helloImage = await customFonts.png2x({
+      text: user[config.passport.fields.givenName]
+        ? `${i18n.api.t('Hello')} ${user[config.passport.fields.givenName]}!`
+        : i18n.api.t('Hello there!'),
+      fontSize: 40,
+      backgroundColor: '#e9ecef',
+      fontNameOrPath: 'Bitter Regular'
+    });
     const job = await bull.add('email', {
       template: 'welcome',
       message: {
         to: user.full_email
       },
       locals: {
-        user: select(user.toObject(), User.options.toJSON.select)
+        user: select(user.toObject(), User.options.toJSON.select),
+        helloImage
       }
     });
     logger.info('added job', bull.getMeta({ job }));

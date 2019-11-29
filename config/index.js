@@ -4,13 +4,13 @@ const Axe = require('axe');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const base64ToS3 = require('nodemailer-base64-to-s3');
-const boolean = require('boolean');
 const consolidate = require('consolidate');
+const manifestRev = require('manifest-rev');
 const nodemailer = require('nodemailer');
 const pino = require('pino');
-const manifestRev = require('manifest-rev');
 const strength = require('strength');
 const { Signale } = require('signale');
+const { boolean } = require('boolean');
 
 const pkg = require('../package');
 const env = require('./env');

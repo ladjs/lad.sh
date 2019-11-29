@@ -4,7 +4,7 @@ extends ../layout
 block content
   .jumbotron.jumbotron-fluid
     .container
-      != png2x({ text: user[config.passport.fields.givenName] ? `${t('Hello')} ${user[config.passport.fields.givenName]}!` : t('Hello there!'), fontSize: 40, backgroundColor: '#e9ecef', fontNameOrPath: 'Bitter Regular' })
+      != helloImage
       p.lead.mt-2
         t('Visit our website for complete documentation and tutorials. If you need a quick install guide, then see below.')
       p

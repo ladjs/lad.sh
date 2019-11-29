@@ -1,6 +1,6 @@
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
-const boolean = require('boolean');
+const { boolean } = require('boolean');
 
 const passport = require('../../helpers/passport');
 const policies = require('../../helpers/policies');

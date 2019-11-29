@@ -76,7 +76,7 @@ nav(class=['/register', '/login'].includes(ctx.pathWithoutLocale) ? 'bg-white' :
             role='button',
             href=l('/login'),
             data-toggle=isRegisterOrLogin ? '': 'modal-anchor',
-            data-target=isRegisterOrLogin ? '' : '#modal-log-in',
+            data-target=isRegisterOrLogin ? '' : '#modal-sign-in',
             class=ctx.pathWithoutLocale === '/login' ? 'btn-success' : 'text-success'
           )= t('Sign in')
         li.nav-item.ml-md-1.mt-1.mt-md-0
