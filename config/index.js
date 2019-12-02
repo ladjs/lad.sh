@@ -54,7 +54,7 @@ const config = {
     level: 'debug',
     capture: false,
     logger:
-      env === 'production'
+      env.NODE_ENV === 'production'
         ? pino({
             customLevels: {
               log: 30
