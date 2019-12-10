@@ -6,6 +6,7 @@ const _ = require('lodash');
 const base64ToS3 = require('nodemailer-base64-to-s3');
 const consolidate = require('consolidate');
 const manifestRev = require('manifest-rev');
+const ms = require('ms');
 const nodemailer = require('nodemailer');
 const pino = require('pino');
 const strength = require('strength');
@@ -50,6 +51,7 @@ const config = {
   },
   logger: {
     showStack: env.SHOW_STACK,
+    showMeta: env.SHOW_META,
     name: env.APP_NAME,
     level: 'debug',
     capture: false,
@@ -111,6 +113,27 @@ const config = {
       filters: {}
     }
   },
+
+  // user fields (change these if you want camel case or whatever)
+  userFields: {
+    fullEmail: 'full_email',
+    apiToken: 'api_token',
+    resetTokenExpiresAt: 'reset_token_expires_at',
+    resetToken: 'reset_token',
+    hasSetPassword: 'has_set_password',
+    hasVerifiedEmail: 'has_verified_email',
+    verificationPinExpiresAt: 'verification_pin_expires_at',
+    verificationPinSentAt: 'verification_pin_sent_at',
+    verificationPin: 'verification_pin',
+    verificationPinHasExpired: 'verification_pin_has_expired',
+    welcomeEmailSentAt: 'welcome_email_sent_at'
+  },
+
+  // verification pin
+  verificationPath: '/verify',
+  verificationPinTimeoutMs: ms(env.VERIFICATION_PIN_TIMEOUT_MS),
+  verificationPinEmailIntervalMs: ms(env.VERIFICATION_PIN_EMAIL_INTERVAL_MS),
+  verificationPin: { length: 6, characters: '1234567890' },
 
   // @ladjs/passport configuration (see defaults in package)
   // <https://github.com/ladjs/passport>

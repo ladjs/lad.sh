@@ -37,9 +37,6 @@ $question: theme-color('light');
 // bootstrap floating labels
 @import 'node_modules/@tkrotoff/bootstrap-floating-label/src/bootstrap4-floating-label';
 
-// sticky footer
-@import '_sticky-footer';
-
 // hljs
 @import '_hljs';
 
@@ -48,6 +45,9 @@ $question: theme-color('light');
 
 // auth buttons
 @import '_btn-auth';
+
+// sweetalert2 fix
+@import '_swal2';
 
 // custom app styling
 @import '_custom';

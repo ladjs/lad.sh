@@ -12,19 +12,17 @@ async function create(ctx) {
     return ctx.throw(Boom.badRequest(ctx.translate('INVALID_PASSWORD')));
 
   // register the user
-  const user = await Users.register(
-    {
-      email: body.email,
-      has_set_password: true
-    },
-    body.password
-  );
+  const query = { email: body.email };
+  query[config.userFields.hasSetPassword] = true;
+  const user = await Users.register(query, body.password);
+
+  // send a verification email
+  await user.sendVerificationEmail();
 
   // send the response
-  ctx.body = {
-    ...select(user.toObject(), Users.schema.options.toJSON.select),
-    api_token: user.api_token
-  };
+  const obj = select(user.toObject(), Users.schema.options.toJSON.select);
+  obj[config.userFields.apiToken] = user[config.userFields.apiToken];
+  ctx.body = obj;
 }
 
 async function retrieve(ctx) {
