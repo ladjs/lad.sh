@@ -22,4 +22,4 @@ block body
           each dep in Object.keys(config.pkg.devDependencies)
             a(href=`https://www.npmjs.com/package/${dep}`, target="_blank").list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
               = dep
-              span.badge.badge-pill= config.pkg.dependencies[dep]
+              span.badge.badge-pill= config.pkg.devDependencies[dep]
