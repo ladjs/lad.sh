@@ -220,7 +220,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ladjs/lad"
+    "url": "https://github.com/ladjs/lad.sh"
   },
   "scripts": {
     "build": "nps build",
