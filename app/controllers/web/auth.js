@@ -154,10 +154,7 @@ async function register(ctx) {
   const query = { email: body.email, group: count === 0 ? 'admin' : 'user' };
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
-  const user = await Users.register(
-    query,
-    body.password
-  );
+  const user = await Users.register(query, body.password);
 
   await ctx.login(user);
 
@@ -314,6 +311,7 @@ async function catchError(ctx, next) {
   }
 }
 
+// eslint-disable-next-line complexity
 async function verify(ctx) {
   let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
 
@@ -346,7 +344,22 @@ async function verify(ctx) {
     ctx.state.user[config.userFields.verificationPinHasExpired] ||
     resend
   ) {
-    ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx);
+    try {
+      ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx);
+    } catch (err) {
+      // wrap with try/catch to prevent redirect looping
+      // (even though the koa redirect loop package will help here)
+      if (!err.isBoom) return ctx.throw(err);
+      ctx.logger.warn(err);
+      if (ctx.accepts('html')) {
+        ctx.flash('warning', err.message);
+        ctx.redirect(redirectTo);
+      } else {
+        ctx.body = { message: err.message };
+      }
+
+      return;
+    }
 
     const message = ctx.translate(
       ctx.state.user[config.userFields.verificationPinHasExpired]
