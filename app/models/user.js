@@ -1,7 +1,6 @@
 const Boom = require('@hapi/boom');
 const StoreIPAddress = require('@ladjs/store-ip-address');
 const cryptoRandomString = require('crypto-random-string');
-const customFonts = require('custom-fonts-in-emails');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
 const mongoose = require('mongoose');
@@ -184,22 +183,13 @@ User.post('save', async user => {
 
   // add welcome email job
   try {
-    const helloImage = await customFonts.png2x({
-      text: user[config.passport.fields.givenName]
-        ? `${i18n.api.t('Hello')} ${user[config.passport.fields.givenName]}!`
-        : i18n.api.t('Hello there!'),
-      fontSize: 40,
-      backgroundColor: '#e9ecef',
-      fontNameOrPath: 'Bitter Regular'
-    });
     const job = await bull.add('email', {
       template: 'welcome',
       message: {
         to: user[config.userFields.fullEmail]
       },
       locals: {
-        user: select(user.toObject(), User.options.toJSON.select),
-        helloImage
+        user: select(user.toObject(), User.options.toJSON.select)
       }
     });
     logger.info('added job', bull.getMeta({ job }));

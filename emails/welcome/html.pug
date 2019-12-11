@@ -5,12 +5,11 @@ block content
   .container
     .row
       .col-12
-        .jumbotron.jumbotron-fluid.rounded.my-2
+        .jumbotron.jumbotron-fluid.rounded.my-2.text-center
           .container
-            != helloImage
-            p.lead.mt-2= t('Visit our website for complete documentation and tutorials. If you need a quick install guide, see below.')
-            p
-              a.btn.btn-lg.btn-success(href=config.urls.web, role="button")= t('Try the demo')
+            h1= t('The Best Node.js Framework')
+            p.lead= t('Lad scaffolds a Koa webapp and API framework for Node.js')
+            a.btn.btn-lg.btn-success(href=config.urls.web, role="button")= t('Try the demo')
     .row
       .col-12
         p
