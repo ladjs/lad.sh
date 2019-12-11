@@ -2,18 +2,22 @@
 extends ../layout
 
 block content
-  .jumbotron.jumbotron-fluid.rounded.my-2
-    .container
-      != helloImage
-      p.lead.mt-2= t('Visit our website for complete documentation and tutorials. If you need a quick install guide, see below.')
-      p
-        a.btn.btn-lg.btn-success(href=config.urls.web, role="button")= t('Try the demo')
   .container
-    p
-      :markdown-it(langPrefix='hljs ')
-        ```sh
-        npm install -g lad
-        lad new-project
-        cd new-project
-        npm start
-        ```
+    .row
+      .col-12
+        .jumbotron.jumbotron-fluid.rounded.my-2
+          .container
+            != helloImage
+            p.lead.mt-2= t('Visit our website for complete documentation and tutorials. If you need a quick install guide, see below.')
+            p
+              a.btn.btn-lg.btn-success(href=config.urls.web, role="button")= t('Try the demo')
+    .row
+      .col-12
+        p
+          :markdown-it(langPrefix='hljs ')
+            ```sh
+            npm install -g lad
+            lad new-project
+            cd new-project
+            npm start
+            ```
