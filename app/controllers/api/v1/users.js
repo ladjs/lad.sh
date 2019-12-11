@@ -13,6 +13,7 @@ async function create(ctx) {
 
   // register the user
   const query = { email: body.email };
+  query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   const user = await Users.register(query, body.password);
 

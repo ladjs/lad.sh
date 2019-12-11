@@ -3,18 +3,23 @@ extends layout
 
 block body
   //- Main jumbotron for a primary marketing message or call to action
-  .jumbotron.mb-0
+  .jumbotron.mb-0.text-center
     .container
-      h1.display-3= t('The Best Node.js Framework')
-      p= t('Lad scaffolds a Koa webapp and API framework for Node.js')
-      p
-        a.btn.btn-success.btn-lg(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= `${t('Try the demo')} »`
-  .bg-success.py-5
-    .container
-      .row
-        .col
-          code.bg-dark.text-white.p-3.rounded npm install -g lad
-  .container.pt-5
+      h1= t('The Best Node.js Framework')
+      p.lead= t('Lad scaffolds a Koa webapp and API framework for Node.js')
+      a.btn.btn-success.btn-lg(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= t('Try the demo')
+  .bg-dark.py-5.text-center
+    .d-flex.justify-content-center
+      .input-group.input-group-lg.w-auto
+        .input-group-prepend
+          span.input-group-text.border.border-light.bg-transparent.text-white: i.fa.fa-terminal
+        input(type='text', name='bash', readonly, value='npm install -g lad').border.border-light.bg-transparent.text-white.form-control#npm-install
+        .input-group-append.d-none.d-md-inline-block
+          button(type='button', data-toggle="clipboard", data-clipboard-target="#npm-install").btn.btn-light
+            i.fa.fa-clipboard
+            = ' '
+            = t('Copy')
+  .container.py-5
     .row
       //- Example row of columns
       .col-md-3

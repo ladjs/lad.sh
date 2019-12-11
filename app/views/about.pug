@@ -4,9 +4,9 @@ extends layout
 block body
   .jumbotron.mb-0
     .container
-      h1.display-3= `${t('About')} ${config.appName}`
+      h1= `${t('About')} ${config.appName}`
       p= t("Dependencies and development dependencies are listed below.")
-  .container.pt-5
+  .container.py-3
     .row
       .col-12
         ul.list-group
@@ -14,7 +14,8 @@ block body
           each dep in Object.keys(config.pkg.dependencies)
             a(href=`https://www.npmjs.com/package/${dep}`, target="_blank").list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
               = dep
-              span.badge.badge-pill= config.pkg.dependencies[dep]
+              span.badge.badge-secondary.badge-pill= config.pkg.dependencies[dep]
+    hr
     .row
       .col-12
         ul.list-group
@@ -22,4 +23,4 @@ block body
           each dep in Object.keys(config.pkg.devDependencies)
             a(href=`https://www.npmjs.com/package/${dep}`, target="_blank").list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
               = dep
-              span.badge.badge-pill= config.pkg.devDependencies[dep]
+              span.badge.badge-secondary.badge-pill= config.pkg.devDependencies[dep]

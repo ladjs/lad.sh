@@ -151,8 +151,11 @@ async function register(ctx) {
 
   // register the user
   const count = await Users.countDocuments({ group: 'admin' });
+  const query = { email: body.email, group: count === 0 ? 'admin' : 'user' };
+  query[config.userFields.hasVerifiedEmail] = false;
+  query[config.userFields.hasSetPassword] = true;
   const user = await Users.register(
-    { email: body.email, group: count === 0 ? 'admin' : 'user' },
+    query,
     body.password
   );
 

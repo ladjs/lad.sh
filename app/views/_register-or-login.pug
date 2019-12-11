@@ -50,7 +50,7 @@ mixin registerOrLogin(verb, isModal = false)
         if verb === 'sign up'
           != t('Already have an account?')
           = ' '
-          a(href=l('/login'), data-dismiss-modal=isRegisterOrLogin ? false : 'true', data-toggle=isRegisterOrLogin ? '' : 'modal-anchor', data-target=isRegisterOrLogin ? '' : '#modal-log-in').card-link= t('Sign in')
+          a(href=l('/login'), data-dismiss-modal=isRegisterOrLogin ? false : 'true', data-toggle=isRegisterOrLogin ? '' : 'modal-anchor', data-target=isRegisterOrLogin ? '' : '#modal-sign-in').card-link= t('Sign in')
         else
           != t("Don't have an account?")
           = ' '

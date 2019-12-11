@@ -952,10 +952,10 @@
     path-to-regexp "1.x"
     urijs "^1.19.2"
 
-"@ladjs/api@^0.2.32":
-  version "0.2.32"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-0.2.32.tgz#b0e3ef02c495d0d4eb54bc8d665280e4324db348"
-  integrity sha512-imbxqgjz5w/kD/VkhK339tHQKi/swTCSgfJj+etncocIfRVWpZADln3nLJ4jUwrP/hd19vgIRau6MeX/5j0d1Q==
+"@ladjs/api@^0.2.33":
+  version "0.2.33"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-0.2.33.tgz#cdfc92e1817c5dda8db937b0e81a9b92855e1d47"
+  integrity sha512-RrK06ZF1GyV8eqMNUpTIyqcK0SWemqpIFpB2Bu1xV7Irws0aLQR2B/ILGILXc3W4cK8a4TllqiTIQxW+3M9ryw==
   dependencies:
     "@koa/router" "^8.0.5"
     "@ladjs/i18n" "^3.0.1"
@@ -963,7 +963,7 @@
     "@ladjs/shared-config" "^1.0.1"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.0"
-    cabin "^5.0.12"
+    cabin "^5.0.13"
     express-request-id "^1.4.1"
     kcors "^2.2.2"
     koa "^2.11.0"
@@ -984,10 +984,10 @@
     request-received "^0.0.3"
     response-time "^2.3.2"
 
-"@ladjs/assets@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@ladjs/assets/-/assets-0.0.13.tgz#43a94b16ba372a8a692447b22a3fad8a3a1b62a6"
-  integrity sha512-/3GOeTT4/rwafAGG/DG1BxpiahgKvXfXDn1sAAPZaTMsyh5yWockGRgbq+wCPYBVKnLsv4UDBPXAVJon6oYMoA==
+"@ladjs/assets@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@ladjs/assets/-/assets-0.0.14.tgz#ee3c233fe0373080d7521b3c2dbe1733ff518ef1"
+  integrity sha512-lg5eXdGvDemYXRuzXwsJ53JE0YCm1tW6xYdiYtTP8it8XwQnE5CK2VA2bAw/gv0gBxdbT4gjtXDcKygytlikFA==
   dependencies:
     clipboard "^2.0.4"
     frisbee "^3.1.0"
@@ -1112,10 +1112,10 @@
     passport-google-oauth "^2.0.0"
     validator "^12.0.0"
 
-"@ladjs/policies@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-1.0.7.tgz#c6ce8e36f75278b74132e2cd57834c1c9ac6f483"
-  integrity sha512-JJH5bd7edMj6ord5ejLDgWG9AuvNGeIWtN8C2axVzr/FYoVR3VoRdzmCDM+tcXtIieIsw/dVY8rjgFdopzSOLw==
+"@ladjs/policies@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-1.0.8.tgz#e65d5ca25c3eba3a51a1c26e1c792d04f24c9ce6"
+  integrity sha512-VJ1KIrsekOwjWYL/9ftTQC/lq5vrW2kPHWnvKT1tKDS8tU8xVW6upnaw3eSJLgtLWHlfpU5vMojUp4WxbqGclA==
   dependencies:
     "@hapi/boom" "^8.0.1"
     basic-auth "^2.0.1"
@@ -1160,10 +1160,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.4.10.tgz#cfb9347f9b8145697da0a33c420ec5293214d4b7"
-  integrity sha512-4JkCF1UnhKiQ6ewCtrxsgVgnQD+rDCXgVq7N4bUmYYP0XutBIM++UIeFi+rp9TEtMnj5TxE8F+WgEO6pAnHVuA==
+"@ladjs/web@^0.4.11":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.4.11.tgz#9d7e9c9d02b058e9a13643fdb72e80842aedc3e0"
+  integrity sha512-0v3VXGbI762pGHhwECvytfkB4v9wzE3knW2G38VGQ5b/EeBfKxtnL1Mo6iMCvCw874WaR3uDEWoqlND0BUCkHw==
   dependencies:
     "@hapi/boom" "^8.0.1"
     "@koa/router" "^8.0.5"
@@ -1174,7 +1174,7 @@
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.0"
-    cabin "^5.0.12"
+    cabin "^5.0.13"
     express-request-id "^1.4.1"
     kcors "^2.2.2"
     koa "^2.11.0"
@@ -2158,10 +2158,25 @@ ava@^2.4.0:
     update-notifier "^3.0.1"
     write-file-atomic "^3.0.0"
 
-aws-sdk@^2.233.1, aws-sdk@^2.389.0, aws-sdk@^2.528.0, aws-sdk@^2.586.0:
+aws-sdk@^2.233.1, aws-sdk@^2.389.0, aws-sdk@^2.528.0:
   version "2.586.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.586.0.tgz#71e7882f2ce970e02e417bcf04055524032c62e2"
   integrity sha512-Y5AGW8qRaa81jD1YahzLZLpQY62u3pmi2nlBNDMMR0Z4Ra5H90RgPAomKQe2JX+5Z6fzGFU7nNkYaScsZ6XFqw==
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^2.587.0:
+  version "2.587.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.587.0.tgz#5fbd0ae0662291471f95d009c002fb16dc69ae22"
+  integrity sha512-MAdUE4BC+hyfFPoQc61aV/tIfApp5ifqe3segW4GJq6dMmSCZdFbDwvs5ZUkgOSJ4ks3ZrpH9eCHpt6r0dFJYQ==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -2885,10 +2900,10 @@ bytes@^2.5.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-2.5.0.tgz#4c9423ea2d252c270c41b2bdefeff9bb6b62c06a"
   integrity sha1-TJQj6i0lLCcMQbK97+/5u2tiwGo=
 
-cabin@^5.0.12:
-  version "5.0.12"
-  resolved "https://registry.yarnpkg.com/cabin/-/cabin-5.0.12.tgz#b67cdb4c292830a9782dcfcbe1c11b40635b1361"
-  integrity sha512-YExY3OTqFdZOOdwDCtZxlkoPrmHdEqlittDZTVlurlbJqWGZvytMDtTIRdSYcxO1LoAlYOraik8A4wZEiumpzA==
+cabin@^5.0.13:
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/cabin/-/cabin-5.0.13.tgz#b108647539cb28a9f760fdda653a7530b8558b4d"
+  integrity sha512-2jbj4rdy1r8UTUA5gUPIllaNOnqD1dgOp2vzlWMAD/i/GPXQo4cRugMCn3kI//pYcdkCHj/euOYQ7IO3czdmAg==
   dependencies:
     ansi-colors "^4.1.1"
     axe "^4.0.5"
@@ -7564,7 +7579,7 @@ gulplog@^1.0.0:
   dependencies:
     glogg "^1.0.0"
 
-handlebars@^4.1.2:
+handlebars@^4.1.2, handlebars@^4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.5.3.tgz#5cf75bd8714f7605713511a56be7c349becb0482"
   integrity sha512-3yPecJoJHK/4c6aZhSvxOyG4vJKDshV36VHp0iVCDVh7o9w2vwi3NSnL2MMPj3YdduqaBcu7cGbggJQM0br9xA==
@@ -7782,10 +7797,12 @@ hide-powered-by@1.1.0:
   resolved "https://registry.yarnpkg.com/hide-powered-by/-/hide-powered-by-1.1.0.tgz#be3ea9cab4bdb16f8744be873755ca663383fa7a"
   integrity sha512-Io1zA2yOA1YJslkr+AJlWSf2yWFkKjvkcL9Ni1XSUqnGLr/qRQe2UI3Cn/J9MsJht7yEVCe0SscY1HgVMujbgg==
 
-highlight.js@^9.16.2:
-  version "9.16.2"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.16.2.tgz#68368d039ffe1c6211bcc07e483daf95de3e403e"
-  integrity sha512-feMUrVLZvjy0oC7FVJQcSQRqbBq9kwqnYE4+Kj9ZjbHh3g+BisiPgF49NyQbVLNdrL/qqZr3Ca9yOKwgn2i/tw==
+highlight.js@^9.17.0:
+  version "9.17.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.17.0.tgz#d2f3f746611a4d33b1920b9b067d39423bee7a9d"
+  integrity sha512-PyO7FK7z8ZC7FqBlmAxm4d+1DYaoS6+uaxt9KGkyP1AnmGRLnWmNod1yp9BFjUyHoDF00k+V57gF6X9ifY7f/A==
+  dependencies:
+    handlebars "^4.5.3"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -12333,16 +12350,16 @@ parse-latin@^4.0.0:
     unist-util-modify-children "^1.0.0"
     unist-util-visit-children "^1.0.0"
 
-parse-logs@^0.0.21:
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/parse-logs/-/parse-logs-0.0.21.tgz#054bfd0cfa9bc619950d41888170c21dd6250cb6"
-  integrity sha512-HNpjvRfDA1AblrJJhlCuoeiCYG6FjA1J4Wc6SM9EFqGmaulnWyTPEO9/JTVQGPaWqdoFg3OWdwk4dzwZXqrYwQ==
+parse-logs@^0.0.22:
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/parse-logs/-/parse-logs-0.0.22.tgz#e94fb8061247cc030c8fdcf996869fa5c459fe34"
+  integrity sha512-oK1DSnLsC4MsDs0PQ3J5fi4L0YDkJlxYHwaslPg/kFrtjMF3jkmakNvZ1U63cbtD+cDjaiJN/MgUUaCNR75AKg==
   dependencies:
     error-stack-parser "^2.0.4"
     is-whitespace "^0.3.0"
     iserror "^0.0.2"
     lodash "^4.17.15"
-    parse-request "^2.0.5"
+    parse-request "^2.0.6"
     prepare-stack-trace "^0.0.4"
     rfdc "^1.1.4"
 
@@ -12365,6 +12382,29 @@ parse-request@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/parse-request/-/parse-request-2.0.5.tgz#8d83bd5e9e31ecf3c9d369dd57f71ab754237b53"
   integrity sha512-k5qwKEcJ9CkHaT7C8dPJziE3ou6dQBLZhRcpCItNeXvpxDl4oQd/zEINOBtEFW0bIU1RzRzYFcdVC4tKVK57kA==
+  dependencies:
+    browser-process-hrtime "^1.0.0"
+    bson-objectid "^1.3.0"
+    convert-hrtime "^3.0.0"
+    cookie "^0.4.0"
+    credit-card-type "^8.3.0"
+    debug "^4.1.1"
+    fast-safe-stringify "^2.0.7"
+    http-headers "^3.0.2"
+    is-array-buffer "^1.0.1"
+    is-buffer "^2.0.4"
+    is-stream "^2.0.0"
+    is-uuid "^1.0.2"
+    ms "^2.1.2"
+    no-case "2.3.2"
+    rfdc "^1.1.4"
+    sensitive-fields "^0.0.7"
+    url-parse "^1.4.7"
+
+parse-request@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/parse-request/-/parse-request-2.0.6.tgz#4918649d94fb26cb0c9c714bee9db09bd65a0a70"
+  integrity sha512-Fx0sKz3LlJOPMIHvrTkqe4n4aSDTnVEwe1lAIK+ouPv+S8Ldtod1NP7LxYjQFzw7btWO3rF+P7kYHCZusYD1zw==
   dependencies:
     browser-process-hrtime "^1.0.0"
     bson-objectid "^1.3.0"

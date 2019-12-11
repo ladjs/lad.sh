@@ -82,11 +82,11 @@ obj[config.userFields.welcomeEmailSentAt] = Date;
 // account verification
 obj[config.userFields.hasSetPassword] = {
   type: Boolean,
-  default: false
+  default: false // manually set to true during web/API signup
 };
 obj[config.userFields.hasVerifiedEmail] = {
   type: Boolean,
-  default: false
+  default: true // manually set to false during web/API signup
 };
 obj[config.userFields.verificationPinExpiresAt] = Date;
 obj[config.userFields.verificationPinSentAt] = Date;

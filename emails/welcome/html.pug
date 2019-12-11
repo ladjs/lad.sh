@@ -2,13 +2,12 @@
 extends ../layout
 
 block content
-  .jumbotron.jumbotron-fluid
+  .jumbotron.jumbotron-fluid.rounded.my-2
     .container
       != helloImage
-      p.lead.mt-2
-        t('Visit our website for complete documentation and tutorials. If you need a quick install guide, then see below.')
+      p.lead.mt-2= t('Visit our website for complete documentation and tutorials. If you need a quick install guide, see below.')
       p
-        a.btn.btn-lg.btn-success(href=config.urls.web, role="button")= t('Visit site')
+        a.btn.btn-lg.btn-success(href=config.urls.web, role="button")= t('Try the demo')
   .container
     p
       :markdown-it(langPrefix='hljs ')
