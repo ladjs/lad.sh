@@ -30,7 +30,9 @@ module.exports = {
     'An email verification pin has been sent to your email address.',
   EMAIL_VERIFICATION_EXPIRED:
     'Your current email verification pin has expired and we have sent you a new one to your email address.',
+  INVALID_OTP_PASSCODE: 'Invalid 2FA passcode.',
   IS_NOT_ADMIN: 'You do not belong to the administrative user group.',
+  TWO_FACTOR_REQUIRED: 'Please log in with 2FA passcode to view this page.',
   LOGIN_REQUIRED: 'Please log in to view the page you requested.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   PASSWORD_RESET_LIMIT:

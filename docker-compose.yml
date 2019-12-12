@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  redis:
+    image: bitnami/redis:4.0.11-debian-9-r84
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/bitnami/redis/data
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=true
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+
+volumes:
+  redis_data:
+    driver: local

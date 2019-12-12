@@ -1,0 +1,21 @@
+
+extends ../layout
+
+block body
+  .container.py-3
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3
+        .card
+          .card-body
+            .text-center
+              h1.card-title.h4= t('2FA Passcode')
+              p= t('Please enter the passcode from your authenticator application.')
+            form(action="/en/login-otp", method="POST", autocomplete="off").ajax-form
+              input(type="hidden", name="_csrf", value=ctx.csrf)
+              .form-group.floating-label
+                input#input-text.form-control.form-control-lg(type="text", autocomplete="off", name="passcode", placeholder=t(''))
+                label(for="input-passcode")= t('Passcode')
+              button.btn.btn-primary.btn-block.btn-lg(type="submit")= t('Submit Passcode')
+          .card-footer.text-center
+            = t('Having trouble? ')
+            a.card-link(href=l('/forgot-2fa-passcode'))= t('Recover passcode')

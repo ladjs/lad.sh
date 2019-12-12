@@ -6,6 +6,8 @@ const moment = require('moment');
 const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
 const { boolean } = require('boolean');
+const { authenticator } = require('otplib');
+const qrcode = require('qrcode');
 
 const bull = require('../../../bull');
 const Users = require('../../models/user');
@@ -110,10 +112,52 @@ async function login(ctx, next) {
       delete ctx.session.returnTo;
     }
 
-    try {
-      await ctx.login(user);
-    } catch (err_) {
-      throw err_;
+    if (user) {
+      try {
+        await ctx.login(user);
+      } catch (err_) {
+        throw err_;
+      }
+
+      let greeting = 'Good morning';
+      if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
+        greeting = 'Good afternoon';
+      else if (moment().format('HH') >= 17) greeting = 'Good evening';
+
+      ctx.flash('custom', {
+        title: `${ctx.request.t('Hello')} ${ctx.state.emoji('wave')}`,
+        text: user[config.passport.fields.givenName]
+          ? `${greeting} ${user[config.passport.fields.givenName]}`
+          : greeting,
+        type: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        position: 'top'
+      });
+      
+      const uri = authenticator.keyuri(
+        user.email,
+        'lad.sh',
+        user.two_factor_token
+      );
+      
+      ctx.state.user.qrcode = await qrcode.toDataURL(uri);
+      await ctx.state.user.save();
+      
+      if (user.two_factor_enabled) {
+        if (!ctx.session.TwoFactorSuccess) {
+          redirectTo = `/${ctx.locale}/login-otp`;
+        }
+      }
+
+      if (ctx.accepts('json')) {
+        ctx.body = { redirectTo };
+      } else {
+        ctx.redirect(redirectTo);
+      }
+
+      return;
     }
 
     let greeting = 'Good morning';
@@ -138,6 +182,26 @@ async function login(ctx, next) {
   })(ctx, next);
 }
 
+async function loginOtp(ctx, next) {
+  await passport.authenticate('otp', (err, user, info) => {
+    if (err) throw err;
+    if (!user) throw Boom.unauthorized(ctx.translate('INVALID_OTP_PASSCODE'));
+
+    ctx.session.secondFactor = 'totp';
+    let redirectTo = `/${ctx.locale}/dashboard`;
+    
+    if (ctx.accepts('json')) {
+      ctx.body = { redirectTo };
+    } else {
+      ctx.redirect(redirectTo);
+    }
+  })(ctx, next);
+}
+
+async function renderOtp(ctx) {
+  ctx.render('my-account/security');
+}
+
 async function register(ctx) {
   const { body } = ctx.request;
 
@@ -147,9 +211,12 @@ async function register(ctx) {
   if (!isSANB(body.password))
     throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
 
+  // add qrcode secret later used to generate qr code
+  const key = authenticator.generateSecret();
+
   // register the user
   const count = await Users.countDocuments({ group: 'admin' });
-  const query = { email: body.email, group: count === 0 ? 'admin' : 'user' };
+  const query = { email: body.email, group: count === 0 ? 'admin' : 'user', two_factor_token: key };
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   const user = await Users.register(query, body.password);
@@ -415,6 +482,8 @@ module.exports = {
   registerOrLogin,
   homeOrDashboard,
   login,
+  loginOtp,
+  renderOtp,
   register,
   forgotPassword,
   resetPassword,

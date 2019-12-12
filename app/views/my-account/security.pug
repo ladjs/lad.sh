@@ -2,6 +2,43 @@
 extends ../layout
 
 block body
+  #modal-enable-2fa(tabindex='-1', role='dialog').modal.fade
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header.d-block.text-center
+          h5.modal-title= t('2FA')
+        form(action=ctx.path, method='POST').ajax-form.mt-3
+          input(type='hidden', name='_method', value='POST')
+          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type='hidden', name='enable_2fa', value='true')
+          .modal-body
+            .row
+              img(src=ctx.qrcode, width=250, height=250, alt="").mx-auto.d-block
+            .form-group.floating-label
+            .input-group
+              input(type='text', readonly, value=user.two_factor_token).form-control#api-token
+              .input-group-append
+                button(type='button', data-toggle="clipboard", data-clipboard-target="#api-token").btn.btn-primary
+                  i.fa.fa-clipboard
+                  = ' '
+                  = t('Copy')
+          .modal-footer.text-right
+            button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-secondary= t('Cancel')
+            button(type='submit').btn.btn-primary= t('Enable 2FA')
+  #modal-disable-2fa(tabindex='-1', role='dialog').modal.fade
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header.d-block.text-center
+          h5.modal-title= t('2FA')
+        form(action=ctx.path, method='POST').ajax-form.mt-3
+          input(type='hidden', name='_method', value='POST')
+          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type='hidden', name='enable_2fa', value='false')
+          .modal-body.text-center
+            p= t('Are you sure you want to disable 2FA?')
+          .modal-footer.text-right
+            button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-secondary= t('Cancel')
+            button(type='submit').btn.btn-danger= t('Disable 2FA')
   .container-fluid.py-3
     .row.mt-1
       .col
@@ -20,8 +57,16 @@ block body
                       = ' '
                       = t('Copy')
                 small.form-text.text-muted= t('Keep your token secure and never share it publicly')
-          .card-footer.text-right
-            form(action=ctx.path, method='POST').ajax-form.confirm-prompt
-              input(type='hidden', name='_method', value='DELETE')
-              input(type="hidden", name="_csrf", value=ctx.csrf)
-              button(type='submit').btn.btn-danger= t('Reset API Token')
+    .row.mt-3
+      .col
+        form(action=ctx.path, method='POST').ajax-form.confirm-prompt
+          input(type='hidden', name='_method', value='POST')
+          input(type="hidden", name="_csrf", value=ctx.csrf)
+          .card.card-bg-light
+            h4.card-header= t('2FA')
+            .card-body
+              .form-group.floating-label
+              if user.two_factor_enabled
+                button(data-toggle='modal', data-target='#modal-disable-2fa', type='button').btn.btn-danger.btn-sm.my-auto= t('Disable 2FA')
+              else
+                button(data-toggle='modal', data-target='#modal-enable-2fa', type='button').btn.btn-primary.btn-sm.my-auto= t('Enable 2FA')

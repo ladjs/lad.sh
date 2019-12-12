@@ -18,6 +18,7 @@ localeRouter
   .get(
     '/dashboard',
     policies.ensureLoggedIn,
+    policies.ensure2fa,
     web.breadcrumbs,
     render('dashboard')
   )
@@ -52,6 +53,8 @@ localeRouter
     web.auth.registerOrLogin
   )
   .post('/login', policies.ensureLoggedOut, web.auth.login)
+  .get('/login-otp', policies.ensureLoggedIn, render('my-account/2fa'))
+  .post('/login-otp', policies.ensureLoggedIn, web.auth.loginOtp)
   .get(
     '/register',
     policies.ensureLoggedOut,
