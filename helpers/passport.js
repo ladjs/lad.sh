@@ -8,7 +8,7 @@ const { Users } = require('../app/models');
 
 const passport = new Passport(Users, config.passport);
 
-if (process.env.ENABLE_OTP_STRATEGY) {
+if (process.env.ENABLE_OTP_STRATEGY)
   passport.use(new OtpStrategy(
   {
     codeField: 'passcode',
@@ -21,6 +21,5 @@ if (process.env.ENABLE_OTP_STRATEGY) {
     // we already have the user object from initial login
     return done(null, user.two_factor_token);
   }));
-}
 
 module.exports = passport;

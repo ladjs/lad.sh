@@ -118,6 +118,8 @@ const config = {
   userFields: {
     fullEmail: 'full_email',
     apiToken: 'api_token',
+    twoFactorEnabled: 'two_factor_enabled',
+    twoFactorToken: 'two_factor_token',
     resetTokenExpiresAt: 'reset_token_expires_at',
     resetToken: 'reset_token',
     hasSetPassword: 'has_set_password',

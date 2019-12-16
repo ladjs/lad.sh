@@ -49,21 +49,6 @@ const User = new mongoose.Schema({
     unique: true,
     validate: val => validator.isEmail(val)
   },
-  full_email: {
-    type: String,
-    required: true,
-    trim: true
-  },
-
-  // api token for basic auth
-  api_token: {
-    type: String,
-    required: true,
-    lowercase: true,
-    trim: true,
-    unique: true,
-    index: true
-  },
 
   // password reset
   reset_token_expires_at: Date,
@@ -72,20 +57,6 @@ const User = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  
-  two_factor_enabled: {
-    type: Boolean,
-    default: false
-  },
-  
-  two_factor_token: {
-    type: String,
-    required: false,
-    lowercase: true,
-    trim: true,
-    unique: true,
-    index: true
-  }
 });
 
 // additional variable based properties to add to the schema
@@ -102,6 +73,20 @@ obj[config.userFields.fullEmail] = {
 obj[config.userFields.apiToken] = {
   type: String,
   required: true,
+  lowercase: true,
+  trim: true,
+  unique: true,
+  index: true
+};
+
+obj[config.userFields.twoFactorEnabled] = {
+  type: Boolean,
+  default: false
+};
+
+obj[config.userFields.twoFactorToken] = {
+  type: String,
+  required: false,
   lowercase: true,
   trim: true,
   unique: true,
