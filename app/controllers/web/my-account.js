@@ -1,6 +1,8 @@
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
+const { authenticator } = require('otplib');
+const qrcode = require('qrcode');
 
 const config = require('../../../config');
 
@@ -74,6 +76,16 @@ async function resetAPIToken(ctx) {
   else ctx.body = { reloadPage: true };
 }
 
+async function security(ctx) {
+  const uri = authenticator.keyuri(
+    ctx.state.user.email,
+    'lad.sh',
+    ctx.state.user.two_factor_token
+  );
+  ctx.qrcode = await qrcode.toDataURL(uri);
+  await ctx.render('my-account/security');
+}
+
 async function setup2fa(ctx) {
   const { body } = ctx.request;
   ctx.state.user.two_factor_enabled = body.enable_2fa === 'true';
@@ -99,5 +111,6 @@ async function setup2fa(ctx) {
 module.exports = {
   update,
   resetAPIToken,
+  security,
   setup2fa
 };

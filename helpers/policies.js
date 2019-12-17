@@ -27,6 +27,7 @@ policies.ensure2fa = (ctx, next) => {
           : 'Please log in with two factor authentication to view the page you requested.'
         );
     ctx.redirect('/login-otp');
+    return;
   }
 
   return next();

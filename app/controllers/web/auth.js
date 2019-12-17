@@ -146,7 +146,7 @@ async function login(ctx, next) {
       await ctx.state.user.save();
       
       if (user.two_factor_enabled) {
-        if (!ctx.session.TwoFactorSuccess) {
+        if (!ctx.session.secondFactor) {
           redirectTo = `/${ctx.locale}/login-otp`;
         }
       }
@@ -196,10 +196,6 @@ async function loginOtp(ctx, next) {
       ctx.redirect(redirectTo);
     }
   })(ctx, next);
-}
-
-async function renderOtp(ctx) {
-  ctx.render('my-account/security');
 }
 
 async function register(ctx) {
@@ -483,7 +479,6 @@ module.exports = {
   homeOrDashboard,
   login,
   loginOtp,
-  renderOtp,
   register,
   forgotPassword,
   resetPassword,
