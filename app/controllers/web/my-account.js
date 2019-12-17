@@ -1,6 +1,8 @@
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
+const { authenticator } = require('otplib');
+const qrcode = require('qrcode');
 
 const config = require('../../../config');
 
@@ -74,10 +76,32 @@ async function resetAPIToken(ctx) {
   else ctx.body = { reloadPage: true };
 }
 
+async function security(ctx) {
+  const uri = authenticator.keyuri(
+    ctx.state.user.email,
+    'lad.sh',
+    ctx.state.user.two_factor_token
+  );
+  ctx.qrcode = await qrcode.toDataURL(uri);
+  await ctx.render('my-account/security');
+}
+
+async function recoveryKeys(ctx) {
+  const { two_factor_recovery_keys } = ctx.state.user;
+
+  ctx.attachment('lad-recovery-codes.txt');
+  ctx.body = two_factor_recovery_keys
+    .toString()
+    .replace(/,/g, '\n')
+    .replace(/"/g, '');
+}
+
 async function setup2fa(ctx) {
   const { body } = ctx.request;
   ctx.state.user.two_factor_enabled = body.enable_2fa === 'true';
   await ctx.state.user.save();
+  
+  ctx.session.otp = 'otp-setup';
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -98,6 +122,8 @@ async function setup2fa(ctx) {
 
 module.exports = {
   update,
+  recoveryKeys,
   resetAPIToken,
+  security,
   setup2fa
 };

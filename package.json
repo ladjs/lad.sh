@@ -99,6 +99,7 @@
     "qrcode": "^1.4.4",
     "qs": "^6.9.1",
     "sanitize-html": "^1.20.1",
+    "short-uuid": "^3.1.1",
     "signale": "^1.4.0",
     "stacktrace-js": "^2.0.1",
     "strength": "^0.1.4",

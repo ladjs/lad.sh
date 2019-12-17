@@ -59,14 +59,24 @@ block body
                 small.form-text.text-muted= t('Keep your token secure and never share it publicly')
     .row.mt-3
       .col
-        form(action=ctx.path, method='POST').ajax-form.confirm-prompt
+        form(action=ctx.path, method='POST')#enable-2fa.ajax-form.confirm-prompt
+        form(action=l('/my-account/recovery-keys'), method='POST')#recovery-form
           input(type='hidden', name='_method', value='POST')
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .card.card-bg-light
             h4.card-header= t('2FA')
             .card-body
-              .form-group.floating-label
               if user.two_factor_enabled
-                button(data-toggle='modal', data-target='#modal-disable-2fa', type='button').btn.btn-danger.btn-sm.my-auto= t('Disable 2FA')
+                button(data-toggle='modal', data-target='#modal-disable-2fa', type='button' form="enable-2fa").btn.btn-danger.btn-sm.my-auto= t('Disable 2FA')
+                .row.mt-4
+                  h3.label.control-label.col-md-6.col-form-label.text-md-left= t('Recovery codes')
+                .row.col-md-6.text-md-left
+                  p= t('Recovery codes allow you to login to your account when you have lost access to your 2FA device or authenticator app.')
+                  p= t('Download your recovery codes and put them in a safe place to use as a last resort.')
+                .row.col-md-6.text-md-left
+                  button(type='submit' form="recovery-form").btn.btn-secondary.btn-sm.my-auto= t('Download recovery codes')
               else
-                button(data-toggle='modal', data-target='#modal-enable-2fa', type='button').btn.btn-primary.btn-sm.my-auto= t('Enable 2FA')
+                button(data-toggle='modal', data-target='#modal-enable-2fa', type='button' form="enable-2fa").btn.btn-primary.btn-sm.my-auto= t('Enable 2FA')
+                
+            
+                

@@ -18,7 +18,7 @@ localeRouter
   .get(
     '/dashboard',
     policies.ensureLoggedIn,
-    policies.ensure2fa,
+    policies.ensureOtp,
     web.breadcrumbs,
     render('dashboard')
   )
@@ -33,6 +33,8 @@ localeRouter
   .post('/forgot-password', web.auth.forgotPassword)
   .get('/reset-password/:token', render('reset-password'))
   .post('/reset-password/:token', web.auth.resetPassword)
+  .get('/2fa-recovery', render('my-account/2fa-recovery'))
+  .post('/2fa-recovery', web.auth.recoveryKey)
   .get(
     config.verificationPath,
     policies.ensureLoggedIn,

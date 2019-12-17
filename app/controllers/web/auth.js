@@ -8,6 +8,7 @@ const validator = require('validator');
 const { boolean } = require('boolean');
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
+const short = require('short-uuid');
 
 const bull = require('../../../bull');
 const Users = require('../../models/user');
@@ -20,8 +21,19 @@ const sanitize = str =>
     allowedAttributes: []
   });
 
+const generateRecoveryKeys = () => {
+  const keys = [];
+  for (let num = 0; num < 10; num++) {
+    keys.push(short.generate());
+  }
+
+  return keys;
+};
+
 function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(`/${ctx.locale}`);
+  if (ctx.session.otp && !ctx.session.otp_remember_me)
+    delete ctx.session.otp;
   ctx.logout();
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -135,18 +147,18 @@ async function login(ctx, next) {
         timer: 3000,
         position: 'top'
       });
-      
+
       const uri = authenticator.keyuri(
         user.email,
         'lad.sh',
         user.two_factor_token
       );
-      
+
       ctx.state.user.qrcode = await qrcode.toDataURL(uri);
       await ctx.state.user.save();
-      
+
       if (user.two_factor_enabled) {
-        if (!ctx.session.TwoFactorSuccess) {
+        if (!ctx.session.otp) {
           redirectTo = `/${ctx.locale}/login-otp`;
         }
       }
@@ -183,13 +195,16 @@ async function login(ctx, next) {
 }
 
 async function loginOtp(ctx, next) {
-  await passport.authenticate('otp', (err, user, info) => {
+  await passport.authenticate('otp', (err, user) => {
     if (err) throw err;
     if (!user) throw Boom.unauthorized(ctx.translate('INVALID_OTP_PASSCODE'));
 
-    ctx.session.secondFactor = 'totp';
-    let redirectTo = `/${ctx.locale}/dashboard`;
-    
+    const { otp_remember_me } = ctx.request.body;
+    ctx.session.otp_remember_me = otp_remember_me;
+
+    ctx.session.otp = 'totp';
+    const redirectTo = `/${ctx.locale}/dashboard`;
+
     if (ctx.accepts('json')) {
       ctx.body = { redirectTo };
     } else {
@@ -198,8 +213,41 @@ async function loginOtp(ctx, next) {
   })(ctx, next);
 }
 
-async function renderOtp(ctx) {
-  ctx.render('my-account/security');
+async function recoveryKey(ctx) {
+  let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+
+  if (ctx.session && ctx.session.returnTo) {
+    redirectTo = ctx.session.returnTo;
+    delete ctx.session.returnTo;
+  }
+
+  ctx.state.redirectTo = redirectTo;
+  const { recovery_passcode } = ctx.request.body;
+
+  // ensure recovery matches user list of keys
+  let recoveryKeys = ctx.state.user[config.userFields.recoveryKeys];
+  if (!recoveryKeys.includes(recovery_passcode)) {
+    return ctx.throw(
+      Boom.badRequest(ctx.translate('INVALID_RECOVERY_PASSCODE'))
+    );
+  }
+
+  // remove used passcode from recovery key list
+  recoveryKeys = recoveryKeys.filter(key => key !== recovery_passcode);
+  ctx.state.user[config.userFields.recoveryKeys] = recoveryKeys;
+  await ctx.state.user.save();
+
+  ctx.session.otp = 'totp-recovery';
+
+  // send the user a success message
+  const message = ctx.translate('TWO_FACTOR_RECOVERY_SUCCESS');
+
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = { message, redirectTo };
+  }
 }
 
 async function register(ctx) {
@@ -214,9 +262,17 @@ async function register(ctx) {
   // add qrcode secret later used to generate qr code
   const key = authenticator.generateSecret();
 
+  // generate 2fa recovery keys list used for fallback
+  const recoveryKeys = generateRecoveryKeys();
+
   // register the user
   const count = await Users.countDocuments({ group: 'admin' });
-  const query = { email: body.email, group: count === 0 ? 'admin' : 'user', two_factor_token: key };
+  const query = {
+    email: body.email,
+    group: count === 0 ? 'admin' : 'user'
+  };
+  query[config.userFields.twoFactorToken] = key;
+  query[config.userFields.recoveryKeys] = recoveryKeys;
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   const user = await Users.register(query, body.password);
@@ -483,10 +539,10 @@ module.exports = {
   homeOrDashboard,
   login,
   loginOtp,
-  renderOtp,
   register,
   forgotPassword,
   resetPassword,
+  recoveryKey,
   catchError,
   verify,
   parseReturnOrRedirectTo

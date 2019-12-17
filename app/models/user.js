@@ -56,7 +56,7 @@ const User = new mongoose.Schema({
   has_set_password: {
     type: Boolean,
     default: false
-  },
+  }
 });
 
 // additional variable based properties to add to the schema
@@ -91,6 +91,11 @@ obj[config.userFields.twoFactorToken] = {
   trim: true,
   unique: true,
   index: true
+};
+
+obj[config.userFields.recoveryKeys] = {
+  type: Array,
+  required: false
 };
 
 // password reset

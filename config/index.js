@@ -120,6 +120,7 @@ const config = {
     apiToken: 'api_token',
     twoFactorEnabled: 'two_factor_enabled',
     twoFactorToken: 'two_factor_token',
+    recoveryKeys: 'two_factor_recovery_keys',
     resetTokenExpiresAt: 'reset_token_expires_at',
     resetToken: 'reset_token',
     hasSetPassword: 'has_set_password',

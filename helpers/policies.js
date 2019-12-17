@@ -7,6 +7,7 @@ const policies = new Policies(
   {
     schemeName: appName,
     hasVerifiedEmail: userFields.hasVerifiedEmail,
+    twoFactorEnabled: userFields.twoFactorEnabled,
     verifyRoute: verificationPath
   },
   apiToken => {
@@ -15,21 +16,5 @@ const policies = new Policies(
     return Users.findOne(query);
   }
 );
-
-policies.ensure2fa = (ctx, next) => {
-  if (!ctx.isAuthenticated() || (ctx.state.user.two_factor_enabled && !ctx.session.secondFactor)) {
-    ctx.session.returnTo = ctx.originalUrl || ctx.req.url;
-    if (!ctx.is('json'))
-      ctx.flash(
-        'warning',
-        ctx.translate
-           ? ctx.translate('TWO_FACTOR_REQUIRED')
-          : 'Please log in with two factor authentication to view the page you requested.'
-        );
-    ctx.redirect('/login-otp');
-  }
-
-  return next();
-}
 
 module.exports = policies;

@@ -13,6 +13,7 @@ module.exports = {
   INVALID_PASSWORD_CONFIRM: 'Password confirmation did not match new password.',
   INVALID_PASSWORD_STRENGTH: 'Password strength was not strong enough.',
   INVALID_PROVIDER: 'We do not support this authentication provider.',
+  INVALID_RECOVERY_PASSCODE: 'Invalid recovery passcode.',
   INVALID_RESET_PASSWORD: 'Reset token and email were not valid together.',
   INVALID_RESET_TOKEN: 'Reset token provided was invalid.',
   INVALID_SESSION_SECRET: 'Invalid session secret.',
@@ -39,6 +40,8 @@ module.exports = {
     'You can only request a password reset every 30 minutes.  Please try again %s.',
   PASSWORD_RESET_SENT:
     'We have sent you an email with a link to reset your password.',
+  TWO_FACTOR_RECOVERY_SUCCESS:
+    'Recovery passcode successful. This passcode will no longer be valid.',
   REGISTERED: 'You have successfully registered.',
   REQUEST_OK: 'Your request was successfully completed.',
   REQUEST_TIMED_OUT:
