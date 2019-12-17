@@ -10,7 +10,7 @@ block body
             .text-center
               h1.card-title.h4= t('2FA Passcode')
               p= t('Please enter the passcode from your authenticator application.')
-            form(action="/en/login-otp", method="POST", autocomplete="off").ajax-form
+            form(action=`${ctx.locale}/login-otp`, method="POST", autocomplete="off").ajax-form
               input(type="hidden", name="_csrf", value=ctx.csrf)
               .form-group.floating-label
                 input#input-text.form-control.form-control-lg(type="text", autocomplete="off", name="passcode", placeholder=t(''))
