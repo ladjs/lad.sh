@@ -48,6 +48,14 @@ const User = new mongoose.Schema({
     lowercase: true,
     unique: true,
     validate: val => validator.isEmail(val)
+  },
+
+  // password reset
+  reset_token_expires_at: Date,
+  reset_token: String,
+  has_set_password: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -69,6 +77,25 @@ obj[config.userFields.apiToken] = {
   trim: true,
   unique: true,
   index: true
+};
+
+obj[config.userFields.twoFactorEnabled] = {
+  type: Boolean,
+  default: false
+};
+
+obj[config.userFields.twoFactorToken] = {
+  type: String,
+  required: false,
+  lowercase: true,
+  trim: true,
+  unique: true,
+  index: true
+};
+
+obj[config.userFields.recoveryKeys] = {
+  type: Array,
+  required: false
 };
 
 // password reset

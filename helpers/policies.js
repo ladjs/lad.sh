@@ -7,6 +7,7 @@ const policies = new Policies(
   {
     schemeName: appName,
     hasVerifiedEmail: userFields.hasVerifiedEmail,
+    twoFactorEnabled: userFields.twoFactorEnabled,
     verifyRoute: verificationPath
   },
   apiToken => {

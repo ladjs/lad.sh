@@ -6,6 +6,9 @@ const moment = require('moment');
 const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
 const { boolean } = require('boolean');
+const { authenticator } = require('otplib');
+const qrcode = require('qrcode');
+const short = require('short-uuid');
 
 const bull = require('../../../bull');
 const Users = require('../../models/user');
@@ -18,8 +21,19 @@ const sanitize = str =>
     allowedAttributes: []
   });
 
+const generateRecoveryKeys = () => {
+  const keys = [];
+  for (let num = 0; num < 10; num++) {
+    keys.push(short.generate());
+  }
+
+  return keys;
+};
+
 function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(`/${ctx.locale}`);
+  if (ctx.session.otp && !ctx.session.otp_remember_me)
+    delete ctx.session.otp;
   ctx.logout();
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -110,10 +124,52 @@ async function login(ctx, next) {
       delete ctx.session.returnTo;
     }
 
-    try {
-      await ctx.login(user);
-    } catch (err_) {
-      throw err_;
+    if (user) {
+      try {
+        await ctx.login(user);
+      } catch (err_) {
+        throw err_;
+      }
+
+      let greeting = 'Good morning';
+      if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
+        greeting = 'Good afternoon';
+      else if (moment().format('HH') >= 17) greeting = 'Good evening';
+
+      ctx.flash('custom', {
+        title: `${ctx.request.t('Hello')} ${ctx.state.emoji('wave')}`,
+        text: user[config.passport.fields.givenName]
+          ? `${greeting} ${user[config.passport.fields.givenName]}`
+          : greeting,
+        type: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        position: 'top'
+      });
+
+      const uri = authenticator.keyuri(
+        user.email,
+        'lad.sh',
+        user.two_factor_token
+      );
+
+      ctx.state.user.qrcode = await qrcode.toDataURL(uri);
+      await ctx.state.user.save();
+
+      if (user.two_factor_enabled) {
+        if (!ctx.session.otp) {
+          redirectTo = `/${ctx.locale}/login-otp`;
+        }
+      }
+
+      if (ctx.accepts('json')) {
+        ctx.body = { redirectTo };
+      } else {
+        ctx.redirect(redirectTo);
+      }
+
+      return;
     }
 
     let greeting = 'Good morning';
@@ -138,6 +194,62 @@ async function login(ctx, next) {
   })(ctx, next);
 }
 
+async function loginOtp(ctx, next) {
+  await passport.authenticate('otp', (err, user) => {
+    if (err) throw err;
+    if (!user) throw Boom.unauthorized(ctx.translate('INVALID_OTP_PASSCODE'));
+
+    const { otp_remember_me } = ctx.request.body;
+    ctx.session.otp_remember_me = otp_remember_me;
+
+    ctx.session.otp = 'totp';
+    const redirectTo = `/${ctx.locale}/dashboard`;
+
+    if (ctx.accepts('json')) {
+      ctx.body = { redirectTo };
+    } else {
+      ctx.redirect(redirectTo);
+    }
+  })(ctx, next);
+}
+
+async function recoveryKey(ctx) {
+  let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+
+  if (ctx.session && ctx.session.returnTo) {
+    redirectTo = ctx.session.returnTo;
+    delete ctx.session.returnTo;
+  }
+
+  ctx.state.redirectTo = redirectTo;
+  const { recovery_passcode } = ctx.request.body;
+
+  // ensure recovery matches user list of keys
+  let recoveryKeys = ctx.state.user[config.userFields.recoveryKeys];
+  if (!recoveryKeys.includes(recovery_passcode)) {
+    return ctx.throw(
+      Boom.badRequest(ctx.translate('INVALID_RECOVERY_PASSCODE'))
+    );
+  }
+
+  // remove used passcode from recovery key list
+  recoveryKeys = recoveryKeys.filter(key => key !== recovery_passcode);
+  ctx.state.user[config.userFields.recoveryKeys] = recoveryKeys;
+  await ctx.state.user.save();
+
+  ctx.session.otp = 'totp-recovery';
+
+  // send the user a success message
+  const message = ctx.translate('TWO_FACTOR_RECOVERY_SUCCESS');
+
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = { message, redirectTo };
+  }
+}
+
 async function register(ctx) {
   const { body } = ctx.request;
 
@@ -147,9 +259,20 @@ async function register(ctx) {
   if (!isSANB(body.password))
     throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
 
+  // add qrcode secret later used to generate qr code
+  const key = authenticator.generateSecret();
+
+  // generate 2fa recovery keys list used for fallback
+  const recoveryKeys = generateRecoveryKeys();
+
   // register the user
   const count = await Users.countDocuments({ group: 'admin' });
-  const query = { email: body.email, group: count === 0 ? 'admin' : 'user' };
+  const query = {
+    email: body.email,
+    group: count === 0 ? 'admin' : 'user'
+  };
+  query[config.userFields.twoFactorToken] = key;
+  query[config.userFields.recoveryKeys] = recoveryKeys;
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   const user = await Users.register(query, body.password);
@@ -415,9 +538,11 @@ module.exports = {
   registerOrLogin,
   homeOrDashboard,
   login,
+  loginOtp,
   register,
   forgotPassword,
   resetPassword,
+  recoveryKey,
   catchError,
   verify,
   parseReturnOrRedirectTo

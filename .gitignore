@@ -16,3 +16,4 @@ temp.md
 locales/**/*
 !locales
 .vscode
+package-lock.json
