@@ -8,7 +8,7 @@ block body
         .card
           .card-body
             .text-center
-              h1.card-title.h4= t('2FA Passcode')
+              h1.card-title.h4= t('Two-Factor Authentication Passcode')
               p= t('Please enter the passcode from your authenticator application.')
             form(action=l('/login-otp'), method="POST", autocomplete="off").ajax-form
               input(type="hidden", name="_csrf", value=ctx.csrf)

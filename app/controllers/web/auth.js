@@ -21,15 +21,6 @@ const sanitize = str =>
     allowedAttributes: []
   });
 
-const generateRecoveryKeys = () => {
-  const keys = [];
-  for (let num = 0; num < 10; num++) {
-    keys.push(short.generate());
-  }
-
-  return keys;
-};
-
 function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(`/${ctx.locale}`);
   if (ctx.session.otp && !ctx.session.otp_remember_me) delete ctx.session.otp;
@@ -263,7 +254,7 @@ async function register(ctx) {
   const key = authenticator.generateSecret();
 
   // generate 2fa recovery keys list used for fallback
-  const recoveryKeys = generateRecoveryKeys();
+  const recoveryKeys = new Array(10).map(() => short.generate());
 
   // register the user
   const count = await Users.countDocuments({ group: 'admin' });

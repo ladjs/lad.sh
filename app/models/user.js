@@ -86,17 +86,12 @@ obj[config.userFields.twoFactorEnabled] = {
 
 obj[config.userFields.twoFactorToken] = {
   type: String,
-  required: false,
   lowercase: true,
   trim: true,
-  unique: true,
   index: true
 };
 
-obj[config.userFields.twoFactorRecoveryKeys] = {
-  type: Array,
-  required: false
-};
+obj[config.userFields.twoFactorRecoveryKeys] = Array;
 
 // password reset
 obj[config.userFields.resetTokenExpiresAt] = Date;
@@ -195,6 +190,21 @@ User.pre('validate', function(next) {
   this[config.userFields.fullEmail] = this[fields.displayName]
     ? `${this[fields.displayName]} <${this.email}>`
     : this.email;
+
+  // if two-factor authentication values no longer valid
+  // then disable it completely
+  if (
+    !this[config.userFields.twoFactorEnabled] ||
+    !this[config.userFields.twoFactorToken] ||
+    !Array.isArray(
+      this[config.userFields.twoFactorRecoveryKeys] ||
+        this[config.userFields.twoFactorRecoveryKeys].length === 0
+    )
+  ) {
+    this[config.userFields.twoFactorEnabled] = false;
+    this[config.userFields.twoFactorRecoveryKeys] = null;
+    this[config.userFields.twoFactorToken] = null;
+  }
 
   next();
 });
@@ -300,7 +310,9 @@ User.plugin(mongooseCommonPlugin, {
     config.userFields.verificationPinExpiresAt,
     config.userFields.verificationPin,
     config.userFields.verificationPinHasExpired,
-    config.userFields.welcomeEmailSentAt
+    config.userFields.welcomeEmailSentAt,
+    config.userFields.twoFactorRecoveryKeys,
+    config.userFields.twoFactorToken
   ]
 });
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);

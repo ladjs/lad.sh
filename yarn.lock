@@ -1117,10 +1117,10 @@
     passport-otp-strategy "^1.0.1"
     validator "^12.1.0"
 
-"@ladjs/policies@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-2.0.0.tgz#05dcecd36ebbf54ce4c6e1061a04fdd86b250b07"
-  integrity sha512-mxA6k7KGRMM8lwjvT9o0AbBgn+wVav2//Mvp5qdQYbTY3hba2TBGYynQfoQO9kClB9pzEgvv8MHZJLzxYzdX+A==
+"@ladjs/policies@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-2.0.1.tgz#ea3c6c0426114063d14888546a9ee20ccdee6891"
+  integrity sha512-PbL0hb3wqtNbWggaxEw3aW59jJ+hzMv2io1EOvbOqmIdr+xY44NwjryJbEbGjq+MgzBte+PRPAbJOlocA9KXXw==
   dependencies:
     "@hapi/boom" "^9.0.0"
     basic-auth "^2.0.1"

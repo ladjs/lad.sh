@@ -6,7 +6,7 @@ block body
     .modal-dialog(role='document')
       .modal-content
         .modal-header.d-block.text-center
-          h5.modal-title= t('2FA')
+          h5.modal-title= t('Two-Factor Authentication')
         form(action=ctx.path, method='POST').ajax-form.mt-3
           input(type='hidden', name='_method', value='POST')
           input(type="hidden", name="_csrf", value=ctx.csrf)
@@ -14,37 +14,39 @@ block body
           .modal-body
             .row
               img(src=ctx.qrcode, width=250, height=250, alt="").mx-auto.d-block
-            .form-group.floating-label
             .input-group
-              input(type='text', readonly, value=user[config.userFields.twoFactorToken]).form-control#api-token
+              input(type='text', readonly, value=user[config.userFields.twoFactorToken]).form-control#two-factor-token
               .input-group-append
-                button(type='button', data-toggle="clipboard", data-clipboard-target="#api-token").btn.btn-primary
+                button(type='button', data-toggle="clipboard", data-clipboard-target="#two-factor-token").btn.btn-lg.btn-primary
                   i.fa.fa-clipboard
                   = ' '
                   = t('Copy')
           .modal-footer.text-right
-            button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-secondary= t('Cancel')
-            button(type='submit').btn.btn-primary= t('Enable 2FA')
-  #modal-disable-2fa(tabindex='-1', role='dialog').modal.fade
-    .modal-dialog(role='document')
-      .modal-content
-        .modal-header.d-block.text-center
-          h5.modal-title= t('2FA')
-        form(action=ctx.path, method='POST').ajax-form.mt-3
-          input(type='hidden', name='_method', value='POST')
-          input(type="hidden", name="_csrf", value=ctx.csrf)
-          input(type='hidden', name='enable_2fa', value='false')
-          .modal-body.text-center
-            p= t('Are you sure you want to disable 2FA?')
-          .modal-footer.text-right
-            button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-secondary= t('Cancel')
-            button(type='submit').btn.btn-danger= t('Disable 2FA')
+            button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-lg.btn-secondary= t('Cancel')
+            button(type='submit').btn.btn-lg.btn-primary= t('Enable Two-Factor Authentication')
   .container-fluid.py-3
     .row.mt-1
       .col
         include ../_breadcrumbs
+        .card.card-bg-light.mb-3
+          h4.card-header= t('Two-Factor Authentication')
+          .card-body
+            if user[config.userFields.twoFactorEnabled]
+              h3= t('Recovery keys')
+              p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
+              form(action=l('/my-account/recovery-keys'), method='POST')
+                input(type='hidden', name='_method', value='POST')
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+                button(type='submit').btn.btn-secondary.btn-lg= t('Download recovery keys')
+              form(action=ctx.path, method='POST').ajax-form.confirm-prompt.mt-3
+                input(type='hidden', name='_method', value='POST')
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+                input(type='hidden', name='enable_2fa', value='false')
+                button(Type='submit').btn.btn-danger.btn-lg= t('Disable Two-Factor Authentication')
+            else
+              button(data-toggle='modal', data-target='#modal-enable-2fa', type='button').btn.btn-primary.btn-lg= t('Enable Two-Factor Authentication')
         .card.card-bg-light
-          h4.card-header= t('Credentials')
+          h4.card-header= t('API Credentials')
           .card-body
             .form-group.row
               label.control-label.col-md-4.col-form-label.text-md-right= t('API token')
@@ -57,23 +59,3 @@ block body
                       = ' '
                       = t('Copy')
                 small.form-text.text-muted= t('Keep your token secure and never share it publicly')
-    .row.mt-3
-      .col
-        form(action=ctx.path, method='POST')#enable-2fa.ajax-form.confirm-prompt
-        form(action=l('/my-account/recovery-keys'), method='POST')#recovery-form
-          input(type='hidden', name='_method', value='POST')
-          input(type="hidden", name="_csrf", value=ctx.csrf)
-          .card.card-bg-light
-            h4.card-header= t('2FA')
-            .card-body
-              if user[config.userFields.twoFactorEnabled]
-                button(data-toggle='modal', data-target='#modal-disable-2fa', type='button' form="enable-2fa").btn.btn-danger.btn-sm.my-auto= t('Disable 2FA')
-                .row.mt-4
-                  h3.label.control-label.col-md-6.col-form-label.text-md-left= t('Recovery keys')
-                .row.col-md-6.text-md-left
-                  p= t('Recovery keys allow you to login to your account when you have lost access to your 2FA device or authenticator app.')
-                  p= t('Download your recovery keys and put them in a safe place to use as a last resort.')
-                .row.col-md-6.text-md-left
-                  button(type='submit' form="recovery-form").btn.btn-secondary.btn-sm.my-auto= t('Download recovery keys')
-              else
-                button(data-toggle='modal', data-target='#modal-enable-2fa', type='button' form="enable-2fa").btn.btn-primary.btn-sm.my-auto= t('Enable 2FA')
