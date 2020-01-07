@@ -6,8 +6,7 @@ const { Users } = require('../app/models');
 const policies = new Policies(
   {
     schemeName: appName,
-    hasVerifiedEmail: userFields.hasVerifiedEmail,
-    twoFactorEnabled: userFields.twoFactorEnabled,
+    userFields,
     verifyRoute: verificationPath
   },
   apiToken => {

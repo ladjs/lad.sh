@@ -32,8 +32,7 @@ const generateRecoveryKeys = () => {
 
 function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(`/${ctx.locale}`);
-  if (ctx.session.otp && !ctx.session.otp_remember_me)
-    delete ctx.session.otp;
+  if (ctx.session.otp && !ctx.session.otp_remember_me) delete ctx.session.otp;
   ctx.logout();
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -98,6 +97,7 @@ async function homeOrDashboard(ctx) {
 }
 
 async function login(ctx, next) {
+  // eslint-disable-next-line complexity
   await passport.authenticate('local', async (err, user, info) => {
     if (err) throw err;
 
@@ -151,17 +151,14 @@ async function login(ctx, next) {
       const uri = authenticator.keyuri(
         user.email,
         'lad.sh',
-        user.two_factor_token
+        user[config.userFields.twoFactorToken]
       );
 
       ctx.state.user.qrcode = await qrcode.toDataURL(uri);
       await ctx.state.user.save();
 
-      if (user.two_factor_enabled) {
-        if (!ctx.session.otp) {
-          redirectTo = `/${ctx.locale}/login-otp`;
-        }
-      }
+      if (user[config.userFields.twoFactorEnabled] && !ctx.session.otp)
+        redirectTo = `/${ctx.locale}/login-otp`;
 
       if (ctx.accepts('json')) {
         ctx.body = { redirectTo };
@@ -199,8 +196,7 @@ async function loginOtp(ctx, next) {
     if (err) throw err;
     if (!user) throw Boom.unauthorized(ctx.translate('INVALID_OTP_PASSCODE'));
 
-    const { otp_remember_me } = ctx.request.body;
-    ctx.session.otp_remember_me = otp_remember_me;
+    ctx.session.otp_remember_me = boolean(ctx.request.body.otp_remember_me);
 
     ctx.session.otp = 'totp';
     const redirectTo = `/${ctx.locale}/dashboard`;
@@ -222,19 +218,23 @@ async function recoveryKey(ctx) {
   }
 
   ctx.state.redirectTo = redirectTo;
-  const { recovery_passcode } = ctx.request.body;
+
+  let recoveryKeys = ctx.state.user[config.userFields.twoFactorRecoveryKeys];
 
   // ensure recovery matches user list of keys
-  let recoveryKeys = ctx.state.user[config.userFields.recoveryKeys];
-  if (!recoveryKeys.includes(recovery_passcode)) {
+  if (
+    !isSANB(ctx.request.body.recovery_passcode) ||
+    !recoveryKeys.includes(ctx.request.body.recovery_passcode)
+  )
     return ctx.throw(
       Boom.badRequest(ctx.translate('INVALID_RECOVERY_PASSCODE'))
     );
-  }
 
   // remove used passcode from recovery key list
-  recoveryKeys = recoveryKeys.filter(key => key !== recovery_passcode);
-  ctx.state.user[config.userFields.recoveryKeys] = recoveryKeys;
+  recoveryKeys = recoveryKeys.filter(
+    key => key !== ctx.request.body.recovery_passcode
+  );
+  ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
   await ctx.state.user.save();
 
   ctx.session.otp = 'totp-recovery';
@@ -272,7 +272,7 @@ async function register(ctx) {
     group: count === 0 ? 'admin' : 'user'
   };
   query[config.userFields.twoFactorToken] = key;
-  query[config.userFields.recoveryKeys] = recoveryKeys;
+  query[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   const user = await Users.register(query, body.password);

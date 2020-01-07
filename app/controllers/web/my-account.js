@@ -1,8 +1,9 @@
+const Boom = require('@hapi/boom');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const Boom = require('@hapi/boom');
-const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
+const { authenticator } = require('otplib');
+const { boolean } = require('boolean');
 
 const config = require('../../../config');
 
@@ -14,7 +15,7 @@ async function update(ctx) {
 
   if (hasSetPassword) requiredFields.push('old_password');
 
-  if (body.change_password === 'true') {
+  if (boolean(body.change_password)) {
     requiredFields.forEach(prop => {
       if (!isSANB(body[prop]))
         throw Boom.badRequest(
@@ -80,27 +81,29 @@ async function security(ctx) {
   const uri = authenticator.keyuri(
     ctx.state.user.email,
     'lad.sh',
-    ctx.state.user.two_factor_token
+    ctx.state.user[config.userFields.twoFactorToken]
   );
   ctx.qrcode = await qrcode.toDataURL(uri);
   await ctx.render('my-account/security');
 }
 
 async function recoveryKeys(ctx) {
-  const { two_factor_recovery_keys } = ctx.state.user;
+  const twoFactorRecoveryKeys =
+    ctx.state.user[config.userFields.twoFactorRecoveryKeys];
 
-  ctx.attachment('lad-recovery-codes.txt');
-  ctx.body = two_factor_recovery_keys
+  ctx.attachment('recovery-keys.txt');
+  ctx.body = twoFactorRecoveryKeys
     .toString()
     .replace(/,/g, '\n')
     .replace(/"/g, '');
 }
 
 async function setup2fa(ctx) {
-  const { body } = ctx.request;
-  ctx.state.user.two_factor_enabled = body.enable_2fa === 'true';
+  ctx.state.user[config.userFields.twoFactorEnabled] = boolean(
+    ctx.request.body.enable_2fa
+  );
   await ctx.state.user.save();
-  
+
   ctx.session.otp = 'otp-setup';
 
   ctx.flash('custom', {

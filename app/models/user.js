@@ -93,7 +93,7 @@ obj[config.userFields.twoFactorToken] = {
   index: true
 };
 
-obj[config.userFields.recoveryKeys] = {
+obj[config.userFields.twoFactorRecoveryKeys] = {
   type: Array,
   required: false
 };

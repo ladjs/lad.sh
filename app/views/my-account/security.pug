@@ -16,7 +16,7 @@ block body
               img(src=ctx.qrcode, width=250, height=250, alt="").mx-auto.d-block
             .form-group.floating-label
             .input-group
-              input(type='text', readonly, value=user.two_factor_token).form-control#api-token
+              input(type='text', readonly, value=user[config.userFields.twoFactorToken]).form-control#api-token
               .input-group-append
                 button(type='button', data-toggle="clipboard", data-clipboard-target="#api-token").btn.btn-primary
                   i.fa.fa-clipboard
@@ -66,17 +66,14 @@ block body
           .card.card-bg-light
             h4.card-header= t('2FA')
             .card-body
-              if user.two_factor_enabled
+              if user[config.userFields.twoFactorEnabled]
                 button(data-toggle='modal', data-target='#modal-disable-2fa', type='button' form="enable-2fa").btn.btn-danger.btn-sm.my-auto= t('Disable 2FA')
                 .row.mt-4
-                  h3.label.control-label.col-md-6.col-form-label.text-md-left= t('Recovery codes')
+                  h3.label.control-label.col-md-6.col-form-label.text-md-left= t('Recovery keys')
                 .row.col-md-6.text-md-left
-                  p= t('Recovery codes allow you to login to your account when you have lost access to your 2FA device or authenticator app.')
-                  p= t('Download your recovery codes and put them in a safe place to use as a last resort.')
+                  p= t('Recovery keys allow you to login to your account when you have lost access to your 2FA device or authenticator app.')
+                  p= t('Download your recovery keys and put them in a safe place to use as a last resort.')
                 .row.col-md-6.text-md-left
-                  button(type='submit' form="recovery-form").btn.btn-secondary.btn-sm.my-auto= t('Download recovery codes')
+                  button(type='submit' form="recovery-form").btn.btn-secondary.btn-sm.my-auto= t('Download recovery keys')
               else
                 button(data-toggle='modal', data-target='#modal-enable-2fa', type='button' form="enable-2fa").btn.btn-primary.btn-sm.my-auto= t('Enable 2FA')
-                
-            
-                
