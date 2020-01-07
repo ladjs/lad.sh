@@ -195,7 +195,6 @@ User.pre('validate', function(next) {
   // then disable it completely
   if (
     !this[config.userFields.twoFactorEnabled] ||
-    !this[config.userFields.twoFactorToken] ||
     !Array.isArray(
       this[config.userFields.twoFactorRecoveryKeys] ||
         this[config.userFields.twoFactorRecoveryKeys].length === 0
@@ -203,7 +202,6 @@ User.pre('validate', function(next) {
   ) {
     this[config.userFields.twoFactorEnabled] = false;
     this[config.userFields.twoFactorRecoveryKeys] = null;
-    this[config.userFields.twoFactorToken] = null;
   }
 
   next();

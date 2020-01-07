@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom');
+const cryptoRandomString = require('crypto-random-string');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const qrcode = require('qrcode');
@@ -78,12 +79,19 @@ async function resetAPIToken(ctx) {
 }
 
 async function security(ctx) {
-  const uri = authenticator.keyuri(
-    ctx.state.user.email,
-    'lad.sh',
-    ctx.state.user[config.userFields.twoFactorToken]
-  );
-  ctx.qrcode = await qrcode.toDataURL(uri);
+  if (!ctx.state.user[config.userFields.twoFactorEnabled]) {
+    ctx.state.user[
+      config.userFields.twoFactorToken
+    ] = authenticator.generateSecret();
+    ctx.state.user = await ctx.state.user.save();
+    ctx.state.twoFactorTokenURI = authenticator.keyuri(
+      ctx.state.user.email,
+      process.env.WEB_HOST,
+      ctx.state.user[config.userFields.twoFactorToken]
+    );
+    ctx.state.qrcode = await qrcode.toDataURL(ctx.state.twoFactorTokenURI);
+  }
+
   await ctx.render('my-account/security');
 }
 
@@ -99,9 +107,31 @@ async function recoveryKeys(ctx) {
 }
 
 async function setup2fa(ctx) {
-  ctx.state.user[config.userFields.twoFactorEnabled] = boolean(
-    ctx.request.body.enable_2fa
-  );
+  if (ctx.method === 'DELETE') {
+    ctx.state.user[config.userFields.twoFactorEnabled] = false;
+  } else if (
+    ctx.method === 'POST' &&
+    ctx.state.user[config.userFields.twoFactorToken]
+  ) {
+    const isValid = authenticator.verify({
+      token: ctx.request.body.token,
+      secret: ctx.state.user[config.userFields.twoFactorToken]
+    });
+
+    if (!isValid)
+      return ctx.throw(Boom.badRequest(ctx.translate('INVALID_OTP_PASSCODE')));
+
+    // generate 2fa recovery keys list used for fallback
+    const recoveryKeys = new Array(16).map(() =>
+      cryptoRandomString({ length: 10, characters: '1234567890' })
+    );
+
+    ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
+    ctx.state.user[config.userFields.twoFactorEnabled] = true;
+  } else {
+    return ctx.throw(Boom.badRequest('Invalid method'));
+  }
+
   await ctx.state.user.save();
 
   ctx.session.otp = 'otp-setup';

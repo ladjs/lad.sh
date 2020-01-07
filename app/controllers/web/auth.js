@@ -8,7 +8,6 @@ const validator = require('validator');
 const { boolean } = require('boolean');
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
-const short = require('short-uuid');
 
 const bull = require('../../../bull');
 const Users = require('../../models/user');
@@ -215,6 +214,8 @@ async function recoveryKey(ctx) {
   // ensure recovery matches user list of keys
   if (
     !isSANB(ctx.request.body.recovery_passcode) ||
+    !Array.isArray(recoveryKeys) ||
+    recoveryKeys.length === 0 ||
     !recoveryKeys.includes(ctx.request.body.recovery_passcode)
   )
     return ctx.throw(
@@ -250,20 +251,12 @@ async function register(ctx) {
   if (!isSANB(body.password))
     throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
 
-  // add qrcode secret later used to generate qr code
-  const key = authenticator.generateSecret();
-
-  // generate 2fa recovery keys list used for fallback
-  const recoveryKeys = new Array(10).map(() => short.generate());
-
   // register the user
   const count = await Users.countDocuments({ group: 'admin' });
   const query = {
     email: body.email,
     group: count === 0 ? 'admin' : 'user'
   };
-  query[config.userFields.twoFactorToken] = key;
-  query[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   const user = await Users.register(query, body.password);
