@@ -42,21 +42,22 @@ block body
     .row.mt-1
       .col
         include ../_breadcrumbs
-        .card.card-bg-light.mb-3
-          h4.card-header= t('Two-Factor Authentication')
-          .card-body
-            if user[config.userFields.twoFactorEnabled]
-              h3= t('Recovery keys')
-              p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
-              form(action=l('/my-account/recovery-keys'), method='POST')
-                input(type="hidden", name="_csrf", value=ctx.csrf)
-                button(type='submit').btn.btn-secondary.btn-lg= t('Download recovery keys')
-              form(action=l('/my-account/setup-2fa'), method='POST').ajax-form.confirm-prompt.mt-3
-                input(type='hidden', name='_method', value='DELETE')
-                input(type="hidden", name="_csrf", value=ctx.csrf)
-                button(Type='submit').btn.btn-danger.btn-lg= t('Disable Two-Factor Authentication')
-            else
-              button(data-toggle='modal', data-target='#modal-enable-2fa', type='button').btn.btn-primary.btn-lg= t('Enable Two-Factor Authentication')
+        if boolean(process.env.AUTH_OTP_ENABLED)
+          .card.card-bg-light.mb-3
+            h4.card-header= t('Two-Factor Authentication')
+            .card-body
+              if user[config.userFields.twoFactorEnabled]
+                h3= t('Recovery keys')
+                p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
+                form(action=l('/my-account/recovery-keys'), method='POST')
+                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  button(type='submit').btn.btn-secondary.btn-lg= t('Download recovery keys')
+                form(action=l('/my-account/setup-2fa'), method='POST').ajax-form.confirm-prompt.mt-3
+                  input(type='hidden', name='_method', value='DELETE')
+                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  button(Type='submit').btn.btn-danger.btn-lg= t('Disable Two-Factor Authentication')
+              else
+                button(data-toggle='modal', data-target='#modal-enable-2fa', type='button').btn.btn-primary.btn-lg= t('Enable Two-Factor Authentication')
         .card.card-bg-light
           h4.card-header= t('API Credentials')
           .card-body
