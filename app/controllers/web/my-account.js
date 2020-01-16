@@ -122,9 +122,9 @@ async function setup2fa(ctx) {
       return ctx.throw(Boom.badRequest(ctx.translate('INVALID_OTP_PASSCODE')));
 
     // generate 2fa recovery keys list used for fallback
-    const recoveryKeys = new Array(16).map(() =>
-      cryptoRandomString({ length: 10, characters: '1234567890' })
-    );
+    const recoveryKeys = new Array(16)
+      .fill()
+      .map(() => cryptoRandomString({ length: 10, characters: '1234567890' }));
 
     ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
     ctx.state.user[config.userFields.twoFactorEnabled] = true;
