@@ -54,7 +54,7 @@ Please ensure your operating system has the following software installed:
 
 * [Git][] - see [GitHub's tutorial][github-git] for installation
 
-* [Node.js][node] (v8.9.0+) - use [nvm][] to install it on any OS
+* [Node.js][node] (v10+) - use [nvm][] to install it on any OS
 
   * After installing `nvm` you will need to run `nvm install node`
   * We also recommend you install [yarn][], which is an alternative to [npm][]
