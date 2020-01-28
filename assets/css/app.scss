@@ -49,5 +49,11 @@ $question: theme-color('light');
 // sweetalert2 fix
 @import '_swal2';
 
+// responsive borders
+@import '_responsive-borders';
+
+// responsive backgrounds
+@import '_responsive-backgrounds';
+
 // custom app styling
 @import '_custom';
