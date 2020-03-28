@@ -116,6 +116,10 @@ obj[config.userFields.verificationPin] = {
   trim: true,
   validate: val => isSANB(val) && val.replace(/\D/g, '').length === 6
 };
+obj[config.userFields.pendingRecovery] = {
+  type: Boolean,
+  default: false
+};
 
 // shared field names with @ladjs/passport for consistency
 const { fields } = config.passport;
@@ -236,7 +240,11 @@ User.post('save', async user => {
 });
 
 User.methods.sendVerificationEmail = async function(ctx) {
-  if (this[config.userFields.hasVerifiedEmail]) return this;
+  if (
+    this[config.userFields.hasVerifiedEmail] &&
+    boolean(!this[config.userFields.pendingRecovery])
+  )
+    return this;
 
   const diff =
     this[config.userFields.verificationPinExpiresAt] &&

@@ -49,6 +49,8 @@ module.exports = {
     'Sorry, your request has timed out.  We have been alerted of this issue.  Please try again.',
   RESET_PASSWORD: 'You have successfully reset your password.',
   SIGNED_OUT: 'You have successfully signed out.',
+  PENDING_RECOVERY_VERIFICATION_SUCCESS:
+    'Your email has been successfully verified. You should receive a support email from an admin within the next 3-5 business days.',
   SUPPORT_REQUEST_ERROR:
     'We were unable to send your support request.  We have been alerted of this problem.  Please try again.',
   SUPPORT_REQUEST_LIMIT:

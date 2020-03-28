@@ -125,6 +125,7 @@ const config = {
     resetToken: 'reset_token',
     hasSetPassword: 'has_set_password',
     hasVerifiedEmail: 'has_verified_email',
+    pendingRecovery: 'pending_recovery',
     verificationPinExpiresAt: 'verification_pin_expires_at',
     verificationPinSentAt: 'verification_pin_sent_at',
     verificationPin: 'verification_pin',

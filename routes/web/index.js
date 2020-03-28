@@ -1,5 +1,6 @@
 const Router = require('@koa/router');
 const render = require('koa-views-render');
+const { boolean } = require('boolean');
 
 const config = require('../../config');
 const { policies } = require('../../helpers');
@@ -8,6 +9,7 @@ const { web } = require('../../app/controllers');
 const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
+const twofactor = require('./2fa');
 
 const router = new Router();
 
@@ -33,8 +35,6 @@ localeRouter
   .post('/forgot-password', web.auth.forgotPassword)
   .get('/reset-password/:token', render('reset-password'))
   .post('/reset-password/:token', web.auth.resetPassword)
-  .get('/2fa-recovery', render('my-account/2fa-recovery'))
-  .post('/2fa-recovery', web.auth.recoveryKey)
   .get(
     config.verificationPath,
     policies.ensureLoggedIn,
@@ -55,8 +55,6 @@ localeRouter
     web.auth.registerOrLogin
   )
   .post('/login', policies.ensureLoggedOut, web.auth.login)
-  .get('/login-otp', policies.ensureLoggedIn, render('my-account/2fa'))
-  .post('/login-otp', policies.ensureLoggedIn, web.auth.loginOtp)
   .get(
     '/register',
     policies.ensureLoggedOut,
@@ -67,6 +65,8 @@ localeRouter
 
 localeRouter.use(myAccount.routes());
 localeRouter.use(admin.routes());
+
+if (boolean(process.env.AUTH_OTP_ENABLED)) localeRouter.use(twofactor.routes());
 
 router.use(auth.routes());
 router.use(localeRouter.routes());
