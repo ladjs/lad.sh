@@ -25,9 +25,9 @@ block body
               hr
               ul.list-inline
                 li
-                  a.card-link(href=l('/2fa/recovery-keys'))= t('Use recovery key')
+                  a.card-link(href=l('/2fa/recovery/keys'))= t('Use recovery key')
                 li
-                  a.card-link(href=l('/2fa/recovery-keys'), data-toggle='modal-anchor', data-target='#modal-domain')= t('Unable to use auth app or recovery keys?')
+                  a.card-link(href=l('/2fa/recovery/keys'), data-toggle='modal-anchor', data-target='#modal-domain')= t('Unable to use authentication app or recovery keys?')
 
   #modal-domain.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-domain-title', aria-hidden='true')
     .modal-dialog(role='document')
