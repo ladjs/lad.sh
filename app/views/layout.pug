@@ -113,7 +113,7 @@ html(lang=locale).h-100
       //- scripts
       script(defer, src=manifest('js/core.js'))
 
-  body(role='document', class=['/register', '/login', config.verificationPath].includes(ctx.pathWithoutLocale) ? 'pt-0' : '').d-flex.flex-column.h-100
+  body(role='document', class=['/register', '/login', config.verifyRoute].includes(ctx.pathWithoutLocale) ? 'pt-0' : '').d-flex.flex-column.h-100
 
     //- spinner
     block spinner

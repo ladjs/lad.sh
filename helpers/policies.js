@@ -1,13 +1,19 @@
 const Policies = require('@ladjs/policies');
 
-const { verificationPath, userFields, appName } = require('../config');
+const {
+  loginOtpRoute,
+  verifyRoute,
+  userFields,
+  appName
+} = require('../config');
 const { Users } = require('../app/models');
 
 const policies = new Policies(
   {
     schemeName: appName,
     userFields,
-    verifyRoute: verificationPath
+    verifyRoute,
+    loginOtpRoute
   },
   apiToken => {
     const query = {};

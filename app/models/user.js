@@ -294,7 +294,7 @@ User.methods.sendVerificationEmail = async function(ctx) {
       user: select(this.toObject(), User.options.toJSON.select),
       expiresAt: this[config.userFields.verificationPinExpiresAt],
       pin: this[config.userFields.verificationPin],
-      link: `${config.urls.web}${config.verificationPath}?pin=${
+      link: `${config.urls.web}${config.verifyRoute}?pin=${
         this[config.userFields.verificationPin]
       }`
     }
