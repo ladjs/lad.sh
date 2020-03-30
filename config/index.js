@@ -133,6 +133,9 @@ const config = {
     welcomeEmailSentAt: 'welcome_email_sent_at'
   },
 
+  // dynamic otp routes
+  loginOtpPath: '/2fa/otp/login',
+
   // verification pin
   verificationPath: '/verify',
   verificationPinTimeoutMs: ms(env.VERIFICATION_PIN_TIMEOUT_MS),
