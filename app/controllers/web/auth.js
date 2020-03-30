@@ -115,11 +115,7 @@ async function login(ctx, next) {
     }
 
     if (user) {
-      try {
-        await ctx.login(user);
-      } catch (err_) {
-        throw err_;
-      }
+      await ctx.login(user);
 
       let greeting = 'Good morning';
       if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
@@ -148,7 +144,7 @@ async function login(ctx, next) {
       await ctx.state.user.save();
 
       if (user[config.userFields.twoFactorEnabled] && !ctx.session.otp)
-        redirectTo = `/${ctx.locale}/login-otp`;
+        redirectTo = `/${ctx.locale}/2fa/otp/login`;
 
       if (ctx.accepts('json')) {
         ctx.body = { redirectTo };
