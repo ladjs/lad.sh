@@ -42,6 +42,7 @@ async function recover(ctx) {
   }
 }
 
+// eslint-disable-next-line complexity
 async function verify(ctx) {
   let redirectTo = `/${ctx.locale}/login`;
 

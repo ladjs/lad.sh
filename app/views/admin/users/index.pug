@@ -38,7 +38,7 @@ block body
                     td.align-middle: code= user[config.storeIPAddress.ip]
                     td.align-middle: code= user[config.lastLocaleField]
                     if boolean(process.env.AUTH_OTP_ENABLED)
-                      td.align-middle= user[config.userFields.twoFactorEnabled]
+                      td.align-middle= user[config.passport.fields.twoFactorEnabled]
                     td.align-middle
                       .btn-group(role='group', aria-label=t('Actions'))
                         a(href=l(`/admin/users/${user.id}`), data-toggle='tooltip', data-title=t('Edit')).btn.btn-secondary: i.fa.fa-fw.fa-edit

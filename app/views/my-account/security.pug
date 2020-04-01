@@ -2,7 +2,7 @@
 extends ../layout
 
 block body
-  if !user[config.userFields.twoFactorEnabled]
+  if !user[config.passport.fields.twoFactorEnabled]
     #modal-enable-2fa(tabindex='-1', role='dialog').modal.fade
       .modal-dialog(role='document')
         .modal-content
@@ -16,7 +16,7 @@ block body
               img(src=qrcode, width=250, height=250, alt="").mx-auto.d-block
               hr
               .input-group.input-group-sm.floating-label.form-group
-                input(type='text', readonly, value=user[config.userFields.twoFactorToken]).form-control#two-factor-token
+                input(type='text', readonly, value=user[config.passport.fields.twoFactorToken]).form-control#two-factor-token
                 label(for='two-factor-token')= t('Two-Factor Token')
                 .input-group-append
                   button(type='button', data-toggle="clipboard", data-clipboard-target="#two-factor-token").btn.btn-primary
@@ -38,7 +38,7 @@ block body
           .card.card-bg-light.mb-3
             h4.card-header= t('Two-Factor Authentication')
             .card-body
-              if user[config.userFields.twoFactorEnabled]
+              if user[config.passport.fields.twoFactorEnabled]
                 h5= t('Recovery keys')
                 p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
                 form(action=l('/my-account/recovery-keys'), method='POST')

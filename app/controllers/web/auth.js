@@ -14,8 +14,8 @@ const Users = require('../../models/user');
 const passport = require('../../../helpers/passport');
 const config = require('../../../config');
 
-const sanitize = str =>
-  sanitizeHtml(str, {
+const sanitize = string =>
+  sanitizeHtml(string, {
     allowedTags: [],
     allowedAttributes: []
   });
@@ -137,13 +137,13 @@ async function login(ctx, next) {
       const uri = authenticator.keyuri(
         user.email,
         'lad.sh',
-        user[config.userFields.twoFactorToken]
+        user[config.passport.fields.twoFactorToken]
       );
 
       ctx.state.user.qrcode = await qrcode.toDataURL(uri);
       await ctx.state.user.save();
 
-      if (user[config.userFields.twoFactorEnabled] && !ctx.session.otp)
+      if (user[config.passport.fields.twoFactorEnabled] && !ctx.session.otp)
         redirectTo = `/${ctx.locale}/2fa/otp/login`;
 
       if (ctx.accepts('json')) {

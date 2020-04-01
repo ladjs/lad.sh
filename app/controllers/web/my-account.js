@@ -79,15 +79,15 @@ async function resetAPIToken(ctx) {
 }
 
 async function security(ctx) {
-  if (!ctx.state.user[config.userFields.twoFactorEnabled]) {
+  if (!ctx.state.user[config.passport.fields.twoFactorEnabled]) {
     ctx.state.user[
-      config.userFields.twoFactorToken
+      config.passport.fields.twoFactorToken
     ] = authenticator.generateSecret();
     ctx.state.user = await ctx.state.user.save();
     ctx.state.twoFactorTokenURI = authenticator.keyuri(
       ctx.state.user.email,
       process.env.WEB_HOST,
-      ctx.state.user[config.userFields.twoFactorToken]
+      ctx.state.user[config.passport.fields.twoFactorToken]
     );
     ctx.state.qrcode = await qrcode.toDataURL(ctx.state.twoFactorTokenURI);
   }
@@ -108,14 +108,14 @@ async function recoveryKeys(ctx) {
 
 async function setup2fa(ctx) {
   if (ctx.method === 'DELETE') {
-    ctx.state.user[config.userFields.twoFactorEnabled] = false;
+    ctx.state.user[config.passport.fields.twoFactorEnabled] = false;
   } else if (
     ctx.method === 'POST' &&
-    ctx.state.user[config.userFields.twoFactorToken]
+    ctx.state.user[config.passport.fields.twoFactorToken]
   ) {
     const isValid = authenticator.verify({
       token: ctx.request.body.token,
-      secret: ctx.state.user[config.userFields.twoFactorToken]
+      secret: ctx.state.user[config.passport.fields.twoFactorToken]
     });
 
     if (!isValid)
@@ -127,7 +127,7 @@ async function setup2fa(ctx) {
       .map(() => cryptoRandomString({ length: 10, characters: '1234567890' }));
 
     ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
-    ctx.state.user[config.userFields.twoFactorEnabled] = true;
+    ctx.state.user[config.passport.fields.twoFactorEnabled] = true;
   } else {
     return ctx.throw(Boom.badRequest('Invalid method'));
   }
