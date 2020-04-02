@@ -83,6 +83,13 @@ async function security(ctx) {
     ctx.state.user[
       config.passport.fields.twoFactorToken
     ] = authenticator.generateSecret();
+
+    // generate 2fa recovery keys list used for fallback
+    const recoveryKeys = new Array(16)
+      .fill()
+      .map(() => cryptoRandomString({ length: 10, characters: '1234567890' }));
+
+    ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
     ctx.state.user = await ctx.state.user.save();
     ctx.state.twoFactorTokenURI = authenticator.keyuri(
       ctx.state.user.email,
@@ -121,12 +128,6 @@ async function setup2fa(ctx) {
     if (!isValid)
       return ctx.throw(Boom.badRequest(ctx.translate('INVALID_OTP_PASSCODE')));
 
-    // generate 2fa recovery keys list used for fallback
-    const recoveryKeys = new Array(16)
-      .fill()
-      .map(() => cryptoRandomString({ length: 10, characters: '1234567890' }));
-
-    ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
     ctx.state.user[config.passport.fields.twoFactorEnabled] = true;
   } else {
     return ctx.throw(Boom.badRequest('Invalid method'));
