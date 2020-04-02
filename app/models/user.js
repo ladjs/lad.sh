@@ -200,7 +200,6 @@ User.pre('validate', function(next) {
     )
   ) {
     this[fields.twoFactorEnabled] = false;
-    this[config.userFields.twoFactorRecoveryKeys] = null;
   }
 
   next();
