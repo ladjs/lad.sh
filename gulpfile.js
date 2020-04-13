@@ -37,6 +37,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('stylelint');
 const terser = require('gulp-terser');
 const unassert = require('gulp-unassert');
+const revSri = require('gulp-rev-sri');
 const { lastRun, watch, series, parallel, src, dest } = require('gulp');
 
 // explicitly set the compiler in case it were to change to dart
@@ -120,6 +121,7 @@ function img() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -155,6 +157,7 @@ function css() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -215,6 +218,7 @@ async function compile() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 

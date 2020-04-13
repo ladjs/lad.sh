@@ -26,11 +26,13 @@ block body
                       input(type="hidden", name="_csrf", value=ctx.csrf)
                       button(type='submit').btn.btn-primary.btn-block
                         i.fa.fa-download
-                          = t(' Download')
+                        = ' '
+                        = t('Download')
                   .col-sm.offset-sm-1
                     button(type='button', data-toggle="clipboard", data-clipboard-target="#two-factor-recovery-keys").btn.btn-secondary.btn-block
                       i.fa.fa-clipboard
-                        = t(' Copy')
+                      = ' '
+                      = t('Copy')
           .modal-footer
             p.text-muted.text-center.font-weight-bold: small= t('Store these in a safe place; they will let you recover your account, if necessary.')
             button(data-toggle='modal', data-target='#modal-enable-2fa-verify', data-dismiss='modal', type='button').btn.btn-primary.btn-lg.float-right= t('Continue')
