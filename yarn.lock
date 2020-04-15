@@ -1236,10 +1236,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.5.4.tgz#b37d1068784ed5af09ae4a7e1aa5d8770fd1ca72"
-  integrity sha512-eimBwEsDOUGrO/UyYwBviiEtpTXdyVbn8aWMzX38YEGMxI916DVOT8IA9r7jXWWHDJ9BtISmKJeB5Pq+iQssCQ==
+"@ladjs/web@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.5.5.tgz#695428aa5b3963965afeee89fe8c93e882a21fff"
+  integrity sha512-jOVCZ5nmQCj42ajW8X6Ke/yR49zB5TdwrU9CGrr9LdGK6A54yZamTYnjeXTWUdiLnymyiaCb5W+yZZh6+7qOUg==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "^8.0.5"
