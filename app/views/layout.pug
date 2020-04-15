@@ -109,9 +109,9 @@ html(lang=locale).h-100
 
       //- factor bundle (common shared assets across all files)
       if config.env === 'production'
-        script(src=manifest('factor-bundle.js') integrity=manifest('factor-bundle.js', 'integrity'))
+        script(src=manifest('js/factor-bundle.js') integrity=manifest('factor-bundle.js', 'integrity'))
       else
-        script(src=manifest('factor-bundle.js'))
+        script(src=manifest('js/factor-bundle.js'))
 
       //- uncaught (handles errors, similar to TraceKit but with CabinJS + StackTrace.JS)
       script(src=manifest('js/uncaught.js'))
