@@ -1236,10 +1236,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.5.4.tgz#b37d1068784ed5af09ae4a7e1aa5d8770fd1ca72"
-  integrity sha512-eimBwEsDOUGrO/UyYwBviiEtpTXdyVbn8aWMzX38YEGMxI916DVOT8IA9r7jXWWHDJ9BtISmKJeB5Pq+iQssCQ==
+"@ladjs/web@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-0.5.5.tgz#695428aa5b3963965afeee89fe8c93e882a21fff"
+  integrity sha512-jOVCZ5nmQCj42ajW8X6Ke/yR49zB5TdwrU9CGrr9LdGK6A54yZamTYnjeXTWUdiLnymyiaCb5W+yZZh6+7qOUg==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "^8.0.5"
@@ -7373,16 +7373,6 @@ gulp-awspublish@^4.1.1:
     through2 "^3.0.1"
     vinyl "^2.2.0"
 
-gulp-babel@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/gulp-babel/-/gulp-babel-8.0.0.tgz#e0da96f4f2ec4a88dd3a3030f476e38ab2126d87"
-  integrity sha512-oomaIqDXxFkg7lbpBou/gnUkX51/Y/M2ZfSjL2hdqXTAlSWZcgZtd2o0cOH0r/eE8LWD0+Q/PsLsr2DKOoqToQ==
-  dependencies:
-    plugin-error "^1.0.1"
-    replace-ext "^1.0.0"
-    through2 "^2.0.0"
-    vinyl-sourcemaps-apply "^0.2.0"
-
 gulp-cli@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/gulp-cli/-/gulp-cli-2.2.0.tgz#5533126eeb7fe415a7e3e84a297d334d5cf70ebc"
@@ -7614,7 +7604,7 @@ gulp-xo@^0.24.0:
     through2 "^3.0.0"
     xo "^0.26.1"
 
-gulp@4.x:
+gulp@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/gulp/-/gulp-4.0.2.tgz#543651070fd0f6ab0a0650c6a3e6ff5a7cb09caa"
   integrity sha512-dvEs27SCZt2ibF29xYgmnwwCYZxdxhQ/+LFWlbAW8y7jt68L/65402Lz3+CKy0Ov4rOs+NERmDq7YlZaDqUIfA==
