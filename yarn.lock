@@ -1192,10 +1192,10 @@
     passport-otp-strategy "^1.0.1"
     validator "^12.1.0"
 
-"@ladjs/policies@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-2.0.2.tgz#bb4ce97af1b2940cc79359cf3eb93c7c355bdc81"
-  integrity sha512-+TMGi1LxvZPLa15UvXwnRV964vTIO+1FgGdQtValVL1+BntZA92Ny4mZ9ZDPgiIop+Q/3Stnmqt7imxvA67ERg==
+"@ladjs/policies@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-2.0.4.tgz#257e2ed3c2748821ad9986664da9fa4dbbb7f010"
+  integrity sha512-+/VbXovsUx82IR7dF2Hl2AGWWYvcKUjxoCd8yMNTEY7CSdjy7mwnVjabDpAu4fwPPuLodyVoFohafpFb00f4jA==
   dependencies:
     "@hapi/boom" "^9.0.0"
     basic-auth "^2.0.1"
