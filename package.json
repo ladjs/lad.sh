@@ -161,7 +161,7 @@
     "gulp-xo": "^0.24.0",
     "husky": "^4.2.5",
     "imagemin-pngquant": "^8.0.0",
-    "lint-staged": "^10.1.6",
+    "lint-staged": "10.1.5",
     "make-dir": "^3.0.2",
     "ms": "^2.1.2",
     "node-sass": "^4.13.1",
