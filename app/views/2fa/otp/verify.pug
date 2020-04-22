@@ -96,7 +96,7 @@ block body
                 a.card-link.text-primary(href='#' data-toggle='collapse' data-target='#two-factor-copy')= t('Can’t scan the QR code? Follow alternative steps')
                 #two-factor-copy.collapse
                   hr
-                  p.text-secondary= t('Scan the following QR code in your authenticator app.')
+                  p.text-secondary= t('Manually configure your authenticator app using this code:')
                   .input-group.input-group-sm.floating-label.form-group
                     input(type='text', readonly, value=user[config.passport.fields.twoFactorToken]).form-control#two-factor-token
                     .input-group-append
