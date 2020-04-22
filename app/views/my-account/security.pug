@@ -6,7 +6,7 @@ block body
     .modal-dialog(role='document')
       .modal-content
         .modal-header.d-block.text-center
-          h6.modal-title.d-inline-block.ml-4= t('Disable 2FA')
+          h6.modal-title.d-inline-block.ml-4= t('Disable OTP')
           button(type='button', data-dismiss='modal', aria-label='Close').close
             span(aria-hidden='true') &times;
         .modal-body.text-center
@@ -17,7 +17,7 @@ block body
               .form-group.floating-label
                 input#input-password.form-control.mt-3(type="password", autocomplete="off", name="password" required)
                 label(for="input-password")= t('Confirm Password')
-                button.btn.btn-danger.btn-md.btn-block.mt-2(type="submit")= t('Disable 2FA')
+                button.btn.btn-danger.btn-md.btn-block.mt-2(type="submit")= t('Disable OTP')
   .container-fluid.py-3
     .row.mt-1
       .col
