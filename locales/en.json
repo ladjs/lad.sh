@@ -172,5 +172,11 @@
   "Resend now": "Resend now",
   "Sign up &#124; <span class=\"notranslate\">Lad</span>": "Sign up &#124; <span class=\"notranslate\">Lad</span>",
   "Create a Lad account": "Create a Lad account",
-  "Verification pin:": "Verification pin:"
+  "Verification pin:": "Verification pin:",
+  "Two Factor Auth &#124; <span class=\"notranslate\">Lad</span>": "Two Factor Auth &#124; <span class=\"notranslate\">Lad</span>",
+  "Authenticate yourself with optional two factor auth to log in": "Authenticate yourself with optional two factor auth to log in",
+  "Please log in to view the page you requested.": "Please log in to view the page you requested.",
+  "Sign in &#124; <span class=\"notranslate\">Lad</span>": "Sign in &#124; <span class=\"notranslate\">Lad</span>",
+  "Sign in to your account": "Sign in to your account",
+  "Sign in now": "Sign in now"
 }
