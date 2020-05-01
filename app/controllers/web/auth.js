@@ -14,8 +14,8 @@ const Users = require('../../models/user');
 const passport = require('../../../helpers/passport');
 const config = require('../../../config');
 
-const sanitize = str =>
-  sanitizeHtml(str, {
+const sanitize = string =>
+  sanitizeHtml(string, {
     allowedTags: [],
     allowedAttributes: []
   });
@@ -115,11 +115,7 @@ async function login(ctx, next) {
     }
 
     if (user) {
-      try {
-        await ctx.login(user);
-      } catch (err_) {
-        throw err_;
-      }
+      await ctx.login(user);
 
       let greeting = 'Good morning';
       if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
@@ -141,14 +137,14 @@ async function login(ctx, next) {
       const uri = authenticator.keyuri(
         user.email,
         'lad.sh',
-        user[config.userFields.twoFactorToken]
+        user[config.passport.fields.twoFactorToken]
       );
 
       ctx.state.user.qrcode = await qrcode.toDataURL(uri);
       await ctx.state.user.save();
 
-      if (user[config.userFields.twoFactorEnabled] && !ctx.session.otp)
-        redirectTo = `/${ctx.locale}/login-otp`;
+      if (user[config.passport.fields.twoFactorEnabled] && !ctx.session.otp)
+        redirectTo = `/${ctx.locale}/2fa/otp/login`;
 
       if (ctx.accepts('json')) {
         ctx.body = { redirectTo };

@@ -19,10 +19,10 @@ module.exports = {
 
     // <https://github.com/kentcdodds/nps-utils/issues/24>
     pretest: concurrent.nps('lint', 'build', 'pretest-mongo', 'pretest-redis'),
-    pretestMongo: "mongo lad_test --eval 'db.dropDatabase()'",
+    pretestMongo: 'mongo lad_test --eval "db.dropDatabase()"',
     // <https://stackoverflow.com/a/16974060/3586413>
     pretestRedis:
-      "redis-cli EVAL \"return redis.call('del', 'defaultKey', unpack(redis.call('keys', ARGV[1])))\" 0 limit_test:*",
+      'redis-cli EVAL "return redis.call("del", "defaultKey", unpack(redis.call("keys", ARGV[1])))" 0 limit_test:*',
 
     test: 'ava',
     testCoverage: series('nps pretest', 'nyc ava'),

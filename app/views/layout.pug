@@ -26,6 +26,7 @@ html(lang=locale).h-100
       //- link(rel="mask-icon", href=manifest('img/safari-pinned-tab.svg'), color=config.appColor)
       meta(name="apple-mobile-web-app-title", content=config.appName)
       meta(name="application-name", content=config.appName)
+      meta(name="msapplication-TileColor", content=config.appColor)
       meta(name="theme-color", content=config.appColor)
 
       //- csrf token
@@ -48,7 +49,28 @@ html(lang=locale).h-100
 
     //- css file
     block stylesheets
-      link(rel="stylesheet", href=manifest('css/app.css'))
+      if config.env === 'production'
+        link(rel="stylesheet", href=manifest('css/app.css') integrity=manifest('css/app.css', 'integrity'))
+      else
+        link(rel="stylesheet", href=manifest('css/app.css'))
+
+  body(role='document', class=['/register', '/login', config.verifyRoute].includes(ctx.pathWithoutLocale) ? 'pt-0' : '').d-flex.flex-column.h-100
+
+    //- spinner
+    block spinner
+      include spinner/spinner
+
+    //- navigation
+    block navigation
+      include _nav
+
+    //- body
+    main(role='main').flex-shrink-0
+    block body
+
+    //- footer
+    block footer
+      include _footer
 
     block scripts
       //- flash messaging (with koa-better-flash and sweetalert2)
@@ -101,31 +123,14 @@ html(lang=locale).h-100
           };
 
       //- polyfill environment
-      script(defer, src=`https://polyfill.io/v3/polyfill${config.env === 'production' ? '.min' : ''}.js?features=${polyfills.join(',')}`)
+      script(src=`https://polyfill.io/v3/polyfill${config.env === 'production' ? '.min' : ''}.js?features=${polyfills.join(',')}`)
 
       //- factor bundle (common shared assets across all files)
-      script(defer, src=manifest('js/factor-bundle.js'))
+      script(src=manifest('js/factor-bundle.js') integrity=manifest('js/factor-bundle.js', 'integrity'))
 
       //- uncaught (handles errors, similar to TraceKit but with CabinJS + StackTrace.JS)
-      script(defer, src=manifest('js/uncaught.js'))
+      script(src=manifest('js/uncaught.js') integrity=manifest('js/uncaught.js', 'integrity'))
 
       //- scripts
-      script(defer, src=manifest('js/core.js'))
-
-  body(role='document', class=['/register', '/login', config.verificationPath].includes(ctx.pathWithoutLocale) ? 'pt-0' : '').d-flex.flex-column.h-100
-
-    //- spinner
-    block spinner
-      include spinner/spinner
-
-    //- navigation
-    block navigation
-      include _nav
-
-    //- body
-    main(role='main').flex-shrink-0
-    block body
-
-    //- footer
-    block footer
-      include _footer
+      if config.env === 'production'
+      script(src=manifest('js/core.js') integrity=manifest('js/core.js', 'integrity'))
