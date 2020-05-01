@@ -1,5 +1,5 @@
 
-extends ../../layout
+extends ../layout
 
 block body
   .container.py-3
@@ -14,9 +14,9 @@ block body
               p.text-muted.font-weight-bold= t('Backup your recovery keys before continuing')
                 .container
                   .row
-                    label(for="two-factor-recovery-keys")= t('Recovery keys')
-                    textarea(rows='4').form-control#two-factor-recovery-keys
-                      = user[config.userFields.twoFactorRecoveryKeys].join('\n')
+                    label(for="otp-recovery-keys")= t('Recovery keys')
+                    textarea(rows='4').form-control#otp-recovery-keys
+                      = user[config.userFields.otpRecoveryKeys].join('\n')
                   .row.mt-3.mb-3
                     .col-sm
                       form(action=l('/my-account/recovery-keys'), method='POST')
@@ -26,14 +26,14 @@ block body
                           = ' '
                           = t('Download')
                     .col-sm.offset-sm-1
-                      button(type='button', data-toggle="clipboard", data-clipboard-target="#two-factor-recovery-keys").btn.btn-secondary.btn-block
+                      button(type='button', data-toggle="clipboard", data-clipboard-target="#otp-recovery-keys").btn.btn-secondary.btn-block
                         i.fa.fa-clipboard
                         = ' '
                         = t('Copy')
                         form.ajax-form.confirm-prompt(action=ctx.path, method="POST", autocomplete="off")
                   hr
                   .row
-                    form(action=l('/2fa/otp/keys'), method='POST').col-md-12
+                    form(action=l('/otp/keys'), method='POST').col-md-12
                       input(type="hidden", name="_csrf", value=ctx.csrf)
                       .form-group.floating-label
                         input#input-password.form-control(type="password", autocomplete="off", name="password" required)

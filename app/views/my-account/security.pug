@@ -2,7 +2,7 @@
 extends ../layout
 
 block body
-  #modal-disable-2fa(tabindex='-1', role='dialog').modal.fade
+  #modal-disable-otp(tabindex='-1', role='dialog').modal.fade
     .modal-dialog(role='document')
       .modal-content
         .modal-header.d-block.text-center
@@ -12,7 +12,7 @@ block body
         .modal-body.text-center
           = t('You are about to disable two-factor authentication on your account. Please confirm your password to continue.')
           .row
-            form(action=l('/2fa/otp/disable'), method='POST').col-md-12
+            form(action=l('/otp/disable'), method='POST').col-md-12
               input(type="hidden", name="_csrf", value=ctx.csrf)
               .form-group.floating-label
                 input#input-password.form-control.mt-3(type="password", autocomplete="off", name="password" required)
@@ -26,17 +26,17 @@ block body
           .card.card-bg-light.mb-3
             h4.card-header= t('Two-Factor Authentication')
             .card-body
-              if user[config.passport.fields.twoFactorEnabled]
+              if user[config.passport.fields.otpEnabled]
                 h5= t('Recovery keys')
                 p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
                 form(action=l('/my-account/recovery-keys'), method='POST')
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   button(type='submit').btn.btn-secondary.btn-lg= t('Download recovery keys')
-                button(data-toggle='modal', data-target='#modal-disable-2fa', type='button').btn.btn-danger.btn-lg.mt-3= t('Disable OTP')
+                button(data-toggle='modal', data-target='#modal-disable-otp', type='button').btn.btn-danger.btn-lg.mt-3= t('Disable OTP')
               else
                 h5= t('OTP')
                 p= t('OTP or one-time password allows you to add Two-Factor Authentication to your account using a device or authenticator app.')
-                a.btn.btn-primary.btn-lg(href=l('/2fa/otp/keys'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= t('Enable OTP')
+                a.btn.btn-primary.btn-lg(href=l('/otp/keys'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= t('Enable OTP')
         .card.card-bg-light
           h4.card-header= t('API Credentials')
           .card-body
