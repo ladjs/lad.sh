@@ -225,6 +225,8 @@ async function recoveryKey(ctx) {
   ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
   await ctx.state.user.save();
 
+  ctx.session.otp = 'totp-recovery';
+
   // send the user a success message
   const message = ctx.translate('OTP_RECOVERY_SUCCESS');
 
