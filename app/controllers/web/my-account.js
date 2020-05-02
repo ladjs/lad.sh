@@ -1,7 +1,6 @@
 const Boom = require('@hapi/boom');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 
 const config = require('../../../config');
@@ -77,60 +76,17 @@ async function resetAPIToken(ctx) {
 }
 
 async function recoveryKeys(ctx) {
-  const twoFactorRecoveryKeys =
-    ctx.state.user[config.userFields.twoFactorRecoveryKeys];
+  const otpRecoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
 
   ctx.attachment('recovery-keys.txt');
-  ctx.body = twoFactorRecoveryKeys
+  ctx.body = otpRecoveryKeys
     .toString()
     .replace(/,/g, '\n')
     .replace(/"/g, '');
 }
 
-async function setup2fa(ctx) {
-  if (ctx.method === 'DELETE') {
-    ctx.state.user[config.passport.fields.twoFactorEnabled] = false;
-  } else if (
-    ctx.method === 'POST' &&
-    ctx.state.user[config.passport.fields.twoFactorToken]
-  ) {
-    const isValid = authenticator.verify({
-      token: ctx.request.body.token,
-      secret: ctx.state.user[config.passport.fields.twoFactorToken]
-    });
-
-    if (!isValid)
-      return ctx.throw(Boom.badRequest(ctx.translate('INVALID_OTP_PASSCODE')));
-
-    ctx.state.user[config.passport.fields.twoFactorEnabled] = true;
-  } else {
-    return ctx.throw(Boom.badRequest('Invalid method'));
-  }
-
-  await ctx.state.user.save();
-
-  ctx.session.otp = 'otp-setup';
-
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
-
-  if (ctx.accepts('json')) {
-    ctx.body = { reloadPage: true };
-  } else {
-    ctx.redirect('back');
-  }
-}
-
 module.exports = {
   update,
   recoveryKeys,
-  resetAPIToken,
-  setup2fa
+  resetAPIToken
 };

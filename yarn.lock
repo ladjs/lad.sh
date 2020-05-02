@@ -1167,10 +1167,10 @@
     delay "^4.3.0"
     lodash "^4.17.15"
 
-"@ladjs/passport@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ladjs/passport/-/passport-1.0.0.tgz#924adf86326ad2075d106c27afad69d2e774f14b"
-  integrity sha512-kc+FYrYHCyYIq6AGNRn9M1mz9BMo3CNzdxQmCha6pv56aRy7ZOtjFpzxDMywvDUJTqe7zNdVbiiGdegNvZGjbQ==
+"@ladjs/passport@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/passport/-/passport-2.0.0.tgz#dfcc401d1349b077b84f4a082370d019db7f46d3"
+  integrity sha512-Sp6whAawHx9aE1N+Ew8skaJ/gRKg0tR75xynM1evunpmjWggz3+Zm21+ifQ9sgV+Ctrg7l+s2dK1Ogp9qVoB0Q==
   dependencies:
     boolean "^3.0.0"
     koa-passport "^4.1.3"
@@ -1180,10 +1180,10 @@
     passport-otp-strategy "^1.0.1"
     validator "^12.1.0"
 
-"@ladjs/policies@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-2.0.4.tgz#257e2ed3c2748821ad9986664da9fa4dbbb7f010"
-  integrity sha512-+/VbXovsUx82IR7dF2Hl2AGWWYvcKUjxoCd8yMNTEY7CSdjy7mwnVjabDpAu4fwPPuLodyVoFohafpFb00f4jA==
+"@ladjs/policies@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-3.0.0.tgz#fd5f007409f7c7d0c50efa82f2b9d3ec7bcfc774"
+  integrity sha512-99NgCCr/EssQjbKEK7Yqzj8ZgcFwthOkod3OmhvYrt2ytHLT8s/a+Hd+iCwL8vQTs5WxDGk7Gl1AAEoWwfMAeA==
   dependencies:
     "@hapi/boom" "^9.0.0"
     basic-auth "^2.0.1"
