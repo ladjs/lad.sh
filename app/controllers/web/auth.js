@@ -144,7 +144,7 @@ async function login(ctx, next) {
       await ctx.state.user.save();
 
       if (user[config.passport.fields.otpEnabled] && !ctx.session.otp)
-        redirectTo = `/${ctx.locale}/otp/login`;
+        redirectTo = ctx.state.l(config.loginOtpRoute);
 
       if (ctx.accepts('json')) {
         ctx.body = { redirectTo };
@@ -187,6 +187,7 @@ async function loginOtp(ctx, next) {
     ctx.session.otp = 'totp';
     const redirectTo = `/${ctx.locale}/dashboard`;
 
+    // TODO: should be `ctx.accepts('html')` first I think like elsewhere
     if (ctx.accepts('json')) {
       ctx.body = { redirectTo };
     } else {

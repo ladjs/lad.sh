@@ -10,9 +10,7 @@ router.use(policies.ensureLoggedIn);
 router
   .get('/login', render('otp/login'))
   .post('/login', web.auth.loginOtp)
-  .get('/keys', web.otp.renderKeys)
-  .post('/keys', web.otp.keys)
-  .get('/setup', web.otp.renderSetup)
+  .get('/setup', render('otp/keys'))
   .post('/setup', web.otp.setup)
   .post('/disable', web.otp.disable)
   .post('/recovery', web.otp.recovery)
