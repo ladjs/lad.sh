@@ -202,7 +202,10 @@ User.pre('validate', function(next) {
   )
     this[fields.otpEnabled] = false;
 
-  if (!Array.isArray(this[config.userFields.otpRecoveryKeys]))
+  if (
+    !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
+    this[config.userFields.otpRecoveryKeys].length === 0
+  )
     this[config.userFields.otpRecoveryKeys] = new Array(10)
       .fill()
       .map(() => cryptoRandomString(opts));
