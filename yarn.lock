@@ -1076,10 +1076,10 @@
     request-received "^0.0.3"
     response-time "^2.3.2"
 
-"@ladjs/assets@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@ladjs/assets/-/assets-0.0.22.tgz#9bd2b0344e742dee53a07c690e483671e4f3e714"
-  integrity sha512-DJZiIzrXVIvdx84DhoqQrqUKHB+/oE3IYNsooHkr40latCjrc2DIUuf040R2lU1Xa/aNJ+MPBZroKj2eT+a8Mg==
+"@ladjs/assets@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@ladjs/assets/-/assets-0.0.23.tgz#f2faa540caa6d1a8ad425c2a4e6b0e16554139d9"
+  integrity sha512-Fd+a6znok3djBKQB7eReMaYOKUj0PjMIIYyAYtwnW6hegeXvG3AW4VNfqMXmb/y8xB3yZkZcpfGWXHPG/IRNzA==
   dependencies:
     clipboard "^2.0.4"
     is-string-and-not-blank "^0.0.2"

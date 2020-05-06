@@ -2,11 +2,11 @@
 extends ../layout
 
 block body
-  #modal-domain.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-domain-title', aria-hidden='true')
+  #modal-recovery.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-domain-title', aria-hidden='true')
     .modal-dialog(role='document')
       .modal-content
         .modal-header.text-center.d-block
-          h4.modal-title.d-inline-block.ml-4#modal-domain-title= t('Account Recovery')
+          h4.modal-title.d-inline-block.ml-4#modal-recovery-title= t('Account Recovery')
           button(type='button', data-dismiss='modal', aria-label='Close').close
             span(aria-hidden='true') &times;
         .modal-body
@@ -39,4 +39,4 @@ block body
           small.text-muted
             = t('Lose your recovery keys?')
             = ' '
-            a(href='#', data-toggle='modal-anchor', data-target='#modal-domain').text-danger= t('Request account recovery')
+            a(href='#', data-toggle='modal-anchor', data-target='#modal-recovery').text-danger= t('Request account recovery')

@@ -223,19 +223,43 @@ async function recoveryKey(ctx) {
   recoveryKeys = recoveryKeys.filter(
     key => key !== ctx.request.body.recovery_passcode
   );
+
+  const emptyRecoveryKeys = recoveryKeys.length === 0;
+  const type = emptyRecoveryKeys ? 'warning' : 'success';
+  redirectTo = emptyRecoveryKeys
+    ? `/${ctx.locale}/my-account/security`
+    : redirectTo;
+
+  // handle case if the user runs out of keys
+  if (emptyRecoveryKeys) {
+    const opts = { length: 10, characters: '1234567890' };
+    recoveryKeys = new Array(10).fill().map(() => cryptoRandomString(opts));
+  }
+
   ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
   await ctx.state.user.save();
 
   ctx.session.otp = 'totp-recovery';
 
-  // send the user a success message
-  const message = ctx.translate('OTP_RECOVERY_SUCCESS');
-
+  const message = ctx.translate(
+    type === 'warning' ? 'OTP_RECOVERY_RESET' : 'OTP_RECOVERY_SUCCESS'
+  );
   if (ctx.accepts('html')) {
-    ctx.flash('success', message);
+    ctx.flash(type, message);
     ctx.redirect(redirectTo);
   } else {
-    ctx.body = { message, redirectTo };
+    ctx.body = {
+      ...(emptyRecoveryKeys
+        ? {
+            swal: {
+              title: null,
+              type,
+              html: message
+            }
+          }
+        : { message }),
+      redirectTo
+    };
   }
 }
 

@@ -34,7 +34,7 @@
     "@hapi/boom": "^9.1.0",
     "@koa/router": "^8.0.8",
     "@ladjs/api": "^1.0.0",
-    "@ladjs/assets": "^0.0.22",
+    "@ladjs/assets": "^0.0.23",
     "@ladjs/bull": "^1.0.5",
     "@ladjs/env": "^1.0.0",
     "@ladjs/graceful": "^1.0.0",
