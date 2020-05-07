@@ -41,6 +41,7 @@ module.exports = {
     'You can only request a password reset every 30 minutes.  Please try again %s.',
   PASSWORD_RESET_SENT:
     'We have sent you an email with a link to reset your password.',
+  EMPTY_RECOVERY_KEYS: 'Empty Recovery Keys',
   OTP_RECOVERY_RESET:
     'You have run out of recovery keys. Please download the newly generated recovery keys before continuing.',
   OTP_RECOVERY_SUCCESS:
