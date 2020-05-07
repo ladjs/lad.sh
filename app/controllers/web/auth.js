@@ -252,9 +252,9 @@ async function recoveryKey(ctx) {
       ...(emptyRecoveryKeys
         ? {
             swal: {
-              title: null,
+              title: ctx.translate('EMPTY_RECOVERY_KEYS'),
               type,
-              html: message
+              text: message
             }
           }
         : { message }),
