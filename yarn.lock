@@ -1221,6 +1221,14 @@
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
 
+"@ladjs/shared-config@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-2.0.1.tgz#2dffb0732411be76941c1fb7c0bce657b6483dab"
+  integrity sha512-DEm5uSr8I+uENixBdd82XE7Rv2vrjvsWsBzD3wbCE316uPCswpd8ZO/kWhem1kcTz1rH+G2zIg7EZZ4rYQAqFw==
+  dependencies:
+    boolean "^3.0.1"
+    is-string-and-not-blank "^0.0.2"
+
 "@ladjs/state-helper@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@ladjs/state-helper/-/state-helper-0.0.2.tgz#e25300ab24824304c2fdfb9d0f0380f55582d700"
@@ -1236,17 +1244,17 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.0.tgz#852de7ff4c7fdba88dec7b479e3360d1d27b1de1"
-  integrity sha512-jr8OF+71fZmeMAKTqC63n12Om2LmrOhepYmVDLm0UPHpBfd7AS/0aKTviHvZ7EaFqBCPNFS/SCZAO1DwZ1si0Q==
+"@ladjs/web@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.1.tgz#8af23ddbfd607377fa1cb17847774b309be39a28"
+  integrity sha512-Gl+j8DGlGrBlGA84OALDF0ReI9ZJjtNFvk9v4vUNjVNV/HBSvcPbYL3FTRW09AAZFzSuO/wrIxayV6pdGAWZyA==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
     "@ladjs/i18n" "^3.0.5"
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/redis" "^1.0.3"
-    "@ladjs/shared-config" "^2.0.0"
+    "@ladjs/shared-config" "^2.0.1"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
@@ -2341,10 +2349,25 @@ ava@^3.8.1:
     write-file-atomic "^3.0.3"
     yargs "^15.3.1"
 
-aws-sdk@^2.233.1, aws-sdk@^2.389.0, aws-sdk@^2.588.0, aws-sdk@^2.668.0:
+aws-sdk@^2.233.1, aws-sdk@^2.389.0, aws-sdk@^2.588.0:
   version "2.668.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.668.0.tgz#18b3e64a47f86c109586422596e53dc733117696"
   integrity sha512-mmZJmeenNM9hRR4k+JAStBhYFym2+VCPTRWv0Vn2oqqXIaIaNVdNf9xag/WMG8b8M80R3XXfVHKmDPST0/EfHA==
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^2.673.0:
+  version "2.673.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.673.0.tgz#5848900c90cfd8939602019df16fdc38d2a1cdbf"
+  integrity sha512-OoEPqTLmA5+4uSFf/k4ZLb8cEdx+CwlzovqGf6/gKvb8VrUxe5B5/d2RGlGM777Ke9TmuFhJtTIDugpgc2jo/Q==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
