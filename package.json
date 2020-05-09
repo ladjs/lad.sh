@@ -50,7 +50,7 @@
     "@tkrotoff/bootstrap-floating-label": "^0.5.1",
     "accounting": "^0.4.1",
     "array-join-conjunction": "^1.0.0",
-    "aws-sdk": "^2.668.0",
+    "aws-sdk": "^2.673.0",
     "axe": "^5.0.1",
     "basic-auth": "^2.0.1",
     "bitter-font": "^0.0.1",
