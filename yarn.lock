@@ -1221,6 +1221,14 @@
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
 
+"@ladjs/shared-config@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-2.0.1.tgz#2dffb0732411be76941c1fb7c0bce657b6483dab"
+  integrity sha512-DEm5uSr8I+uENixBdd82XE7Rv2vrjvsWsBzD3wbCE316uPCswpd8ZO/kWhem1kcTz1rH+G2zIg7EZZ4rYQAqFw==
+  dependencies:
+    boolean "^3.0.1"
+    is-string-and-not-blank "^0.0.2"
+
 "@ladjs/state-helper@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@ladjs/state-helper/-/state-helper-0.0.2.tgz#e25300ab24824304c2fdfb9d0f0380f55582d700"
@@ -1236,17 +1244,17 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.0.tgz#852de7ff4c7fdba88dec7b479e3360d1d27b1de1"
-  integrity sha512-jr8OF+71fZmeMAKTqC63n12Om2LmrOhepYmVDLm0UPHpBfd7AS/0aKTviHvZ7EaFqBCPNFS/SCZAO1DwZ1si0Q==
+"@ladjs/web@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.1.tgz#8af23ddbfd607377fa1cb17847774b309be39a28"
+  integrity sha512-Gl+j8DGlGrBlGA84OALDF0ReI9ZJjtNFvk9v4vUNjVNV/HBSvcPbYL3FTRW09AAZFzSuO/wrIxayV6pdGAWZyA==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
     "@ladjs/i18n" "^3.0.5"
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/redis" "^1.0.3"
-    "@ladjs/shared-config" "^2.0.0"
+    "@ladjs/shared-config" "^2.0.1"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
