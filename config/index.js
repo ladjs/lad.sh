@@ -18,7 +18,6 @@ const i18n = require('./i18n');
 const loggerConfig = require('./logger');
 const meta = require('./meta');
 const phrases = require('./phrases');
-const polyfills = require('./polyfills');
 const utilities = require('./utilities');
 
 const config = {
@@ -90,7 +89,6 @@ const config = {
       // debug: env.NODE_ENV === 'development',
       // compileDebug: env.NODE_ENV === 'development',
       ...utilities,
-      polyfills,
       filters
     }
   },

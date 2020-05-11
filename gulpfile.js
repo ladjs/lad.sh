@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const Graceful = require('@ladjs/graceful');
 const Mandarin = require('mandarin');
-const _ = require('lodash');
+const babel = require('babelify');
 const browserify = require('browserify');
 const collapser = require('bundle-collapser/plugin');
 const cssnano = require('cssnano');
@@ -19,7 +19,6 @@ const gulpif = require('gulp-if');
 const imagemin = require('gulp-imagemin');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
-const ms = require('ms');
 const nodeSass = require('node-sass');
 const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
@@ -27,13 +26,13 @@ const postcssPresetEnv = require('postcss-preset-env');
 const pugLinter = require('gulp-pug-linter');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
+const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass');
 const scssParser = require('postcss-scss');
 const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('stylelint');
 const terser = require('gulp-terser');
 const unassert = require('gulp-unassert');
-const revSri = require('gulp-rev-sri');
 const { lastRun, watch, series, parallel, src, dest } = require('gulp');
 
 // explicitly set the compiler in case it were to change to dart
@@ -156,6 +155,7 @@ async function bundle() {
     debug: true
   });
   return b
+    .transform(babel)
     .plugin(collapser)
     .plugin('factor-bundle', {
       outputs: paths.map(string => path.join(config.buildBase, 'js', string))
