@@ -219,10 +219,7 @@ const logger = new Axe(config.logger);
 config.manifest = path.join(config.buildDir, 'rev-manifest.json');
 config.srimanifest = path.join(config.buildDir, 'sri-manifest.json');
 config.views.locals.manifest = manifestRev({
-  prepend:
-    env.AWS_CLOUDFRONT_DOMAIN && env.NODE_ENV === 'production'
-      ? `//${env.AWS_CLOUDFRONT_DOMAIN}/`
-      : '/',
+  prepend: '/',
   manifest: config.srimanifest
 });
 

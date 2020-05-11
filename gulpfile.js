@@ -1,12 +1,9 @@
 const path = require('path');
 const fs = require('fs');
 
-const AWS = require('aws-sdk');
 const Graceful = require('@ladjs/graceful');
 const Mandarin = require('mandarin');
 const _ = require('lodash');
-const awscloudfront = require('gulp-awspublish-cloudfront');
-const awspublish = require('gulp-awspublish');
 const browserify = require('browserify');
 const collapser = require('bundle-collapser/plugin');
 const cssnano = require('cssnano');
@@ -66,38 +63,6 @@ const manifestOptions = {
   merge: true,
   base: config.buildBase
 };
-
-// set aws logger
-AWS.config.logger = logger;
-
-function publish() {
-  // create a new publisher
-  const publisher = awspublish.create(
-    _.merge(config.aws, {
-      params: {
-        Bucket: env.AWS_S3_BUCKET
-      }
-    })
-  );
-  return (
-    src([`${config.buildBase}/**/*`, `!${config.manifest}`])
-      // gzip, Set Content-Encoding headers and add .gz extension
-      .pipe(awspublish.gzip())
-      // publisher will add Content-Length, Content-Type
-      // and headers specified below
-      // If not specified it will set x-amz-acl to public-read by default
-      .pipe(
-        publisher.publish({
-          'Cache-Control': `public, max-age=${ms('1yr')}`
-        })
-      )
-      // create a cache file to speed up consecutive uploads
-      .pipe(publisher.cache())
-      // print upload updates to console
-      .pipe(awspublish.reporter())
-      .pipe(awscloudfront(env.AWS_CLOUDFRONT_DISTRIBUTION_ID))
-  );
-}
 
 function pug() {
   return src('app/views/**/*.pug', { since: lastRun(pug) })
@@ -256,7 +221,6 @@ const build = series(
 module.exports = {
   build,
   bundle,
-  publish,
   markdown,
   watch: () => {
     lr.listen(config.livereload);
