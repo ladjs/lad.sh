@@ -10,9 +10,6 @@ const { Inquiries } = require('../../models');
 const config = require('../../../config');
 
 async function support(ctx) {
-  ctx.throw(new Error('Please email hello@lad.sh directly for requests'));
-
-  /*
   let { body } = ctx.request;
 
   if (config.env === 'test') ctx.ip = ctx.ip || '127.0.0.1';
@@ -95,7 +92,6 @@ async function support(ctx) {
     ctx.logger.error(err, { body });
     throw Boom.badRequest(ctx.translate('SUPPORT_REQUEST_ERROR'));
   }
-  */
 }
 
 module.exports = support;
