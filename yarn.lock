@@ -1044,13 +1044,13 @@
     path-to-regexp "1.x"
     urijs "^1.19.2"
 
-"@ladjs/api@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.0.5.tgz#7b3fd23717f5efca5c028f96ea6062e39e4d0e53"
-  integrity sha512-AvfGfAIIB2MnHUJ5DrA6nLCLkcPj3SP6B5OkSq71eBivvfn7/m8s1d9t8z7nDcLej08eqskGszNpXY7wEb6esA==
+"@ladjs/api@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.0.6.tgz#c53c763db9d7b4a259b9c16b407a9d871f40a220"
+  integrity sha512-EE6kkdBHgkFvocTPa0RJC1JNSHTVGUzfQJCCfOvD+mPOSYqZL0IsceNrDMwSmdbHSIFtoZqdIC2dTbN3IziHJQ==
   dependencies:
     "@koa/router" "8.x"
-    "@ladjs/i18n" "^3.0.7"
+    "@ladjs/i18n" "^3.0.8"
     "@ladjs/redis" "^1.0.3"
     "@ladjs/shared-config" "^2.0.7"
     "@ladjs/store-ip-address" "^0.0.7"
@@ -1128,10 +1128,27 @@
   dependencies:
     debug "^4.1.1"
 
-"@ladjs/i18n@^3.0.4", "@ladjs/i18n@^3.0.7":
+"@ladjs/i18n@^3.0.4":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-3.0.7.tgz#2a9dee51c96436c9743d6c1477474ea36d93175f"
   integrity sha512-blsRGdJhdNfrc7JqF4DGaBzM5V+T2YD5T8qMk5jeJCEwutQcjOVkT+z7y8hOIVznjFp8j+ZKu1bSy53uhqz3JA==
+  dependencies:
+    "@hapi/boom" "^9.1.0"
+    boolean "3.0.1"
+    country-language "^0.1.7"
+    debug "^4.1.1"
+    i18n "^0.9.1"
+    i18n-locales "^0.0.4"
+    lodash "^4.17.15"
+    moment "^2.25.3"
+    multimatch "^4.0.0"
+    qs "^6.9.4"
+    titleize "^2.1.0"
+
+"@ladjs/i18n@^3.0.8", "@ladjs/i18n@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-3.0.9.tgz#26fe4f326a9d87e9983846ddfda66022aec56030"
+  integrity sha512-FFNoVBBU8ha+WPdZW+7DXiL2fcfjUZCfciB0wqvYlZ0hmzroxTnREHrkU7SX2cGH5+6J+IRBCNkmgZQQat9Nhg==
   dependencies:
     "@hapi/boom" "^9.1.0"
     boolean "3.0.1"
@@ -1244,14 +1261,14 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.6.tgz#4a1c70379dd8bd17f0ff4a4c41c94d30da0fe764"
-  integrity sha512-zHGSAzz2L6allYyTbCjLk0rc0n+YjulWXIBI84sHQP+CiwQGRWYc1n/pKLhS6V71I4gNGZBk8cvVlvi0+UkPrg==
+"@ladjs/web@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.8.tgz#7f0e86e3e3600b43fc87f26e323223954b9d5c46"
+  integrity sha512-vW0NArb9BoZNIGsaprU+DaqfcvOBsKidxOmDaO9cz9rg1S6xKr8KiEwGVrR4NgaUHpVra8i0Hx/L46AxzYyTLQ==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
-    "@ladjs/i18n" "^3.0.7"
+    "@ladjs/i18n" "^3.0.8"
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/redis" "^1.0.3"
     "@ladjs/shared-config" "^2.0.7"
@@ -1278,7 +1295,6 @@
     koa-helmet "^5.2.0"
     koa-isajax "^1.0.5"
     koa-json "^2.0.2"
-    koa-livereload "^0.2.0"
     koa-logger "https://github.com/niftylettuce/logger"
     koa-meta "^0.2.2"
     koa-methodoverride "^2.0.0"
@@ -9681,14 +9697,6 @@ koa-json@^2.0.2:
     koa-is-json "1"
     streaming-json-stringify "3"
 
-koa-livereload@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/koa-livereload/-/koa-livereload-0.2.0.tgz#6eb4ca910a5c78f4050cb28306958a1b7160ab2e"
-  integrity sha1-brTKkQpcePQFDLKDBpWKG3Fgqy4=
-  dependencies:
-    koa "^2.0.0"
-    stream-injecter "0.0.1"
-
 "koa-logger@https://github.com/niftylettuce/logger":
   version "3.1.0"
   resolved "https://github.com/niftylettuce/logger#0714ea6917061d1da16da13ffb7a6c199bd5df88"
@@ -9771,7 +9779,7 @@ koa-views@^6.2.1:
     mz "^2.4.0"
     pretty "^2.0.0"
 
-koa@^2.0.0, koa@^2.11.0:
+koa@^2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/koa/-/koa-2.11.0.tgz#fe5a51c46f566d27632dd5dc8fd5d7dd44f935a4"
   integrity sha512-EpR9dElBTDlaDgyhDMiLkXrPwp6ZqgAIBvhhmxQ9XN4TFgW+gEz6tkcsNI6BnUbUftrKDjVFj4lW2/J2aNBMMA==
@@ -17033,11 +17041,6 @@ stream-http@^3.0.0:
     inherits "^2.0.4"
     readable-stream "^3.6.0"
     xtend "^4.0.2"
-
-stream-injecter@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/stream-injecter/-/stream-injecter-0.0.1.tgz#7507ae5eab9836536665e81ad8ce31b40fe3d455"
-  integrity sha1-dQeuXquYNlNmZega2M4xtA/j1FU=
 
 stream-shift@^1.0.0:
   version "1.0.1"
