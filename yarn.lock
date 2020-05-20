@@ -1000,7 +1000,7 @@
   dependencies:
     "@hapi/hoek" "8.x.x"
 
-"@hapi/boom@^9.0.0", "@hapi/boom@^9.1.0":
+"@hapi/boom@^9.1.0":
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-9.1.0.tgz#0d9517657a56ff1e0b42d0aca9da1b37706fec56"
   integrity sha512-4nZmpp4tXbm162LaZT45P7F7sgiem8dwAh2vHWT6XX24dozNjGMg6BvKCRvtCUcmcXqeMIUqWN8Rc5X8yKuROQ==
@@ -1044,15 +1044,15 @@
     path-to-regexp "1.x"
     urijs "^1.19.2"
 
-"@ladjs/api@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.1.tgz#fbd35747b74329c6dd9e5766d207b8a7837a774d"
-  integrity sha512-P7mwnvCqxvsjXVNFfrvsNS7ByXn5pbtj9DJZg4/9GCLz1meexVgsaOSG1ZMYIrypVOP3ynw2jzufQg4r+9zf8w==
+"@ladjs/api@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.2.tgz#86f068b1190cf5670119d8c3e7a8ff9a702108b0"
+  integrity sha512-TBAXvq0cnEY3UmZXMMYt6kTFdPJMrwnjJu8vFekbN5p55lU2F0lH2yfxj+hewqKpXA/0ccaEvCANnNcep0DnPA==
   dependencies:
     "@koa/router" "8.x"
     "@ladjs/i18n" "^3.0.10"
     "@ladjs/redis" "^1.0.3"
-    "@ladjs/shared-config" "^2.0.7"
+    "@ladjs/shared-config" "^2.0.8"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
     cabin "^6.1.1"
@@ -1180,12 +1180,12 @@
     passport-otp-strategy "^1.0.1"
     validator "^12.1.0"
 
-"@ladjs/policies@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-3.0.0.tgz#fd5f007409f7c7d0c50efa82f2b9d3ec7bcfc774"
-  integrity sha512-99NgCCr/EssQjbKEK7Yqzj8ZgcFwthOkod3OmhvYrt2ytHLT8s/a+Hd+iCwL8vQTs5WxDGk7Gl1AAEoWwfMAeA==
+"@ladjs/policies@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/policies/-/policies-3.1.0.tgz#cc7b3bef31d440c81c13e9adc529b55060aa63a3"
+  integrity sha512-fxYGdlMaMuvGRd8Pw5MVwTsqoQlA3Aqmw563+0In3feSEY3z7pfJxnb1+4RpZlZiuJOHoBD39NpT2vX4RW4HqA==
   dependencies:
-    "@hapi/boom" "^9.0.0"
+    "@hapi/boom" "^9.1.0"
     basic-auth "^2.0.1"
 
 "@ladjs/proxy@^1.0.3":
@@ -1213,6 +1213,14 @@
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
 
+"@ladjs/shared-config@^2.0.11", "@ladjs/shared-config@^2.0.8":
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-2.0.11.tgz#66478a3748fa42e1178332a9ca7981f7c4d58dc0"
+  integrity sha512-5LGZDYTd+Nll1OAAzNmYrnHehLpKC2yveK602M6TgqUTn5GSUKVBk498DVkaxRj2UlPY595XothdZCTPqagPTA==
+  dependencies:
+    boolean "^3.0.1"
+    is-string-and-not-blank "^0.0.2"
+
 "@ladjs/state-helper@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@ladjs/state-helper/-/state-helper-0.0.2.tgz#e25300ab24824304c2fdfb9d0f0380f55582d700"
@@ -1228,17 +1236,17 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.12.tgz#c2fadce7cb85920dc806b0b56cc59271120a27a7"
-  integrity sha512-PxGVP0wG2StffFegl9K1A4y21u9uYHlvXbAGjDG5JGytGgmW4Ij2vZ7hehr9tMH+Ws2DKxIX6Rj5iRNqkMRRUA==
+"@ladjs/web@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.15.tgz#e76881c2d61286eb84c811acddf31d4b4f6e1d19"
+  integrity sha512-H+1qScb9E5c5T24ITt/A7Qr86xyCUI6/guwU9sRBJwmU98KOw5UbJKMkYYiiIiCP2SDEY6qu9Z2+++EU974HvA==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
     "@ladjs/i18n" "^3.0.10"
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/redis" "^1.0.3"
-    "@ladjs/shared-config" "^2.0.7"
+    "@ladjs/shared-config" "^2.0.11"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
@@ -10440,7 +10448,7 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-"loose-envify@github:tomashanacek/loose-envify":
+loose-envify@tomashanacek/loose-envify:
   version "1.0.0"
   resolved "https://codeload.github.com/tomashanacek/loose-envify/tar.gz/274d08b592bab76b3a7ab099a669ccd1b4a7a34f"
   dependencies:
