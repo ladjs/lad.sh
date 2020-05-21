@@ -8,10 +8,7 @@ const config = require('./config');
 const logger = require('./helpers/logger');
 
 const apiConfig = require('./config/api');
-
-const api = new API({
-  ...apiConfig
-});
+const api = new API(apiConfig);
 
 if (!module.parent) {
   const mongoose = new Mongoose(

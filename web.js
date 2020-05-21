@@ -8,10 +8,7 @@ const config = require('./config');
 const logger = require('./helpers/logger');
 
 const webConfig = require('./config/web');
-
-const web = new Web({
-  ...webConfig
-});
+const web = new Web(webConfig);
 
 if (!module.parent) {
   const mongoose = new Mongoose(
