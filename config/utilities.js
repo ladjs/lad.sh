@@ -5,6 +5,7 @@ const dashify = require('dashify');
 const fa = require('font-awesome-assets');
 const hljs = require('highlight.js');
 const humanize = require('humanize-string');
+const isBot = require('isbot');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
 const pluralize = require('pluralize');
@@ -33,5 +34,6 @@ module.exports = {
   dashify,
   humanize,
   validator,
-  ajc
+  ajc,
+  isBot
 };
