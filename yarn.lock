@@ -1153,6 +1153,23 @@
     qs "^6.9.4"
     titleize "^2.1.0"
 
+"@ladjs/i18n@^3.0.11":
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-3.0.11.tgz#d9e4cb385864ebef82c44b5dd96d1ba3e26aa3da"
+  integrity sha512-reLu3Rw2AUEeN/L5UH8XA2qgr/wuGwwN2ToU6q7U+VlZxVH0fU6ewLER0TRODWaOTXB1nd0Dr96zWqNzVW3cdQ==
+  dependencies:
+    "@hapi/boom" "^9.1.0"
+    boolean "3.0.1"
+    country-language "^0.1.7"
+    debug "^4.1.1"
+    i18n "^0.9.1"
+    i18n-locales "^0.0.4"
+    lodash "^4.17.15"
+    moment "^2.25.3"
+    multimatch "^4.0.0"
+    qs "^6.9.4"
+    titleize "^2.1.0"
+
 "@ladjs/koa-better-static@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@ladjs/koa-better-static/-/koa-better-static-2.0.0.tgz#bfe052f2aae73970146ea18353212bc26c2babbe"
@@ -1261,10 +1278,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-2.0.2.tgz#98b9588a42c6a3869e0b5a31795348277cbec82f"
-  integrity sha512-1I/OnrU0wMQ7WUX5vzIeNH9f8vwza9UyRchK3H3slriGoCUlwLKu2CuEDHdU2VxENjxzzhvjC3YGmw5J7amjBA==
+"@ladjs/web@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-2.0.3.tgz#f8a481ef53864a9b0d878e958e09b302849cbdc1"
+  integrity sha512-eAlt7WWLZAt8wonB5Y56zoaVfs0dYrhpwExEgzxWHYA7ajPxLLN7iGRU4cHuDHiMY7iJmZjs/iFU5/f8j1kMYQ==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
