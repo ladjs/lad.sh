@@ -5,19 +5,10 @@ const _ = require('lodash');
 const ip = require('ip');
 
 const config = require('./config');
-const routes = require('./routes');
-const i18n = require('./helpers/i18n');
 const logger = require('./helpers/logger');
-const passport = require('./helpers/passport');
 
-const web = new Web({
-  routes: routes.web,
-  logger,
-  i18n,
-  meta: config.meta,
-  views: config.views,
-  passport
-});
+const webConfig = require('./config/web');
+const web = new Web(webConfig);
 
 if (!module.parent) {
   const mongoose = new Mongoose(
