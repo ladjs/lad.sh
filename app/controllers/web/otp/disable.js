@@ -9,10 +9,10 @@ async function disable(ctx) {
   const redirectTo = `/${ctx.locale}/my-account/security`;
 
   if (!isSANB(body.password))
-    throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   const { user } = await ctx.state.user.authenticate(body.password);
-  if (!user) throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+  if (!user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   ctx.state.user[config.passport.fields.otpEnabled] = false;
   ctx.state.user[config.passport.fields.otpToken] = null;

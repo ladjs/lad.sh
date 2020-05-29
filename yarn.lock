@@ -1238,6 +1238,13 @@
   dependencies:
     ioredis "^4.14.0"
 
+"@ladjs/redis@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@ladjs/redis/-/redis-1.0.4.tgz#b225d508943d6a5b65e757e1fe4c19adda41f6c3"
+  integrity sha512-2PgOsLIQ9taJ3B4fhG6RXZQjKh5r7BkoQpQ7iIwreOPoLwCjCiLWuSempJbY3nwnxx1+TyOI2yRPPUcxPdssdA==
+  dependencies:
+    ioredis "^4.17.1"
+
 "@ladjs/shared-config@^2.0.0", "@ladjs/shared-config@^2.0.7":
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-2.0.7.tgz#6e7ab4d820a8fb3eb0c12a41d12c4ad30d5fa247"
@@ -1262,6 +1269,15 @@
   dependencies:
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
+
+"@ladjs/shared-config@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.4.tgz#e39be99c88ba30d3b982b35a0be641f80dda9dc8"
+  integrity sha512-h3cHSFvoXr3JMULACurVde33pCGbzD1KbXIAClqMWsk3o8rcJujFz2xm4ADt0hxRPeJYPNxYHdsbawxuUcszKA==
+  dependencies:
+    boolean "^3.0.1"
+    is-string-and-not-blank "^0.0.2"
+    ms "^2.1.2"
 
 "@ladjs/state-helper@^0.0.2":
   version "0.0.2"
@@ -8823,6 +8839,21 @@ ioredis@^4.14.0, ioredis@^4.14.1:
   version "4.16.3"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.16.3.tgz#6a6b85830206fd98353b7ff8536521f17943be53"
   integrity sha512-Ejvcs2yW19Vq8AipvbtfcX3Ig8XG9EAyFOvGbhI/Q1QoVOK9ZdgY092kdOyOWIYBnPHjfjMJhU9qhsnp0i0K1w==
+  dependencies:
+    cluster-key-slot "^1.1.0"
+    debug "^4.1.1"
+    denque "^1.1.0"
+    lodash.defaults "^4.2.0"
+    lodash.flatten "^4.4.0"
+    redis-commands "1.5.0"
+    redis-errors "^1.2.0"
+    redis-parser "^3.0.0"
+    standard-as-callback "^2.0.1"
+
+ioredis@^4.17.1:
+  version "4.17.1"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.17.1.tgz#06ef3d3b2cb96b7e6bc90a7b8839a33e743843ad"
+  integrity sha512-kfxkN/YO1dnyaoAGyNdH3my4A1eoGDy4QOfqn6o86fo4dTboxyxYVW0S0v/d3MkwCWlvSWhlwq6IJMY9BlWs6w==
   dependencies:
     cluster-key-slot "^1.1.0"
     debug "^4.1.1"

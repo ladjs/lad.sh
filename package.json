@@ -45,6 +45,8 @@
     "@ladjs/passport": "^2.0.0",
     "@ladjs/policies": "^3.1.0",
     "@ladjs/proxy": "^1.0.3",
+    "@ladjs/redis": "^1.0.4",
+    "@ladjs/shared-config": "^3.0.4",
     "@ladjs/store-ip-address": "^0.0.7",
     "@ladjs/web": "^2.0.3",
     "@primer/css": "^14.3.0",
@@ -67,6 +69,7 @@
     "del": "^5.1.0",
     "dense": "^0.0.1",
     "email-templates": "^7.0.5",
+    "fast-safe-stringify": "^2.0.7",
     "font-awesome-assets": "^0.0.8",
     "frisbee": "^3.1.2",
     "gemoji": "^5.0.1",
@@ -199,7 +202,7 @@
   "homepage": "https://github.com/ladjs/lad",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm test",
+      "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },

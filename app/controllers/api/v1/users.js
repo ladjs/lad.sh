@@ -9,7 +9,7 @@ async function create(ctx) {
   const { body } = ctx.request;
 
   if (!isSANB(body.password))
-    return ctx.throw(Boom.badRequest(ctx.translate('INVALID_PASSWORD')));
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PASSWORD')));
 
   // register the user
   const query = { email: body.email };

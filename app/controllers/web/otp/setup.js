@@ -33,7 +33,7 @@ async function setup(ctx) {
     });
 
     if (!isValid) {
-      ctx.flash('error', ctx.translate('INVALID_OTP_PASSCODE'));
+      ctx.flash('error', ctx.translateError('INVALID_OTP_PASSCODE'));
       ctx.state.otpTokenURI = authenticator.keyuri(
         ctx.state.user.email,
         process.env.WEB_HOST,
@@ -61,10 +61,10 @@ async function setup(ctx) {
 
   if (ctx.state.user[config.userFields.hasSetPassword]) {
     if (!isSANB(body.password))
-      throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
     const { user } = await ctx.state.user.authenticate(body.password);
-    if (!user) throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
   }
 
   ctx.state.otpTokenURI = authenticator.keyuri(

@@ -17,12 +17,12 @@ async function update(ctx) {
     requiredFields.forEach(prop => {
       if (!isSANB(body[prop]))
         throw Boom.badRequest(
-          ctx.translate('INVALID_STRING', ctx.request.t(humanize(prop)))
+          ctx.translateError('INVALID_STRING', ctx.request.t(humanize(prop)))
         );
     });
 
     if (body.password !== body.confirm_password)
-      throw Boom.badRequest(ctx.translate('INVALID_PASSWORD_CONFIRM'));
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD_CONFIRM'));
 
     if (hasSetPassword)
       await ctx.state.user.changePassword(body.old_password, body.password);

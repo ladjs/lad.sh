@@ -239,7 +239,9 @@ function remark() {
 
 function serve() {
   browserSync.init({
-    proxy: config.browserSync.proxyUrl
+    proxy: env.WEB_URL,
+    port: env.BROWSERSYNC_SERVER_PORT,
+    ui: { port: env.BROWSERSYNC_UI_PORT }
   });
 }
 
@@ -332,7 +334,7 @@ module.exports = {
     watch('assets/img/**/*', img);
     watch('assets/css/**/*.scss', series(fonts, scss, css));
     watch('assets/js/**/*.js', series(xo, bundle));
-    watch('app/views/**/*.pug', pug);
+    watch('app/views/**/*.pug', series(pug, browserSync.reload));
     watch(staticAssets, static);
     watch(config.buildBase, browserSync.reload);
   },
