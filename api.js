@@ -6,8 +6,8 @@ const ip = require('ip');
 
 const config = require('./config');
 const logger = require('./helpers/logger');
-
 const apiConfig = require('./config/api');
+
 const api = new API(apiConfig);
 
 if (!module.parent) {
