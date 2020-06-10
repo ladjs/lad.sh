@@ -6,7 +6,6 @@ const Mandarin = require('mandarin');
 const RevAll = require('gulp-rev-all');
 const babel = require('gulp-babel');
 const browserify = require('browserify');
-const browserSync = require('browser-sync').create();
 const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
@@ -18,6 +17,7 @@ const globby = require('globby');
 const gulpRemark = require('gulp-remark');
 const gulpXo = require('gulp-xo');
 const imagemin = require('gulp-imagemin');
+const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
 const nodeSass = require('node-sass');
 const pngquant = require('imagemin-pngquant');
@@ -65,7 +65,7 @@ function pug() {
     pugLinter({ reporter: 'default', failAfterError: true })
   );
 
-  if (DEV) stream = stream.pipe(browserSync.stream());
+  if (DEV) stream = stream.pipe(lr(config.livereload));
 
   return stream;
 }
@@ -84,8 +84,7 @@ function img() {
     )
     .pipe(dest(config.buildBase));
 
-  if (DEV) stream = stream.pipe(browserSync.stream());
-
+  if (DEV) stream = stream.pipe(lr(config.livereload));
   return stream;
 }
 
@@ -131,7 +130,7 @@ function css() {
 
   stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
 
-  if (DEV) stream = stream.pipe(browserSync.stream());
+  if (DEV) stream = stream.pipe(lr(config.livereload));
 
   return stream;
 }
@@ -216,7 +215,7 @@ async function bundle() {
 
   stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
 
-  if (DEV) stream = stream.pipe(browserSync.stream());
+  if (DEV) stream = stream.pipe(lr(config.livereload));
 
   stream = stream.pipe(dest(config.buildBase));
 
@@ -235,14 +234,6 @@ function remark() {
       })
     )
     .pipe(dest('.'));
-}
-
-function serve() {
-  browserSync.init({
-    proxy: env.WEB_URL,
-    port: env.BROWSERSYNC_SERVER_PORT,
-    ui: { port: env.BROWSERSYNC_UI_PORT }
-  });
 }
 
 function static() {
@@ -328,20 +319,18 @@ module.exports = {
   sri,
   markdown,
   watch: () => {
-    serve();
+    lr.listen(config.livereload);
     watch(['**/*.js', '!assets/js/**/*.js'], xo);
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
     watch('assets/css/**/*.scss', series(fonts, scss, css));
     watch('assets/js/**/*.js', series(xo, bundle));
-    watch('app/views/**/*.pug', series(pug, browserSync.reload));
+    watch('app/views/**/*.pug', pug);
     watch(staticAssets, static);
-    watch(config.buildBase, browserSync.reload);
   },
   pug,
   img,
   xo,
-  serve,
   static,
   remark,
   fonts,

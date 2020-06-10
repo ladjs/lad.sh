@@ -52,8 +52,8 @@ const config = {
     i18n
   },
   logger: loggerConfig,
-  browserSync: {
-    proxyUrl: env.WEB_URL
+  livereload: {
+    port: env.LIVERELOAD_PORT
   },
   appName: env.APP_NAME,
   appColor: env.APP_COLOR,
