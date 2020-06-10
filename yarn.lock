@@ -1098,20 +1098,19 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@ladjs/api@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.7.tgz#b564e73e1d345b6a20913bff07371a7a0044516c"
-  integrity sha512-8/xemYUlM8KH2U3LyUjXap7Ji6ClNlxpi/caymR2aQDCN0JHEQAn/Ug7REKx+Yvk54b4GHOBrx7AMPVde7wmdA==
+"@ladjs/api@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.8.tgz#de851a5691c646b966265d3e0609694c0b0f649a"
+  integrity sha512-nkpRys2USbS40bRghQjcNmvMjVvReR9rcTeprweflvExQ9p9VQJk0AhcIHvmkC/MZkKNgPRpHZZVEKFJ49YTUA==
   dependencies:
     "@koa/router" "^9.0.1"
     "@ladjs/i18n" "^3.0.12"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.6"
+    "@ladjs/shared-config" "^3.0.7"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
-    cabin "^6.1.4"
+    cabin "^7.0.0"
     express-request-id "^1.4.1"
-    kcors "^2.2.2"
     koa "^2.12.0"
     koa-404-handler "^0.0.2"
     koa-basic-auth "^4.0.0"
@@ -1122,7 +1121,6 @@
     koa-conditional-get "^2.0.0"
     koa-connect "^2.0.1"
     koa-etag "^3.0.0"
-    koa-helmet "^5.2.0"
     koa-json "^2.0.2"
     koa-no-trailing-slash "^2.1.0"
     koa-simple-ratelimit "^4.0.2"
@@ -1277,14 +1275,13 @@
     is-string-and-not-blank "^0.0.2"
     ms "^2.1.2"
 
-"@ladjs/shared-config@^3.0.2", "@ladjs/shared-config@^3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.6.tgz#47c6267357a37457b15a6c5a129d6cff9bcd0037"
-  integrity sha512-sYA/Tv6EzoxjrgjXljAWpy3oJ+5uedcZEbqD2ztVkFOjnfGFjBkQvaNslKcWhYzWVia5VBsQYDEDDftYwC+FUQ==
+"@ladjs/shared-config@^3.0.2", "@ladjs/shared-config@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.7.tgz#f9ab641b8e7af4b20115a41f6cea7ce3b94b3880"
+  integrity sha512-GTIhVjbLFoV1mY0EO3/ngIp4PF80YNIKl3XZKuFma0SNgJLNiNipxHustXCOeta349XN5qCHXEW/rkcOhSZfUg==
   dependencies:
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
-    ms "^2.1.2"
 
 "@ladjs/state-helper@^0.0.2":
   version "0.0.2"
@@ -1301,10 +1298,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-4.0.3.tgz#341975f7f5d24614f0d056a0699890060490fa2f"
-  integrity sha512-UBQtvs+sgKtKIfc1Am+vQyznHJiE1wmelEpqOSsIyiaChpvBe7qQkEtx842MMqWdI3vQDMaHhc2uNYrNdhAaGA==
+"@ladjs/web@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-4.0.4.tgz#029ff08da9e8517e01a35bb19b3e99de55e45739"
+  integrity sha512-3eX2XrElzgaxnhAxYXwTY24TvgGQCvxH/OLVgvcCnaw7zvXD97kwn+M8O/RiKxupmJ/c9+H9vf8q11/w1yYysg==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "^9.0.1"
@@ -1312,13 +1309,14 @@
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/koa-cache-responses" "^0.0.1"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.6"
+    "@ladjs/shared-config" "^3.0.7"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
-    cabin "^6.1.4"
+    cabin "^7.0.0"
     crypto-random-string "^3.2.0"
     express-request-id "^1.4.1"
+    is-string-and-not-blank "^0.0.2"
     kcors "^2.2.2"
     koa "^2.12.0"
     koa-404-handler "^0.0.2"
@@ -1343,8 +1341,9 @@
     koa-no-trailing-slash "^2.1.0"
     koa-redis "^4.0.1"
     koa-simple-ratelimit "^4.0.2"
-    koa-views "^6.2.3"
+    koa-views "^6.3.0"
     lodash "^4.17.15"
+    ms "^2.1.2"
     multimatch "^4.0.0"
     request-received "^0.0.3"
     response-time "^2.3.2"
@@ -3275,20 +3274,6 @@ bytes@3.1.0, bytes@^3.0.0, bytes@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
-
-cabin@^6.1.4:
-  version "6.1.6"
-  resolved "https://registry.yarnpkg.com/cabin/-/cabin-6.1.6.tgz#deb10eaa5df87ce9693dda19691f4c1ec8b9f486"
-  integrity sha512-05y8PqMJcM798H4x/ByKY4cCgK1RPR+CGkpGnKXNUU0KFELjEWtMPhCOb/4ENSoErQwnAp7tXTwxAdzLoRIC3g==
-  dependencies:
-    ansi-colors "^4.1.1"
-    axe "^5.1.1"
-    clf-date "^0.2.0"
-    iserror "^0.0.2"
-    ms "^2.1.2"
-    on-finished "^2.3.0"
-    parse-err "^0.0.12"
-    parse-request "^2.0.8"
 
 cabin@^7.0.0:
   version "7.0.0"
@@ -10393,7 +10378,7 @@ koa-views-render@^0.0.1:
   resolved "https://registry.yarnpkg.com/koa-views-render/-/koa-views-render-0.0.1.tgz#98b38e52de411d55e380a3d4af8be06a85f404bf"
   integrity sha512-vryfNancX55BsfC0A4scAOXrLJxbalx7TeVaPcIF6/OSN6EDOTS55uvriIDGLT8A1bbDhmy1G6M+9SvKA39pdA==
 
-koa-views@^6.2.3:
+koa-views@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/koa-views/-/koa-views-6.3.0.tgz#0adaf85699fba910b81e3f0755350c2c7c6c3771"
   integrity sha512-6FEN3z9B/PSay4XDAqzNBEAxfrQRhgoepoL5XKFkiMYToxTZnbirSt1qJb18YUpmHtbMdTdB4IUHFn1tyQ3SIA==
@@ -13209,29 +13194,6 @@ parse-passwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/parse-passwd/-/parse-passwd-1.0.0.tgz#6d5b934a456993b23d37f40a382d6f1666a8e5c6"
   integrity sha1-bVuTSkVpk7I9N/QKOC1vFmao5cY=
-
-parse-request@^2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/parse-request/-/parse-request-2.0.8.tgz#ed5496a9a9d7010f256093c1b008d0d44afffa7c"
-  integrity sha512-UXR7hkTwvFP5ciV8thoHpAVfHTVWB+Zz1H/GSkpl/eajIM8WE1TRISE3Kmr5itn9GG3ixBJzJb9HCPWF/J9Vrw==
-  dependencies:
-    browser-process-hrtime "^1.0.0"
-    bson-objectid "^1.3.0"
-    convert-hrtime "^3.0.0"
-    cookie "^0.4.1"
-    credit-card-type "^8.3.0"
-    debug "^4.1.1"
-    fast-safe-stringify "^2.0.7"
-    http-headers "^3.0.2"
-    is-array-buffer "^1.0.1"
-    is-buffer "^2.0.4"
-    is-stream "^2.0.0"
-    is-uuid "^1.0.2"
-    ms "^2.1.2"
-    no-case "2.3.2"
-    rfdc "^1.1.4"
-    sensitive-fields "^0.0.8"
-    url-parse "^1.4.7"
 
 parse-request@^3.0.0:
   version "3.0.0"
@@ -16682,11 +16644,6 @@ send@0.16.2:
     on-finished "~2.3.0"
     range-parser "~1.2.0"
     statuses "~1.4.0"
-
-sensitive-fields@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/sensitive-fields/-/sensitive-fields-0.0.8.tgz#e9a86106e7c8333bb78f346350d745ba4de1220f"
-  integrity sha512-QlPeI+mE+UngLkSfFYzJL49FX7RbEjl3YB/eIOWzF0yFJmbf0Qa6C5vOfJjreICvoXqPMXsyvg4/oyfKCTYKAg==
 
 sensitive-fields@^0.0.9:
   version "0.0.9"
