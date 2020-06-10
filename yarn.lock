@@ -1098,10 +1098,10 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@ladjs/api@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.8.tgz#de851a5691c646b966265d3e0609694c0b0f649a"
-  integrity sha512-nkpRys2USbS40bRghQjcNmvMjVvReR9rcTeprweflvExQ9p9VQJk0AhcIHvmkC/MZkKNgPRpHZZVEKFJ49YTUA==
+"@ladjs/api@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-2.0.0.tgz#2102055cf7769d2840d2920074db5796d485fcb0"
+  integrity sha512-6wC44TC4vnPQJ/Qr7PZScD+ZvSQeGIjYXi2T2l+qZxdYrtd/gW4PJzJRnEm/rPP23BgNJoa7oZg+i+WPOHCgPw==
   dependencies:
     "@koa/router" "^9.0.1"
     "@ladjs/i18n" "^3.0.12"
@@ -1298,10 +1298,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-4.0.4.tgz#029ff08da9e8517e01a35bb19b3e99de55e45739"
-  integrity sha512-3eX2XrElzgaxnhAxYXwTY24TvgGQCvxH/OLVgvcCnaw7zvXD97kwn+M8O/RiKxupmJ/c9+H9vf8q11/w1yYysg==
+"@ladjs/web@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-5.0.0.tgz#88e906f81d0a0a2555636c0e1a82cb4bbc72eca8"
+  integrity sha512-UikBTs7C5exHh4ltZ8jBGdpUtnt02bwmnnvy+rpP2JSBiAYuk7BGa4z9ByMboeIrhKfI0Aj/kbjAJU2Bajv4lQ==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "^9.0.1"
@@ -11086,7 +11086,7 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-"loose-envify@github:tomashanacek/loose-envify":
+loose-envify@tomashanacek/loose-envify:
   version "1.0.0"
   resolved "https://codeload.github.com/tomashanacek/loose-envify/tar.gz/274d08b592bab76b3a7ab099a669ccd1b4a7a34f"
   dependencies:
