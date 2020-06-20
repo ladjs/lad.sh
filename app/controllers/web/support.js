@@ -5,11 +5,10 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const validator = require('validator');
 
-const bull = require('../../../bull');
 const { Inquiries } = require('../../models');
 const config = require('../../../config');
 
-async function support(ctx) {
+async function help(ctx) {
   let { body } = ctx.request;
 
   if (config.env === 'test') ctx.ip = ctx.ip || '127.0.0.1';
@@ -62,12 +61,13 @@ async function support(ctx) {
   try {
     const inquiry = await Inquiries.create({
       ...body,
-      ip: ctx.ip
+      ip: ctx.ip,
+      locale: ctx.locale
     });
 
     ctx.logger.debug('created inquiry', inquiry);
 
-    const job = await bull.add('email', {
+    const job = await ctx.bull.add('email', {
       template: 'inquiry',
       message: {
         to: body.email,
@@ -79,7 +79,7 @@ async function support(ctx) {
       }
     });
 
-    ctx.logger.info('added job', bull.getMeta({ job }));
+    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
 
     const message = ctx.translate('SUPPORT_REQUEST_SENT');
     if (ctx.accepts('html')) {
@@ -94,4 +94,4 @@ async function support(ctx) {
   }
 }
 
-module.exports = support;
+module.exports = help;

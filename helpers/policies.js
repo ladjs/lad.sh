@@ -1,27 +1,27 @@
-const Policies = require('@ladjs/policies');
+const config = require('../config');
 
-const {
-  loginOtpRoute,
-  verifyRoute,
-  userFields,
-  passport,
-  appName
-} = require('../config');
-const { Users } = require('../app/models');
+async function sendVerificationEmail(ctx) {
+  ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx);
 
-const policies = new Policies(
-  {
-    schemeName: appName,
-    userFields,
-    passport,
-    verifyRoute,
-    loginOtpRoute
-  },
-  apiToken => {
-    const query = {};
-    query[userFields.apiToken] = apiToken;
-    return Users.findOne(query);
-  }
-);
+  // attempt to send them an email
+  const job = await ctx.bull.add('email', {
+    template: 'verify',
+    message: {
+      to: ctx.state.user[config.userFields.fullEmail]
+    },
+    locals: {
+      user: ctx.state.user.toObject(),
+      expiresAt: ctx.state.user[config.userFields.verificationPinExpiresAt],
+      pin: ctx.state.user[config.userFields.verificationPin],
+      link: `${config.urls.web}${config.verifyRoute}?pin=${
+        ctx.state.user[config.userFields.verificationPin]
+      }`
+    }
+  });
 
-module.exports = policies;
+  ctx.logger.info('added job', ctx.bull.getMeta({ job }));
+
+  return ctx.state.user;
+}
+
+module.exports = sendVerificationEmail;

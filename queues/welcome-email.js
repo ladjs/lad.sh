@@ -1,19 +1,39 @@
-const { select } = require('mongoose-json-select');
+const Graceful = require('@ladjs/graceful');
+const Mongoose = require('@ladjs/mongoose');
+const dayjs = require('dayjs');
+const sharedConfig = require('@ladjs/shared-config');
 
-const bull = require('../bull');
 const config = require('../config');
 const logger = require('../helpers/logger');
+
+const bull = require('../bull');
+
 const Users = require('../app/models/user');
 
+const bullSharedConfig = sharedConfig('BULL');
+
+const mongoose = new Mongoose({ ...bullSharedConfig.mongoose, logger });
+
+const graceful = new Graceful({
+  mongooses: [mongoose],
+  bulls: [bull],
+  logger
+});
+
 module.exports = async job => {
-  logger.info('welcome email', { job });
   try {
-    const obj = {};
+    logger.info('welcome email', { job });
+    await Promise.all([mongoose.connect(), graceful.listen()]);
+    const obj = {
+      created_at: {
+        $lte: dayjs()
+          .subtract(24, 'hours')
+          .toDate()
+      }
+    };
     obj[config.userFields.welcomeEmailSentAt] = { $exists: false };
     obj[config.userFields.hasVerifiedEmail] = true;
-    const users = await Users.find(obj)
-      .lean()
-      .exec();
+    const users = await Users.find(obj);
     await Promise.all(
       users.map(async user => {
         // add welcome email job
@@ -24,7 +44,7 @@ module.exports = async job => {
               to: user[config.userFields.fullEmail]
             },
             locals: {
-              user: select(user.toObject(), Users.schema.options.toJSON.select)
+              user: user.toObject()
             }
           });
           logger.info('added job', bull.getMeta({ job }));
