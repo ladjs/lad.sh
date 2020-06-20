@@ -15,7 +15,7 @@ const sendVerificationEmail = require('../../../helpers/send-verification-email'
 const config = require('../../../config');
 const { Inquiries } = require('../../models');
 
-const sanitize = string =>
+const sanitize = (string) =>
   sanitizeHtml(string, {
     allowedTags: [],
     allowedAttributes: []
@@ -252,7 +252,7 @@ async function recoveryKey(ctx) {
 
   // remove used key from recovery key list
   recoveryKeys = recoveryKeys.filter(
-    key => key !== ctx.request.body.recovery_key
+    (key) => key !== ctx.request.body.recovery_key
   );
 
   const emptyRecoveryKeys = recoveryKeys.length === 0;

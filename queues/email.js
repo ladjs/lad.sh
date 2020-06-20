@@ -7,7 +7,7 @@ const config = require('../config');
 
 const email = new Email(config.email);
 
-module.exports = async job => {
+module.exports = async (job) => {
   try {
     logger.info('sending email', { job });
     if (!_.isObject(job.data.locals)) job.data.locals = {};

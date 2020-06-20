@@ -20,22 +20,20 @@ const graceful = new Graceful({
   logger
 });
 
-module.exports = async job => {
+module.exports = async (job) => {
   try {
     logger.info('welcome email', { job });
     await Promise.all([mongoose.connect(), graceful.listen()]);
     const obj = {
       created_at: {
-        $lte: dayjs()
-          .subtract(24, 'hours')
-          .toDate()
+        $lte: dayjs().subtract(24, 'hours').toDate()
       }
     };
     obj[config.userFields.welcomeEmailSentAt] = { $exists: false };
     obj[config.userFields.hasVerifiedEmail] = true;
     const users = await Users.find(obj);
     await Promise.all(
-      users.map(async user => {
+      users.map(async (user) => {
         // add welcome email job
         try {
           const job = await bull.add('email', {

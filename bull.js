@@ -44,7 +44,7 @@ if (!module.parent) {
           (async () => {
             // <https://github.com/OptimalBits/bull/issues/870>
             const failedEmailJobs = await bull.queues.get('email').getFailed();
-            await Promise.all(failedEmailJobs.map(job => job.retry()));
+            await Promise.all(failedEmailJobs.map((job) => job.retry()));
           })(),
           pSeries([() => welcomeEmail.empty(), () => welcomeEmail.add()]),
           pSeries([
@@ -65,7 +65,7 @@ if (!module.parent) {
           ])
         ]);
 
-        cluster.on('online', worker => {
+        cluster.on('online', (worker) => {
           logger.info('cluster worker online', { worker });
         });
 

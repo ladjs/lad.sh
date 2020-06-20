@@ -1,7 +1,7 @@
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 
-module.exports = client => ({
+module.exports = (client) => ({
   maxAge: ms('1y') / 1000,
   async get(key) {
     const [buffer, data] = await Promise.all([

@@ -17,7 +17,7 @@ const i18n = new I18N({
 
 const mandarin = new Mandarin({ i18n, logger });
 
-module.exports = async job => {
+module.exports = async (job) => {
   try {
     logger.info('starting mandarin markdown translation', { job });
     await mandarin.markdown();

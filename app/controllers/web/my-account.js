@@ -1,7 +1,6 @@
 const Boom = require('@hapi/boom');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const { boolean } = require('boolean');
 
 const config = require('../../../config');
 
@@ -13,8 +12,8 @@ async function update(ctx) {
 
   if (hasSetPassword) requiredFields.push('old_password');
 
-  if (boolean(body.change_password)) {
-    requiredFields.forEach(prop => {
+  if (body.change_password === 'true') {
+    requiredFields.forEach((prop) => {
       if (!isSANB(body[prop]))
         throw Boom.badRequest(
           ctx.translateError('INVALID_STRING', ctx.request.t(humanize(prop)))
@@ -41,7 +40,7 @@ async function update(ctx) {
     ctx.state.user.email = body.email;
   }
 
-  await ctx.state.user.save();
+  ctx.state.user = await ctx.state.user.save();
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -59,7 +58,7 @@ async function update(ctx) {
 
 async function resetAPIToken(ctx) {
   ctx.state.user[config.userFields.apiToken] = null;
-  await ctx.state.user.save();
+  ctx.state.user = await ctx.state.user.save();
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -79,14 +78,11 @@ async function recoveryKeys(ctx) {
   const otpRecoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
 
   ctx.attachment('recovery-keys.txt');
-  ctx.body = otpRecoveryKeys
-    .toString()
-    .replace(/,/g, '\n')
-    .replace(/"/g, '');
+  ctx.body = otpRecoveryKeys.toString().replace(/,/g, '\n').replace(/"/g, '');
 }
 
 module.exports = {
   update,
-  recoveryKeys,
-  resetAPIToken
+  resetAPIToken,
+  recoveryKeys
 };

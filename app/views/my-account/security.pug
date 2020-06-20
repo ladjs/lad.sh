@@ -25,24 +25,26 @@ block body
           .card.card-bg-light.mb-3
             h4.card-header= t('Two-Factor Authentication')
             .card-body
-            if user[config.passport.fields.otpEnabled]
-              h5= t('Recovery keys')
-              p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
-              form(action=l('/my-account/recovery-keys'), method='POST')
-                input(type="hidden", name="_csrf", value=ctx.csrf)
-                button(type='submit').btn.btn-secondary.btn-lg= t('Download recovery keys')
-              button(data-toggle='modal', data-target='#modal-disable-otp', type='button').btn.btn-danger.btn-lg.mt-3= t('Disable OTP')
-            else
-              h5= t('Configure One-time Password')
-              p= t('One-time passwords ("OTP") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.')
-              a.btn.btn-primary.btn-lg(href=l(`${config.otpRoutePrefix}/setup`), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= t('Enable OTP')
-        .card.card-bg-light
-          h4.card-header= t('API Credentials')
+              if user[config.passport.fields.otpEnabled]
+                h5= t('Recovery keys')
+                p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
+                form(action=l('/my-account/recovery-keys'), method='POST')
+                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  button(type='submit').btn.btn-secondary.btn-lg= t('Download recovery keys')
+                button(data-toggle='modal', data-target='#modal-disable-otp', type='button').btn.btn-danger.btn-lg.mt-3= t('Disable OTP')
+              else
+                h5= t('Configure One-time Password')
+                p= t('One-time passwords ("OTP") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.')
+                a.btn.btn-primary.btn-lg(href=l(`${config.otpRoutePrefix}/setup`), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= t('Enable OTP')
+            .card-footer.text-right
+              a(href='https://en.wikipedia.org/wiki/One-time_password', rel='nofollow', target='_blank').btn.btn-dark= t('Learn more')
+        .card.mb-3
+          h4.card-header= t('Developer Access')
           .card-body
             .form-group.row
               label.control-label.col-md-4.col-form-label.text-md-right= t('API token')
               .col-md-8
-                .input-group.input-group-lg
+                .input-group
                   input(type='text', readonly, value=user[config.userFields.apiToken]).form-control#api-token
                   .input-group-append
                     button(type='button', data-toggle="clipboard", data-clipboard-target="#api-token").btn.btn-primary

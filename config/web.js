@@ -8,7 +8,7 @@ const routes = require('../routes');
 const bull = require('../bull');
 const koaCashConfig = require('./koa-cash');
 
-module.exports = client => ({
+module.exports = (client) => ({
   routes: routes.web,
   logger,
   i18n,
