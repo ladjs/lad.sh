@@ -33,7 +33,7 @@ async function setup(ctx) {
     });
 
     if (!isValid) {
-      ctx.flash('error', ctx.translateError('INVALID_OTP_PASSCODE'));
+      ctx.flash('error', ctx.translate('INVALID_OTP_PASSCODE'));
       ctx.state.otpTokenURI = authenticator.keyuri(
         ctx.state.user.email,
         process.env.WEB_HOST,

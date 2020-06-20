@@ -1,12 +1,13 @@
 const Email = require('email-templates');
 const _ = require('lodash');
 
-const { getEmailLocals, logger } = require('../helpers');
+const getEmailLocals = require('../helpers/get-email-locals');
+const logger = require('../helpers/logger');
 const config = require('../config');
 
 const email = new Email(config.email);
 
-module.exports = async job => {
+module.exports = async (job) => {
   try {
     logger.info('sending email', { job });
     if (!_.isObject(job.data.locals)) job.data.locals = {};

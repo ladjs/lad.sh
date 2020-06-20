@@ -3,7 +3,6 @@ const Router = require('@koa/router');
 const { boolean } = require('boolean');
 
 const passport = require('../../helpers/passport');
-const policies = require('../../helpers/policies');
 const config = require('../../config');
 const web = require('../../app/controllers/web');
 
@@ -19,33 +18,28 @@ router
   })
   .get(
     '/:provider',
-    policies.ensureLoggedOut,
     web.auth.catchError,
-    (ctx, next) =>
+    web.auth.parseReturnOrRedirectTo,
+    (ctx, next) => {
       passport.authenticate(
         ctx.params.provider,
         config.passport[ctx.params.provider]
-      )(ctx, next)
-  )
-  .get(
-    '/:provider/ok',
-    policies.ensureLoggedOut,
-    web.auth.catchError,
-    (ctx, next) => {
-      const redirect = ctx.session.returnTo
-        ? ctx.session.returnTo
-        : `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
-      return passport.authenticate(ctx.params.provider, {
-        ...config.passportCallbackOptions,
-        successReturnToOrRedirect: redirect
-      })(ctx, next);
+      )(ctx, next);
     }
-  );
+  )
+  .get('/:provider/ok', web.auth.catchError, (ctx, next) => {
+    const redirect = ctx.session.returnTo
+      ? ctx.session.returnTo
+      : ctx.state.l(config.passportCallbackOptions.successReturnToOrRedirect);
+    return passport.authenticate(ctx.params.provider, {
+      ...config.passportCallbackOptions,
+      successReturnToOrRedirect: redirect
+    })(ctx, next);
+  });
 
 if (boolean(process.env.AUTH_GOOGLE_ENABLED)) {
   router.get(
     '/google/consent',
-    policies.ensureLoggedOut,
     web.auth.catchError,
     passport.authenticate('google', {
       accessType: 'offline',
