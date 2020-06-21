@@ -4,12 +4,18 @@ const safeStringify = require('fast-safe-stringify');
 module.exports = (client) => ({
   maxAge: ms('1y') / 1000,
   async get(key) {
-    const [buffer, data] = await Promise.all([
+    let [buffer, data] = await Promise.all([
       client.getBuffer(`buffer:${key}`),
       client.get(key)
     ]);
-    if (buffer) data.body = buffer;
-    return data;
+    if (!data) return;
+    try {
+      data = JSON.parse(data);
+      if (buffer) data.body = buffer;
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
   },
   async set(key, value, maxAge) {
     //
@@ -27,7 +33,7 @@ module.exports = (client) => ({
       );
     } else {
       if (maxAge <= 0) return client.set(key, safeStringify(value));
-      client.set(key, Buffer.from(safeStringify(value)), 'EX', maxAge);
+      client.set(key, safeStringify(value), 'EX', maxAge);
     }
   }
 });
