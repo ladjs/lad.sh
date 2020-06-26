@@ -95,8 +95,19 @@ const config = {
     }
   },
 
+  // user fields whose account updates create an action (e.g. email)
+  accountUpdateFields: [
+    'passport.fields.otpEnabled',
+    'passport.fields.displayName',
+    'passportLocalMongoose.usernameField',
+    'passportLocalMongoose.passwordField',
+    'userFields.apiToken'
+  ],
+
   // user fields (change these if you want camel case or whatever)
   userFields: {
+    accountUpdates: 'account_updates',
+    accountUpdatesAt: 'account_updates_at',
     fullEmail: 'full_email',
     apiToken: 'api_token',
     otpRecoveryKeys: 'otp_recovery_keys',
