@@ -98,9 +98,9 @@ const config = {
   // user fields whose account updates create an action (e.g. email)
   accountUpdateFields: [
     'passport.fields.otpEnabled',
-    'passport.fields.displayName',
+    'passport.fields.givenName',
+    'passport.fields.familyName',
     'passportLocalMongoose.usernameField',
-    'passportLocalMongoose.passwordField',
     'userFields.apiToken'
   ],
 
