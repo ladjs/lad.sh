@@ -316,7 +316,7 @@ User.pre('save', function (next) {
   // filter by allowed field updates (otp enabled, profile updates, etc)
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
-    if (this[`__${fieldName}`] !== this[fieldName]) {
+    if (this[`__${fieldName}`] && this[`__${fieldName}`] !== this[fieldName]) {
       this[config.userFields.accountUpdates].push({
         fieldName,
         current: this[fieldName],
