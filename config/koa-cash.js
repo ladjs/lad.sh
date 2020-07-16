@@ -1,8 +1,11 @@
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
+const logger = require('../helpers/logger');
 
 module.exports = (client) => ({
   maxAge: ms('1y') / 1000,
+  hash: (ctx) => `koa-cash:${ctx.request.url}`,
+  setCachedHeader: true,
   async get(key) {
     let [buffer, data] = await Promise.all([
       client.getBuffer(`buffer:${key}`),
@@ -14,7 +17,7 @@ module.exports = (client) => ({
       if (buffer) data.body = buffer;
       return data;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   },
   async set(key, value, maxAge) {

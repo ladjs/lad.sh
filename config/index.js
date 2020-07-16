@@ -86,7 +86,7 @@ const config = {
       // Even though pug deprecates this, we've added `pretty`
       // in `koa-views` package, so this option STILL works
       // <https://github.com/queckezz/koa-views/pull/111>
-      pretty: true,
+      pretty: env.NODE_ENV === 'development',
       cache: env.NODE_ENV !== 'development',
       // debug: env.NODE_ENV === 'development',
       // compileDebug: env.NODE_ENV === 'development',
@@ -107,7 +107,6 @@ const config = {
   // user fields (change these if you want camel case or whatever)
   userFields: {
     accountUpdates: 'account_updates',
-    accountUpdatesAt: 'account_updates_at',
     fullEmail: 'full_email',
     apiToken: 'api_token',
     otpRecoveryKeys: 'otp_recovery_keys',
@@ -127,10 +126,10 @@ const config = {
   otpRoutePrefix: '/otp',
   otpRouteLoginPath: '/login',
 
-  // dynamic otp routes
-  loginOtpRoute: '/otp/login',
+  // login route
+  loginRoute: '/login',
 
-  // verification pin
+  // verification
   verifyRoute: '/verify',
   verificationPinTimeoutMs: ms(env.VERIFICATION_PIN_TIMEOUT_MS),
   verificationPinEmailIntervalMs: ms(env.VERIFICATION_PIN_EMAIL_INTERVAL_MS),
@@ -268,7 +267,7 @@ config.email.juiceResources.webResources = {
 config.email.transport.use(
   'compile',
   base64ToS3({
-    aws: _.merge(config.aws, {
+    aws: _.merge({}, config.aws, {
       params: {
         Bucket: env.AWS_S3_BUCKET
       }

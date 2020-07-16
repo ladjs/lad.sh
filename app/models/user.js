@@ -15,6 +15,7 @@ const { boolean } = require('boolean');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const logger = require('../../helpers/logger');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
 
@@ -23,7 +24,7 @@ if (config.passportLocalMongoose.usernameField !== 'email')
     'User model and @ladjs/passport requires that the usernameField is email'
   );
 
-const opts = { length: 10, characters: '1234567890' };
+const options = { length: 10, characters: '1234567890' };
 const { fields } = config.passport;
 const omitExtraFields = [
   ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
@@ -39,7 +40,6 @@ const omitExtraFields = [
   config.userFields.otpRecoveryKeys,
   config.userFields.pendingRecovery,
   config.userFields.accountUpdates,
-  config.userFields.accountUpdatesAt,
   fields.otpEnabled,
   fields.otpToken
 ];
@@ -63,7 +63,7 @@ const User = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: true,
-    validate: (val) => validator.isEmail(val)
+    validate: (value) => validator.isEmail(value)
   }
 });
 
@@ -124,7 +124,6 @@ object[config.userFields.pendingRecovery] = {
 
 // list of account updates that are batched every 1 min.
 object[config.userFields.accountUpdates] = Array;
-object[config.userFields.accountUpdatesAt] = Date;
 
 // shared field names with @ladjs/passport for consistency
 object[fields.displayName] = {
@@ -224,7 +223,7 @@ User.pre('validate', function (next) {
   )
     this[config.userFields.otpRecoveryKeys] = new Array(10)
       .fill()
-      .map(() => cryptoRandomString(opts));
+      .map(() => cryptoRandomString(options));
 
   if (!this[config.passport.fields.otpToken])
     this[config.passport.fields.otpToken] = authenticator.generateSecret();
@@ -237,12 +236,37 @@ User.pre('validate', function (next) {
 // instead you should use the helper located at
 // `../helpers/send-verification-email.js`
 //
-User.methods.sendVerificationEmail = async function (ctx) {
+User.methods.sendVerificationEmail = async function (ctx, reset = false) {
   if (
     this[config.userFields.hasVerifiedEmail] &&
     boolean(!this[config.userFields.pendingRecovery])
   )
     return this;
+
+  if (reset) {
+    this[config.userFields.verificationPinExpiresAt] = this[
+      `__${config.userFields.verificationPinExpiresAt}`
+    ];
+    this[config.userFields.verificationPinSentAt] = this[
+      `__${config.userFields.verificationPinSentAt}`
+    ];
+    this[config.userFields.verificationPin] = this[
+      `__${config.userFields.verificationPin}`
+    ];
+    await this.save();
+    return this;
+  }
+
+  // store old values in case we have to reset
+  this[`__${config.userFields.verificationPinExpiresAt}`] = this[
+    config.userFields.verificationPinExpiresAt
+  ];
+  this[`__${config.userFields.verificationPinSentAt}`] = this[
+    config.userFields.verificationPinSentAt
+  ];
+  this[`__${config.userFields.verificationPin}`] = this[
+    config.userFields.verificationPin
+  ];
 
   const diff =
     this[config.userFields.verificationPinExpiresAt] &&
@@ -322,12 +346,19 @@ User.pre('save', function (next) {
         current: this[fieldName],
         previous: this[`__${fieldName}`]
       });
-      this[config.userFields.accountUpdatesAt] = new Date();
       // reset so we don't get into infinite loop
       this[`__${fieldName}`] = this[fieldName];
     }
   }
 
+  next();
+});
+
+User.postCreate((user, next) => {
+  logger.info('user created', {
+    user: user.toObject(),
+    slack: true
+  });
   next();
 });
 

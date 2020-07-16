@@ -5,6 +5,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const validator = require('validator');
 
+const email = require('../../../helpers/email');
 const { Inquiries } = require('../../models');
 const config = require('../../../config');
 
@@ -65,7 +66,7 @@ async function help(ctx) {
 
     ctx.logger.debug('created inquiry', inquiry);
 
-    const job = await ctx.bull.add('email', {
+    await email({
       template: 'inquiry',
       message: {
         to: body.email,
@@ -76,8 +77,6 @@ async function help(ctx) {
         inquiry
       }
     });
-
-    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
 
     const message = ctx.translate('SUPPORT_REQUEST_SENT');
     if (ctx.accepts('html')) {

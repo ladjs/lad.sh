@@ -3,7 +3,7 @@ const render = require('koa-views-render');
 const { boolean } = require('boolean');
 
 const config = require('../../config');
-const { policies } = require('../../helpers');
+const policies = require('../../helpers/policies');
 const { web } = require('../../app/controllers');
 
 const admin = require('./admin');
@@ -13,6 +13,10 @@ const otp = require('./otp');
 
 const router = new Router();
 
+// status page crawlers often send `HEAD /` requests
+router.head('/', (ctx) => {
+  ctx.body = 'OK';
+});
 // report URI support (not locale specific)
 router.post('/report', web.report);
 
@@ -52,12 +56,12 @@ localeRouter
   )
   .get('/logout', web.auth.logout)
   .get(
-    '/login',
+    config.loginRoute,
     policies.ensureLoggedOut,
     web.auth.parseReturnOrRedirectTo,
     web.auth.registerOrLogin
   )
-  .post('/login', policies.ensureLoggedOut, web.auth.login)
+  .post(config.loginRoute, policies.ensureLoggedOut, web.auth.login)
   .get(
     '/register',
     policies.ensureLoggedOut,
