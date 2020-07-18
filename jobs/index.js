@@ -6,10 +6,6 @@ const jobs = [
   {
     name: 'account-updates',
     interval: '1m'
-  },
-  {
-    name: 'remove-unverified-users',
-    interval: '1h'
   }
   // TODO: currently commented out until we have better translation solution
   // {

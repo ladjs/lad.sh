@@ -202,8 +202,8 @@ const config = {
 
   // passport callback options
   passportCallbackOptions: {
-    successReturnToOrRedirect: '/dashboard',
-    failureRedirect: '/login',
+    successReturnToOrRedirect: '/my-account',
+    failureRedirect: '/register',
     successFlash: true,
     failureFlash: true
   },

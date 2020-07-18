@@ -91,7 +91,7 @@ async function homeOrDashboard(ctx) {
   // If the user is logged in then take them to their dashboard
   if (ctx.isAuthenticated())
     return ctx.redirect(
-      `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`
+      ctx.state.l(config.passportCallbackOptions.successReturnToOrRedirect)
     );
   // Manually set page title since we don't define Home route in config/meta
   ctx.state.meta = {
@@ -490,6 +490,7 @@ async function verify(ctx) {
     ctx.state.user[config.userFields.hasVerifiedEmail] &&
     !ctx.state.user[config.userFields.pendingRecovery]
   ) {
+    console.log('EMAIL ALREADY VERIFIED');
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
     if (ctx.accepts('html')) {
       ctx.flash('success', message);
@@ -581,17 +582,22 @@ async function verify(ctx) {
 
     ctx.logger.debug('created inquiry', inquiry);
 
-    await email({
-      template: 'recovery',
-      message: {
-        to: ctx.state.user.email,
-        cc: config.email.message.from
-      },
-      locals: {
-        locale: ctx.locale,
-        inquiry
-      }
-    });
+    try {
+      await email({
+        template: 'recovery',
+        message: {
+          to: ctx.state.user.email,
+          cc: config.email.message.from
+        },
+        locals: {
+          locale: ctx.locale,
+          inquiry
+        }
+      });
+    } catch (err) {
+      ctx.logger.error(err);
+      throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
+    }
   }
 
   const message = pendingRecovery
