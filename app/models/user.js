@@ -40,6 +40,7 @@ const omitExtraFields = [
   config.userFields.otpRecoveryKeys,
   config.userFields.pendingRecovery,
   config.userFields.accountUpdates,
+  config.userFields.twoFactorReminderSentAt,
   fields.otpEnabled,
   fields.otpToken
 ];
@@ -63,12 +64,15 @@ const User = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: true,
-    validate: (value) => validator.isEmail(value)
+    validate: value => validator.isEmail(value)
   }
 });
 
 // additional variable based properties to add to the schema
 const object = {};
+
+// two factor auth reminders
+object[config.userFields.twoFactorReminderSentAt] = Date;
 
 object[config.userFields.fullEmail] = {
   type: String,
@@ -109,7 +113,7 @@ object[config.userFields.verificationPinSentAt] = Date;
 object[config.userFields.verificationPin] = {
   type: String,
   trim: true,
-  validate: (value) => isSANB(value) && value.replace(/\D/g, '').length === 6
+  validate: value => isSANB(value) && value.replace(/\D/g, '').length === 6
 };
 
 object[config.userFields.pendingRecovery] = {
@@ -145,7 +149,7 @@ object[fields.familyName] = {
 object[fields.avatarURL] = {
   type: String,
   trim: true,
-  validate: (value) => validator.isURL(value)
+  validate: value => validator.isURL(value)
 };
 // google
 object[fields.googleProfileID] = {
@@ -179,7 +183,7 @@ User.add(object);
 
 User.plugin(captainHook);
 
-User.virtual(config.userFields.verificationPinHasExpired).get(function () {
+User.virtual(config.userFields.verificationPinHasExpired).get(function() {
   return boolean(
     !this[config.userFields.verificationPinExpiresAt] ||
       new Date(this[config.userFields.verificationPinExpiresAt]).getTime() <
@@ -187,7 +191,7 @@ User.virtual(config.userFields.verificationPinHasExpired).get(function () {
   );
 });
 
-User.pre('validate', function (next) {
+User.pre('validate', function(next) {
   // create api token if doesn't exist
   if (!isSANB(this[config.userFields.apiToken]))
     this[config.userFields.apiToken] = cryptoRandomString({ length: 24 });
@@ -196,9 +200,9 @@ User.pre('validate', function (next) {
   // but if they have a name or surname set then use that
   this[fields.displayName] = this.email;
   if (isSANB(this[fields.givenName]) || isSANB(this[fields.familyName])) {
-    this[fields.displayName] = `${this[fields.givenName] || ''} ${
-      this[fields.familyName] || ''
-    }`;
+    this[fields.displayName] = `${this[fields.givenName] || ''} ${this[
+      fields.familyName
+    ] || ''}`;
   }
 
   // set the user's full email address (incl display name)
@@ -236,7 +240,7 @@ User.pre('validate', function (next) {
 // instead you should use the helper located at
 // `../helpers/send-verification-email.js`
 //
-User.methods.sendVerificationEmail = async function (ctx, reset = false) {
+User.methods.sendVerificationEmail = async function(ctx, reset = false) {
   if (
     this[config.userFields.hasVerifiedEmail] &&
     boolean(!this[config.userFields.pendingRecovery])
@@ -329,14 +333,14 @@ User.plugin(mongooseCommonPlugin, {
 
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
 
-User.post('init', (doc) => {
+User.post('init', doc => {
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
     doc[`__${fieldName}`] = doc[fieldName];
   }
 });
 
-User.pre('save', function (next) {
+User.pre('save', function(next) {
   // filter by allowed field updates (otp enabled, profile updates, etc)
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);

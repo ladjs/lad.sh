@@ -31,7 +31,9 @@ graceful.listen();
 
   const object = {
     created_at: {
-      $lte: dayjs().subtract(1, 'minute').toDate()
+      $lte: dayjs()
+        .subtract(1, 'minute')
+        .toDate()
     }
   };
   object[config.userFields.welcomeEmailSentAt] = { $exists: false };
@@ -41,25 +43,31 @@ graceful.listen();
 
   // send welcome email
   await Promise.all(
-    _ids.map(async (_id) => {
+    _ids.map(async _id => {
       try {
         const user = await Users.findById(_id);
 
         // in case user deleted their account
         if (!user) return;
 
+        // in case email was sent for whatever reason
+        if (user[config.userFields.welcomeEmailSentAt]) return;
+
+        // send email
         await email({
           template: 'welcome',
           message: {
             to: user[config.userFields.fullEmail]
           },
-          locals: {
-            user: user.toObject()
-          }
+          locals: { user: user.toObject() }
         });
 
         // store that we sent this email
-        user[config.userFields.welcomeEmailSentAt] = new Date();
+        await Users.findByIdAndUpdate(user._id, {
+          $set: {
+            [config.userFields.welcomeEmailSentAt]: new Date()
+          }
+        });
         await user.save();
       } catch (err) {
         logger.error(err);

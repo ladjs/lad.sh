@@ -1,3 +1,5 @@
+const { boolean } = require('boolean');
+
 const jobs = [
   {
     name: 'welcome-email',
@@ -17,5 +19,11 @@ const jobs = [
   //   interval: '30m'
   // },
 ];
+
+if (boolean(process.env.AUTH_OTP_ENABLED))
+  jobs.push({
+    name: 'two-factor-reminder',
+    interval: '3 months'
+  });
 
 module.exports = jobs;

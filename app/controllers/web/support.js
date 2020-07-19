@@ -50,7 +50,9 @@ async function help(ctx) {
       }
     ],
     created_at: {
-      $gte: moment().subtract(1, 'day').toDate()
+      $gte: moment()
+        .subtract(1, 'day')
+        .toDate()
     }
   });
 
