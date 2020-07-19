@@ -490,7 +490,6 @@ async function verify(ctx) {
     ctx.state.user[config.userFields.hasVerifiedEmail] &&
     !ctx.state.user[config.userFields.pendingRecovery]
   ) {
-    console.log('EMAIL ALREADY VERIFIED');
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
     if (ctx.accepts('html')) {
       ctx.flash('success', message);
