@@ -16,7 +16,7 @@ const mongoose = new Mongoose(
     config.mongoose,
     {
       mongo: {
-        uri: 'mongodb://localhost:27017/lad_test'
+        uri: 'mongodb://localhost:27017/forwardemail_test'
       }
     }
   )

@@ -1,35 +1,84 @@
 const test = require('ava');
 
-test('redirects to correct locale', async (t) => {
-  const res = await global.web.get('/');
+const { before, beforeEach, afterEach, after } = require('../_utils');
+
+test.before(before);
+test.after.always(after);
+test.beforeEach(beforeEach);
+test.afterEach.always(afterEach);
+
+test('redirects to correct locale', async t => {
+  const { web } = t.context;
+  const res = await web.get('/');
+
+  t.is(res.status, 302);
+  t.is(res.headers.location, '/en');
+});
+
+test('returns English homepage', async t => {
+  const { web } = t.context;
+  const res = await web.get('/en').set({ Accept: 'text/html' });
+
+  t.snapshot(res.text);
+});
+
+test('returns Spanish homepage', async t => {
+  const { web } = t.context;
+  const res = await web.get('/es').set({ Accept: 'text/html' });
+
+  t.snapshot(res.text);
+});
+
+test('returns English ToS', async t => {
+  const { web } = t.context;
+  const res = await web.get('/en/terms').set({ Accept: 'text/html' });
+
+  t.snapshot(res.text);
+});
+
+test('returns Spanish ToS', async t => {
+  const { web } = t.context;
+  const res = await web.get('/es/terms').set({ Accept: 'text/html' });
+
+  t.snapshot(res.text);
+});
+
+test('GET /:locale/about', async t => {
+  const { web } = t.context;
+  const res = await web.get('/en/about');
+
   t.is(res.status, 200);
-  t.true(res.url.endsWith('/en'));
+  t.assert(res.text.includes('About'));
 });
 
-test('returns English homepage', async (t) => {
-  const res = await global.web.get('/en', { headers: { Accept: 'text/html' } });
+test('GET /:locale/404', async t => {
+  const { web } = t.context;
+  const res = await web.get('/en/404');
 
-  t.snapshot(res.text);
+  t.is(res.status, 200);
+  t.assert(res.text.includes('Page not found'));
 });
 
-test('returns Spanish homepage', async (t) => {
-  const res = await global.web.get('/es', { headers: { Accept: 'text/html' } });
+test('GET /:locale/500', async t => {
+  const { web } = t.context;
+  const res = await web.get('/en/500');
 
-  t.snapshot(res.text);
+  t.is(res.status, 200);
+  t.assert(res.text.includes('Server Error'));
 });
 
-test('returns English ToS', async (t) => {
-  const res = await global.web.get('/en/terms', {
-    headers: { Accept: 'text/html' }
-  });
+test('GET /:locale/privacy', async t => {
+  const { web } = t.context;
+  const res = await web.get('/en/privacy');
 
-  t.snapshot(res.text);
+  t.is(res.status, 200);
+  t.assert(res.text.includes('Privacy Policy'));
 });
 
-test('returns Spanish ToS', async (t) => {
-  const res = await global.web.get('/es/terms', {
-    headers: { Accept: 'text/html' }
-  });
+test('GET /:locale/support', async t => {
+  const { web } = t.context;
+  const res = await web.get('/en/support');
 
-  t.snapshot(res.text);
+  t.is(res.status, 200);
+  t.assert(res.text.includes('Contact Support'));
 });
