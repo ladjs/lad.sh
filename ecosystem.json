@@ -21,8 +21,8 @@
       }
     },
     {
-      "name": "bull",
-      "script": "bull.js",
+      "name": "bree",
+      "script": "bree.js",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
