@@ -38,6 +38,10 @@ async function help(ctx) {
     body.is_email_only = true;
   }
 
+  // massive spam IP attack (temp removal)
+  if (body.message === 'Muchas gracias. ?Como puedo iniciar sesion?')
+    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_LIMIT'));
+
   // check if we already sent a support request in the past day
   // with this given ip address or email, otherwise create and email
   const count = await Inquiries.countDocuments({
