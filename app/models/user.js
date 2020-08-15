@@ -1,32 +1,49 @@
 const Boom = require('@hapi/boom');
-const StoreIPAddress = require('@ladjs/store-ip-address');
+const _ = require('lodash');
+const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
 const passportLocalMongoose = require('passport-local-mongoose');
 const validator = require('validator');
+const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
-const { select } = require('mongoose-json-select');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const logger = require('../../helpers/logger');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
-const logger = require('../../helpers/logger');
-const bull = require('../../bull');
-
-const storeIPAddress = new StoreIPAddress({
-  logger,
-  ...config.storeIPAddress
-});
 
 if (config.passportLocalMongoose.usernameField !== 'email')
   throw new Error(
     'User model and @ladjs/passport requires that the usernameField is email'
   );
+
+const options = { length: 10, characters: '1234567890' };
+const { fields } = config.passport;
+const omitExtraFields = [
+  ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
+  config.userFields.apiToken,
+  config.userFields.resetTokenExpiresAt,
+  config.userFields.resetToken,
+  config.userFields.hasSetPassword,
+  config.userFields.hasVerifiedEmail,
+  config.userFields.verificationPinExpiresAt,
+  config.userFields.verificationPin,
+  config.userFields.verificationPinSentAt,
+  config.userFields.welcomeEmailSentAt,
+  config.userFields.otpRecoveryKeys,
+  config.userFields.pendingRecovery,
+  config.userFields.accountUpdates,
+  config.userFields.twoFactorReminderSentAt,
+  fields.otpEnabled,
+  fields.otpToken
+];
 
 // set relative threshold for messages
 moment.relativeTimeThreshold('ss', 5);
@@ -48,21 +65,15 @@ const User = new mongoose.Schema({
     lowercase: true,
     unique: true,
     validate: value => validator.isEmail(value)
-  },
-
-  // password reset
-  reset_token_expires_at: Date,
-  reset_token: String,
-  has_set_password: {
-    type: Boolean,
-    default: false
   }
 });
 
 // additional variable based properties to add to the schema
 const object = {};
 
-// user fields
+// two factor auth reminders
+object[config.userFields.twoFactorReminderSentAt] = Date;
+
 object[config.userFields.fullEmail] = {
   type: String,
   required: true,
@@ -79,7 +90,7 @@ object[config.userFields.apiToken] = {
   index: true
 };
 
-object[config.userFields.twoFactorRecoveryKeys] = Array;
+object[config.userFields.otpRecoveryKeys] = Array;
 
 // password reset
 object[config.userFields.resetTokenExpiresAt] = Date;
@@ -104,13 +115,21 @@ object[config.userFields.verificationPin] = {
   trim: true,
   validate: value => isSANB(value) && value.replace(/\D/g, '').length === 6
 };
+
 object[config.userFields.pendingRecovery] = {
   type: Boolean,
   default: false
 };
 
+object[config.userFields.pendingRecovery] = {
+  type: Boolean,
+  default: false
+};
+
+// list of account updates that are batched every 1 min.
+object[config.userFields.accountUpdates] = Array;
+
 // shared field names with @ladjs/passport for consistency
-const { fields } = config.passport;
 object[fields.displayName] = {
   type: String,
   required: true,
@@ -147,12 +166,11 @@ object[fields.githubProfileID] = {
 object[fields.githubAccessToken] = String;
 object[fields.githubRefreshToken] = String;
 
-object[fields.twoFactorEnabled] = {
+object[fields.otpEnabled] = {
   type: Boolean,
   default: false
 };
-
-object[fields.twoFactorToken] = String;
+object[fields.otpToken] = String;
 
 // shared field names with @ladjs/i18n and email-templates
 object[config.lastLocaleField] = {
@@ -162,6 +180,8 @@ object[config.lastLocaleField] = {
 
 // finally add the fields
 User.add(object);
+
+User.plugin(captainHook);
 
 User.virtual(config.userFields.verificationPinHasExpired).get(function() {
   return boolean(
@@ -186,59 +206,71 @@ User.pre('validate', function(next) {
   }
 
   // set the user's full email address (incl display name)
-  this[config.userFields.fullEmail] = this[fields.displayName]
-    ? `${this[fields.displayName]} <${this.email}>`
-    : this.email;
+  this[config.userFields.fullEmail] =
+    this[fields.displayName] && this[fields.displayName] !== this.email
+      ? `${this[fields.displayName]} <${this.email}>`
+      : this.email;
 
-  // if two-factor authentication values no longer valid
+  // if otp authentication values no longer valid
   // then disable it completely
   if (
-    !this[fields.twoFactorEnabled] ||
-    !Array.isArray(
-      this[config.userFields.twoFactorRecoveryKeys] ||
-        this[config.userFields.twoFactorRecoveryKeys].length === 0
-    )
-  ) {
-    this[fields.twoFactorEnabled] = false;
-  }
+    !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
+    !this[config.userFields.otpRecoveryKeys] ||
+    this[config.userFields.otpRecoveryKeys].length === 0 ||
+    !this[config.passport.fields.otpToken]
+  )
+    this[fields.otpEnabled] = false;
+
+  if (
+    !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
+    this[config.userFields.otpRecoveryKeys].length === 0
+  )
+    this[config.userFields.otpRecoveryKeys] = new Array(10)
+      .fill()
+      .map(() => cryptoRandomString(options));
+
+  if (!this[config.passport.fields.otpToken])
+    this[config.passport.fields.otpToken] = authenticator.generateSecret();
 
   next();
 });
 
-User.post('save', async user => {
-  // return early if the user already received welcome email
-  // or if they have not yet verified their email address
-  if (
-    user[config.userFields.welcomeEmailSentAt] ||
-    !user[config.userFields.hasVerifiedEmail]
-  )
-    return;
-
-  // add welcome email job
-  try {
-    const job = await bull.add('email', {
-      template: 'welcome',
-      message: {
-        to: user[config.userFields.fullEmail]
-      },
-      locals: {
-        user: select(user.toObject(), User.options.toJSON.select)
-      }
-    });
-    logger.info('added job', bull.getMeta({ job }));
-    user[config.userFields.welcomeEmailSentAt] = new Date();
-    await user.save();
-  } catch (err) {
-    logger.error(err);
-  }
-});
-
-User.methods.sendVerificationEmail = async function(ctx) {
+//
+// NOTE: you should not call this method directly
+// instead you should use the helper located at
+// `../helpers/send-verification-email.js`
+//
+User.methods.sendVerificationEmail = async function(ctx, reset = false) {
   if (
     this[config.userFields.hasVerifiedEmail] &&
     boolean(!this[config.userFields.pendingRecovery])
   )
     return this;
+
+  if (reset) {
+    this[config.userFields.verificationPinExpiresAt] = this[
+      `__${config.userFields.verificationPinExpiresAt}`
+    ];
+    this[config.userFields.verificationPinSentAt] = this[
+      `__${config.userFields.verificationPinSentAt}`
+    ];
+    this[config.userFields.verificationPin] = this[
+      `__${config.userFields.verificationPin}`
+    ];
+    await this.save();
+    return this;
+  }
+
+  // store old values in case we have to reset
+  this[`__${config.userFields.verificationPinExpiresAt}`] = this[
+    config.userFields.verificationPinExpiresAt
+  ];
+  this[`__${config.userFields.verificationPinSentAt}`] = this[
+    config.userFields.verificationPinSentAt
+  ];
+  this[`__${config.userFields.verificationPin}`] = this[
+    config.userFields.verificationPin
+  ];
 
   const diff =
     this[config.userFields.verificationPinExpiresAt] &&
@@ -262,8 +294,15 @@ User.methods.sendVerificationEmail = async function(ctx) {
         .locale(this[config.lastLocaleField])
         .humanize()
     );
-    if (ctx) throw Boom.badRequest(message);
-    throw new Error(message);
+    if (ctx) {
+      const err = Boom.badRequest(message);
+      err.no_translate = true;
+      throw err;
+    }
+
+    const err = new Error(message);
+    err.no_translate = true;
+    throw err;
   }
 
   if (this[config.userFields.verificationPinHasExpired]) {
@@ -278,44 +317,53 @@ User.methods.sendVerificationEmail = async function(ctx) {
   this[config.userFields.verificationPinSentAt] = new Date();
   await this.save();
 
-  // attempt to send them an email
-  const job = await bull.add('email', {
-    template: 'verify',
-    message: {
-      to: this[config.userFields.fullEmail]
-    },
-    locals: {
-      user: select(this.toObject(), User.options.toJSON.select),
-      expiresAt: this[config.userFields.verificationPinExpiresAt],
-      pin: this[config.userFields.verificationPin],
-      link: `${config.urls.web}${config.verifyRoute}?pin=${
-        this[config.userFields.verificationPin]
-      }`
-    }
-  });
-
-  logger.info('added job', bull.getMeta({ job }));
-
   return this;
 };
 
 User.plugin(mongooseCommonPlugin, {
   object: 'user',
-  omitExtraFields: [
-    config.userFields.apiToken,
-    config.userFields.resetTokenExpiresAt,
-    config.userFields.resetToken,
-    config.userFields.hasSetPassword,
-    config.userFields.hasVerifiedEmail,
-    config.userFields.verificationPinExpiresAt,
-    config.userFields.verificationPin,
-    config.userFields.verificationPinHasExpired,
-    config.userFields.welcomeEmailSentAt,
-    config.userFields.twoFactorRecoveryKeys,
-    fields.twoFactorToken
-  ]
+  omitCommonFields: false,
+  omitExtraFields,
+  mongooseHidden: {
+    virtuals: {
+      [config.userFields.verificationPinHasExpired]: 'hide'
+    }
+  }
 });
+
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
-User.plugin(storeIPAddress.plugin);
+
+User.post('init', doc => {
+  for (const field of config.accountUpdateFields) {
+    const fieldName = _.get(config, field);
+    doc[`__${fieldName}`] = doc[fieldName];
+  }
+});
+
+User.pre('save', function(next) {
+  // filter by allowed field updates (otp enabled, profile updates, etc)
+  for (const field of config.accountUpdateFields) {
+    const fieldName = _.get(config, field);
+    if (this[`__${fieldName}`] && this[`__${fieldName}`] !== this[fieldName]) {
+      this[config.userFields.accountUpdates].push({
+        fieldName,
+        current: this[fieldName],
+        previous: this[`__${fieldName}`]
+      });
+      // reset so we don't get into infinite loop
+      this[`__${fieldName}`] = this[fieldName];
+    }
+  }
+
+  next();
+});
+
+User.postCreate((user, next) => {
+  logger.info('user created', {
+    user: user.toObject(),
+    slack: true
+  });
+  next();
+});
 
 module.exports = mongoose.model('User', User);

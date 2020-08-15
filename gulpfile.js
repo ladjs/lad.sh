@@ -1,28 +1,27 @@
+// eslint-disable-next-line import/no-unassigned-import
+require('./config/env');
+
 const path = require('path');
 const fs = require('fs');
 
-const AWS = require('aws-sdk');
 const Graceful = require('@ladjs/graceful');
 const Mandarin = require('mandarin');
-const _ = require('lodash');
-const awscloudfront = require('gulp-awspublish-cloudfront');
-const awspublish = require('gulp-awspublish');
+const RevAll = require('gulp-rev-all');
+const babel = require('gulp-babel');
 const browserify = require('browserify');
-const collapser = require('bundle-collapser/plugin');
+const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
-const envify = require('gulp-envify');
+const envify = require('@ladjs/gulp-envify');
 const fontMagician = require('postcss-font-magician');
 const fontSmoothing = require('postcss-font-smoothing');
+const getStream = require('get-stream');
 const globby = require('globby');
-const gulpEslint = require('gulp-eslint');
 const gulpRemark = require('gulp-remark');
 const gulpXo = require('gulp-xo');
-const gulpif = require('gulp-if');
 const imagemin = require('gulp-imagemin');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
-const ms = require('ms');
 const nodeSass = require('node-sass');
 const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
@@ -30,13 +29,14 @@ const postcssPresetEnv = require('postcss-preset-env');
 const pugLinter = require('gulp-pug-linter');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
+const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass');
 const scssParser = require('postcss-scss');
 const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('stylelint');
 const terser = require('gulp-terser');
+const through2 = require('through2');
 const unassert = require('gulp-unassert');
-const revSri = require('gulp-rev-sri');
 const { lastRun, watch, series, parallel, src, dest } = require('gulp');
 
 // explicitly set the compiler in case it were to change to dart
@@ -48,7 +48,6 @@ process.env.I18N_SYNC_FILES = true;
 process.env.I18N_AUTO_RELOAD = false;
 process.env.I18N_UPDATE_FILES = true;
 
-const env = require('./config/env');
 const config = require('./config');
 const logger = require('./helpers/logger');
 const i18n = require('./helpers/i18n');
@@ -62,51 +61,19 @@ const staticAssets = [
   '!assets/img/**/*',
   '!assets/js/**/*'
 ];
-const manifestOptions = {
-  merge: true,
-  base: config.buildBase
-};
-
-// set aws logger
-AWS.config.logger = logger;
-
-function publish() {
-  // create a new publisher
-  const publisher = awspublish.create(
-    _.merge(config.aws, {
-      params: {
-        Bucket: env.AWS_S3_BUCKET
-      }
-    })
-  );
-  return (
-    src([`${config.buildBase}/**/*`, `!${config.manifest}`])
-      // gzip, Set Content-Encoding headers and add .gz extension
-      .pipe(awspublish.gzip())
-      // publisher will add Content-Length, Content-Type
-      // and headers specified below
-      // If not specified it will set x-amz-acl to public-read by default
-      .pipe(
-        publisher.publish({
-          'Cache-Control': `public, max-age=${ms('1yr')}`
-        })
-      )
-      // create a cache file to speed up consecutive uploads
-      .pipe(publisher.cache())
-      // print upload updates to console
-      .pipe(awspublish.reporter())
-      .pipe(awscloudfront(env.AWS_CLOUDFRONT_DISTRIBUTION_ID))
-  );
-}
 
 function pug() {
-  return src('app/views/**/*.pug', { since: lastRun(pug) })
-    .pipe(pugLinter({ reporter: 'default', failAfterError: true }))
-    .pipe(gulpif(DEV, lr(config.livereload)));
+  let stream = src('app/views/**/*.pug', { since: lastRun(pug) }).pipe(
+    pugLinter({ reporter: 'default', failAfterError: true })
+  );
+
+  if (DEV) stream = stream.pipe(lr(config.livereload));
+
+  return stream;
 }
 
 function img() {
-  return src('assets/img/**/*', {
+  let stream = src('assets/img/**/*', {
     base: 'assets',
     since: lastRun(img)
   })
@@ -117,11 +84,16 @@ function img() {
         use: [pngquant()]
       })
     )
-    .pipe(dest(config.buildBase))
-    .pipe(gulpif(DEV, lr(config.livereload)))
-    .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
-    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
-    .pipe(gulpif(PROD, dest(config.buildBase)));
+    .pipe(dest(config.buildBase));
+
+  if (DEV) stream = stream.pipe(lr(config.livereload));
+  return stream;
+}
+
+function fonts() {
+  return src(['node_modules/@fortawesome/fontawesome-free/webfonts/**/*']).pipe(
+    dest(path.join(config.buildBase, 'fonts'))
+  );
 }
 
 function scss() {
@@ -135,7 +107,7 @@ function scss() {
 }
 
 function css() {
-  return src('assets/css/**/*.scss', {
+  let stream = src('assets/css/**/*.scss', {
     base: 'assets'
   })
     .pipe(sourcemaps.init())
@@ -143,21 +115,26 @@ function css() {
     .pipe(
       postcss([
         fontMagician({
-          hosted: [path.join(__dirname, config.buildBase, 'fonts'), '/fonts']
+          foundries: ['custom', 'hosted'],
+          // note if you modify this then you will have to
+          // also modify the font awesome fonts in css folder
+          // <https://caniuse.com/#feat=woff2>
+          formats: 'woff ttf',
+          hosted: [path.join(__dirname, config.buildBase, 'fonts'), '../fonts'],
+          display: 'swap'
         }),
         postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
         fontSmoothing(),
         ...(PROD ? [cssnano({ autoprefixer: false })] : []),
         reporter()
       ])
-    )
-    .pipe(gulpif(PROD, rev()))
-    .pipe(sourcemaps.write('./'))
-    .pipe(dest(config.buildBase))
-    .pipe(gulpif(DEV, lr(config.livereload)))
-    .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
-    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
-    .pipe(gulpif(PROD, dest(config.buildBase)));
+    );
+
+  stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
+
+  if (DEV) stream = stream.pipe(lr(config.livereload));
+
+  return stream;
 }
 
 function xo() {
@@ -167,52 +144,87 @@ function xo() {
     .pipe(gulpXo.failAfterError());
 }
 
-function eslint() {
-  return src(`${config.buildBase}/**/*.js`, { since: lastRun(eslint) })
-    .pipe(
-      gulpEslint({
-        allowInlineConfig: false,
-        configFile: '.build.eslintrc'
-      })
-    )
-    .pipe(gulpEslint.format('pretty'))
-    .pipe(gulpEslint.failAfterError());
-}
-
+// TODO: in the future use merge-streams and return a stream w/o through2
 async function bundle() {
-  // make build/js folder for compile task
-  await makeDir(path.join(config.buildBase, 'js'));
-  const ws = fs.createWriteStream(
-    path.join(config.buildBase, 'js', 'factor-bundle.js')
+  const since = lastRun(bundle);
+  const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
+  const factorBundlePath = path.join(
+    config.buildBase,
+    'js',
+    'factor-bundle.js'
   );
-  const paths = await globby('**/*.js', { cwd: 'assets/js' });
-  const b = browserify({
-    entries: paths.map(string => `assets/js/${string}`),
-    debug: true
-  });
-  return b
-    .plugin(collapser)
-    .plugin('factor-bundle', {
-      outputs: paths.map(string => path.join(config.buildBase, 'js', string))
-    })
-    .bundle()
-    .pipe(ws)
-    .on('finish', compile);
-}
 
-function compile() {
-  return src('build/js/**/*.js', { base: 'build', since: lastRun(compile) })
+  await makeDir(path.join(config.buildBase, 'js'));
+
+  async function getFactorBundle() {
+    const paths = await globby('**/*.js', { cwd: 'assets/js' });
+    const factorBundle = await new Promise((resolve, reject) => {
+      browserify({
+        entries: paths.map(string => `assets/js/${string}`),
+        debug: true
+      })
+        .plugin('bundle-collapser/plugin')
+        .plugin('factor-bundle', {
+          outputs: paths.map(string =>
+            path.join(config.buildBase, 'js', string)
+          )
+        })
+        .bundle((err, data) => {
+          if (err) return reject(err);
+          resolve(data);
+        });
+    });
+    await fs.promises.writeFile(factorBundlePath, factorBundle);
+  }
+
+  await Promise.all([
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        '@babel',
+        'polyfill',
+        'dist',
+        'polyfill.js'
+      ),
+      polyfillPath
+    ),
+    getFactorBundle()
+  ]);
+
+  // concatenate files
+  await getStream(
+    src([
+      'build/js/polyfill.js',
+      'build/js/factor-bundle.js',
+      'build/js/uncaught.js',
+      'build/js/core.js'
+    ])
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(concat('build.js'))
+      .pipe(sourcemaps.write('./'))
+      .pipe(dest(path.join(config.buildBase, 'js')))
+      .pipe(through2.obj((chunk, enc, cb) => cb()))
+  );
+
+  let stream = src('build/js/**/*.js', { base: 'build', since })
     .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(envify(env))
     .pipe(unassert())
-    .pipe(gulpif(PROD, terser()))
-    .pipe(gulpif(PROD, rev()))
-    .pipe(sourcemaps.write('./'))
-    .pipe(dest(config.buildBase))
-    .pipe(gulpif(DEV, lr(config.livereload)))
-    .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
-    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
-    .pipe(gulpif(PROD, dest(config.buildBase)));
+    .pipe(envify())
+    .pipe(babel());
+
+  if (PROD) stream = stream.pipe(terser());
+
+  stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
+
+  if (DEV) stream = stream.pipe(lr(config.livereload));
+
+  stream = stream.pipe(dest(config.buildBase));
+
+  // convert to conventional stream
+  stream = stream.pipe(through2.obj((chunk, enc, cb) => cb()));
+
+  await getStream(stream);
 }
 
 function remark() {
@@ -234,49 +246,101 @@ function static() {
   }).pipe(dest(config.buildBase));
 }
 
-function clean() {
-  return del([config.buildBase]);
-}
-
 async function markdown() {
-  const mandarin = new Mandarin({ i18n, logger });
+  const mandarin = new Mandarin({
+    i18n,
+    logger
+  });
   const graceful = new Graceful({ redisClients: [mandarin.redisClient] });
   await mandarin.markdown();
   await graceful.stopRedisClients();
+}
+
+async function sri() {
+  await getStream(
+    src('build/**/*.{css,js}')
+      .pipe(RevAll.revision())
+      .pipe(dest(config.buildBase))
+      .pipe(RevAll.manifestFile())
+      .pipe(dest(config.buildBase))
+      .pipe(revSri({ base: config.buildBase }))
+      .pipe(dest(config.buildBase))
+      // convert to conventional stream
+      .pipe(through2.obj((chunk, enc, cb) => cb()))
+  );
+
+  //
+  // get all non css and non js files since rev-all ignores others
+  // and merge rev-manifest.json with fonts and other non rev-all assets
+  //
+  // <https://github.com/smysnk/gulp-rev-all/blob/7fc61344df3b4377bf54b70d938cda8771096ebb/revisioner.js#L24
+  // <https://github.com/smysnk/gulp-rev-all/issues/106>
+  // <https://github.com/smysnk/gulp-rev-all/issues/165#issuecomment-338064409>
+  //
+  // note that we don't pipe fonts through gulp rev due to binary issues
+  //
+  await getStream(
+    src([
+      'build/**/*',
+      '!build/**/*.{css,js}',
+      '!build/fonts/**/*',
+      '!build/robots.txt',
+      '!build/browserconfig.xml'
+    ])
+      .pipe(rev())
+      .pipe(dest(config.buildBase))
+      .pipe(
+        rev.manifest(config.manifest, {
+          merge: true,
+          base: config.buildBase
+        })
+      )
+      .pipe(revSri({ base: config.buildBase }))
+      .pipe(dest(config.buildBase))
+      // convert to conventional stream
+      .pipe(through2.obj((chunk, enc, cb) => cb()))
+  );
+}
+
+function clean() {
+  return del([config.buildBase]);
 }
 
 const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
-    parallel(img, static, markdown, series(scss, css), series(bundle, eslint))
+    series(
+      parallel(img, static, markdown, series(fonts, scss, css), bundle),
+      sri
+    )
   )
 );
 
 module.exports = {
+  clean,
   build,
   bundle,
-  publish,
+  sri,
   markdown,
   watch: () => {
     lr.listen(config.livereload);
     watch(['**/*.js', '!assets/js/**/*.js'], xo);
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
-    watch('assets/css/**/*.scss', series(scss, css));
-    watch('assets/js/**/*.js', series(xo, bundle, eslint));
+    watch('assets/css/**/*.scss', series(fonts, scss, css));
+    watch('assets/js/**/*.js', series(xo, bundle));
     watch('app/views/**/*.pug', pug);
     watch(staticAssets, static);
   },
   pug,
   img,
   xo,
-  eslint,
   static,
   remark,
+  fonts,
   scss,
-  css,
-  clean
+  css
 };
 
 exports.default = build;

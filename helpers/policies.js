@@ -4,16 +4,20 @@ const {
   loginOtpRoute,
   verifyRoute,
   userFields,
-  appName
+  passport,
+  appName,
+  loginRoute
 } = require('../config');
 const { Users } = require('../app/models');
 
 const policies = new Policies(
   {
     schemeName: appName,
-    userFields,
+    hasVerifiedEmail: userFields.hasVerifiedEmail,
     verifyRoute,
-    loginOtpRoute
+    loginRoute,
+    loginOtpRoute,
+    passport
   },
   apiToken => {
     const query = {};

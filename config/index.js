@@ -18,7 +18,6 @@ const i18n = require('./i18n');
 const loggerConfig = require('./logger');
 const meta = require('./meta');
 const phrases = require('./phrases');
-const polyfills = require('./polyfills');
 const utilities = require('./utilities');
 
 const config = {
@@ -50,12 +49,14 @@ const config = {
       preservePseudos: false
     },
     lastLocaleField: 'last_locale',
-    i18n
+    i18n: {
+      ...i18n,
+      autoReload: false,
+      updateFiles: false,
+      syncFiles: false
+    }
   },
   logger: loggerConfig,
-  livereload: {
-    port: env.LIVERELOAD_PORT
-  },
   appName: env.APP_NAME,
   appColor: env.APP_COLOR,
   twitter: env.TWITTER,
@@ -85,21 +86,30 @@ const config = {
       // Even though pug deprecates this, we've added `pretty`
       // in `koa-views` package, so this option STILL works
       // <https://github.com/queckezz/koa-views/pull/111>
-      pretty: true,
+      pretty: env.NODE_ENV === 'development',
       cache: env.NODE_ENV !== 'development',
       // debug: env.NODE_ENV === 'development',
       // compileDebug: env.NODE_ENV === 'development',
       ...utilities,
-      polyfills,
       filters
     }
   },
 
+  // user fields whose account updates create an action (e.g. email)
+  accountUpdateFields: [
+    'passport.fields.otpEnabled',
+    'passport.fields.givenName',
+    'passport.fields.familyName',
+    'passportLocalMongoose.usernameField',
+    'userFields.apiToken'
+  ],
+
   // user fields (change these if you want camel case or whatever)
   userFields: {
+    accountUpdates: 'account_updates',
     fullEmail: 'full_email',
     apiToken: 'api_token',
-    twoFactorRecoveryKeys: 'two_factor_recovery_keys',
+    otpRecoveryKeys: 'otp_recovery_keys',
     resetTokenExpiresAt: 'reset_token_expires_at',
     resetToken: 'reset_token',
     hasSetPassword: 'has_set_password',
@@ -109,13 +119,21 @@ const config = {
     verificationPinSentAt: 'verification_pin_sent_at',
     verificationPin: 'verification_pin',
     verificationPinHasExpired: 'verification_pin_has_expired',
-    welcomeEmailSentAt: 'welcome_email_sent_at'
+    welcomeEmailSentAt: 'welcome_email_sent_at',
+    twoFactorReminderSentAt: 'two_factor_reminder_sent_at'
   },
 
   // dynamic otp routes
-  loginOtpRoute: '/2fa/otp/login',
+  otpRoutePrefix: '/otp',
+  otpRouteLoginPath: '/login',
 
-  // verification pin
+  // dynamic otp routes
+  loginOtpRoute: '/otp/login',
+
+  // login route
+  loginRoute: '/login',
+
+  // verification
   verifyRoute: '/verify',
   verificationPinTimeoutMs: ms(env.VERIFICATION_PIN_TIMEOUT_MS),
   verificationPinEmailIntervalMs: ms(env.VERIFICATION_PIN_EMAIL_INTERVAL_MS),
@@ -138,8 +156,8 @@ const config = {
       githubProfileID: 'github_profile_id',
       githubAccessToken: 'github_access_token',
       githubRefreshToken: 'github_refresh_token',
-      twoFactorToken: 'two_factor_token',
-      twoFactorEnabled: 'two_factor_enabled'
+      otpToken: 'otp_token',
+      otpEnabled: 'otp_enabled'
     },
     google: {
       accessType: 'offline',
@@ -188,8 +206,8 @@ const config = {
 
   // passport callback options
   passportCallbackOptions: {
-    successReturnToOrRedirect: '/dashboard',
-    failureRedirect: '/login',
+    successReturnToOrRedirect: '/my-account',
+    failureRedirect: '/register',
     successFlash: true,
     failureFlash: true
   },
@@ -206,6 +224,9 @@ const config = {
   lastLocaleField: 'last_locale'
 };
 
+// set dynamic login otp route
+config.loginOtpRoute = `${config.otpRoutePrefix}${config.otpRouteLoginPath}`;
+
 // set build dir based off build base dir name
 config.buildDir = path.join(__dirname, '..', config.buildBase);
 
@@ -219,10 +240,7 @@ const logger = new Axe(config.logger);
 config.manifest = path.join(config.buildDir, 'rev-manifest.json');
 config.srimanifest = path.join(config.buildDir, 'sri-manifest.json');
 config.views.locals.manifest = manifestRev({
-  prepend:
-    env.AWS_CLOUDFRONT_DOMAIN && env.NODE_ENV === 'production'
-      ? `//${env.AWS_CLOUDFRONT_DOMAIN}/`
-      : '/',
+  prepend: '/',
   manifest: config.srimanifest
 });
 
@@ -253,7 +271,7 @@ config.email.juiceResources.webResources = {
 config.email.transport.use(
   'compile',
   base64ToS3({
-    aws: _.merge(config.aws, {
+    aws: _.merge({}, config.aws, {
       params: {
         Bucket: env.AWS_S3_BUCKET
       }
