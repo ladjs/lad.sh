@@ -31,6 +31,9 @@ const omitExtraFields = [
   config.userFields.apiToken,
   config.userFields.resetTokenExpiresAt,
   config.userFields.resetToken,
+  config.userFields.changeEmailTokenExpiresAt,
+  config.userFields.changeEmailToken,
+  config.userFields.changeEmailNewAddress,
   config.userFields.hasSetPassword,
   config.userFields.hasVerifiedEmail,
   config.userFields.verificationPinExpiresAt,
@@ -96,6 +99,11 @@ object[config.userFields.otpRecoveryKeys] = Array;
 object[config.userFields.resetTokenExpiresAt] = Date;
 object[config.userFields.resetToken] = String;
 
+// email change
+object[config.userFields.changeEmailTokenExpiresAt] = Date;
+object[config.userFields.changeEmailToken] = String;
+object[config.userFields.changeEmailNewAddress] = String;
+
 // welcome email
 object[config.userFields.welcomeEmailSentAt] = Date;
 
@@ -127,6 +135,8 @@ object[config.userFields.pendingRecovery] = {
 };
 
 // list of account updates that are batched every 1 min.
+object[config.userFields.accountUpdates] = Array;
+
 object[config.userFields.accountUpdates] = Array;
 
 // shared field names with @ladjs/passport for consistency
