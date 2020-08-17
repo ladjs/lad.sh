@@ -415,8 +415,27 @@ async function forgotPassword(ctx) {
         }`
       }
     });
+
+    if (ctx.accepts('html')) {
+      ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
+      ctx.redirect('back');
+    } else {
+      ctx.body = {
+        message: ctx.translate('PASSWORD_RESET_SENT')
+      };
+    }
   } catch (err) {
     ctx.logger.error(err);
+    // reset if there was an error
+    try {
+      user[config.userFields.resetToken] = null;
+      user[config.userFields.resetTokenExpiresAt] = null;
+      user = await user.save();
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+
+    throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
   }
 }
 
@@ -449,6 +468,55 @@ async function resetPassword(ctx) {
   user = await user.save();
   await ctx.login(user);
   const message = ctx.translate('RESET_PASSWORD');
+  const redirectTo = ctx.state.l();
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = {
+      message,
+      redirectTo
+    };
+  }
+}
+
+async function changeEmail(ctx) {
+  const { body } = ctx.request;
+
+  if (!isSANB(body.password))
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+  if (!isSANB(ctx.params.token))
+    throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
+
+  // lookup the user that has this token and if it matches the email passed
+  const query = { email: body.email };
+  query[config.userFields.changeEmailToken] = ctx.params.token;
+  // ensure that the reset token expires at value is in the future (hasn't expired)
+  query[config.userFields.changeEmailTokenExpiresAt] = { $gte: new Date() };
+  const user = await Users.findOne(query);
+
+  try {
+    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
+
+    const auth = await user.authenticate(body.password);
+    if (!auth.user)
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+    const newEmail = user[config.userFields.changeEmailNewAddress];
+    user[config.passportLocalMongoose.usernameField] = newEmail;
+    await user.save();
+
+    // reset change email info
+    user[config.userFields.changeEmailToken] = null;
+    user[config.userFields.changeEmailTokenExpiresAt] = null;
+    user[config.userFields.changeEmailNewAddress] = null;
+    await user.save();
+  } catch (err) {
+    ctx.throw(err);
+  }
+
+  const message = ctx.translate('CHANGE_EMAIL');
   const redirectTo = ctx.state.l();
   if (ctx.accepts('html')) {
     ctx.flash('success', message);
@@ -622,6 +690,7 @@ module.exports = {
   forgotPassword,
   resetPassword,
   recoveryKey,
+  changeEmail,
   catchError,
   verify,
   parseReturnOrRedirectTo
