@@ -8,7 +8,13 @@
 
 > Lad demo
 
+
 ## Table of Contents
+
+* [Install](#install)
+* [Usage](#usage)
+* [Contributors](#contributors)
+* [License](#license)
 
 
 ## Install
@@ -19,8 +25,14 @@
 
 ## Contributors
 
+| Name           | Website                    |
+| -------------- | -------------------------- |
+| **Nick Baugh** | <http://niftylettuce.com/> |
+
 
 ## License
+
+[Unlicensed](LICENSE) © [Nick Baugh](https://niftylettuce.com)
 
 
 ##
