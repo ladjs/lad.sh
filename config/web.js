@@ -7,7 +7,7 @@ const cookieOptions = require('./cookies');
 const koaCashConfig = require('./koa-cash');
 const config = require('.');
 
-module.exports = client => ({
+module.exports = (client) => ({
   routes: routes.web,
   logger,
   i18n,
@@ -16,6 +16,8 @@ module.exports = client => ({
   views: config.views,
   passport,
   koaCash: env.CACHE_RESPONSES ? koaCashConfig(client) : false,
+  // temp disable until headers already sent error in koa-redirect-loop is fixed
+  redirectLoop: false,
   cacheResponses: env.CACHE_RESPONSES
     ? {
         routes: [

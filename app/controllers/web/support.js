@@ -1,5 +1,5 @@
 const sanitize = require('sanitize-html');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
@@ -38,10 +38,6 @@ async function help(ctx) {
     body.is_email_only = true;
   }
 
-  // massive spam IP attack (temp removal)
-  if (body.message === 'Muchas gracias. ?Como puedo iniciar sesion?')
-    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_LIMIT'));
-
   // check if we already sent a support request in the past day
   // with this given ip address or email, otherwise create and email
   const count = await Inquiries.countDocuments({
@@ -54,9 +50,7 @@ async function help(ctx) {
       }
     ],
     created_at: {
-      $gte: moment()
-        .subtract(1, 'day')
-        .toDate()
+      $gte: dayjs().subtract(1, 'day').toDate()
     }
   });
 

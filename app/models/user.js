@@ -3,7 +3,9 @@ const _ = require('lodash');
 const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
-const moment = require('moment');
+const dayjs = require('dayjs');
+const relativeTime = require('dayjs/plugin/relativeTime');
+const updateLocale = require('dayjs/plugin/updateLocale');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
@@ -24,13 +26,16 @@ if (config.passportLocalMongoose.usernameField !== 'email')
     'User model and @ladjs/passport requires that the usernameField is email'
   );
 
-const options = { length: 10, characters: '1234567890' };
+const options = { length: 10, type: 'numeric' };
 const { fields } = config.passport;
 const omitExtraFields = [
   ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
   config.userFields.apiToken,
   config.userFields.resetTokenExpiresAt,
   config.userFields.resetToken,
+  config.userFields.changeEmailTokenExpiresAt,
+  config.userFields.changeEmailToken,
+  config.userFields.changeEmailNewAddress,
   config.userFields.hasSetPassword,
   config.userFields.hasVerifiedEmail,
   config.userFields.verificationPinExpiresAt,
@@ -46,7 +51,8 @@ const omitExtraFields = [
 ];
 
 // set relative threshold for messages
-moment.relativeTimeThreshold('ss', 5);
+dayjs.extend(updateLocale, { thresholds: [{ l: 'ss', r: 5 }] });
+dayjs.extend(relativeTime);
 
 const User = new mongoose.Schema({
   // group permissions
@@ -64,7 +70,7 @@ const User = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: true,
-    validate: value => validator.isEmail(value)
+    validate: (value) => validator.isEmail(value)
   }
 });
 
@@ -96,6 +102,11 @@ object[config.userFields.otpRecoveryKeys] = Array;
 object[config.userFields.resetTokenExpiresAt] = Date;
 object[config.userFields.resetToken] = String;
 
+// email change
+object[config.userFields.changeEmailTokenExpiresAt] = Date;
+object[config.userFields.changeEmailToken] = String;
+object[config.userFields.changeEmailNewAddress] = String;
+
 // welcome email
 object[config.userFields.welcomeEmailSentAt] = Date;
 
@@ -113,7 +124,7 @@ object[config.userFields.verificationPinSentAt] = Date;
 object[config.userFields.verificationPin] = {
   type: String,
   trim: true,
-  validate: value => isSANB(value) && value.replace(/\D/g, '').length === 6
+  validate: (value) => isSANB(value) && value.replace(/\D/g, '').length === 6
 };
 
 object[config.userFields.pendingRecovery] = {
@@ -127,6 +138,8 @@ object[config.userFields.pendingRecovery] = {
 };
 
 // list of account updates that are batched every 1 min.
+object[config.userFields.accountUpdates] = Array;
+
 object[config.userFields.accountUpdates] = Array;
 
 // shared field names with @ladjs/passport for consistency
@@ -149,7 +162,7 @@ object[fields.familyName] = {
 object[fields.avatarURL] = {
   type: String,
   trim: true,
-  validate: value => validator.isURL(value)
+  validate: (value) => validator.isURL(value)
 };
 // google
 object[fields.googleProfileID] = {
@@ -183,7 +196,7 @@ User.add(object);
 
 User.plugin(captainHook);
 
-User.virtual(config.userFields.verificationPinHasExpired).get(function() {
+User.virtual(config.userFields.verificationPinHasExpired).get(function () {
   return boolean(
     !this[config.userFields.verificationPinExpiresAt] ||
       new Date(this[config.userFields.verificationPinExpiresAt]).getTime() <
@@ -191,48 +204,54 @@ User.virtual(config.userFields.verificationPinHasExpired).get(function() {
   );
 });
 
-User.pre('validate', function(next) {
-  // create api token if doesn't exist
-  if (!isSANB(this[config.userFields.apiToken]))
-    this[config.userFields.apiToken] = cryptoRandomString({ length: 24 });
+User.pre('validate', async function (next) {
+  try {
+    // create api token if doesn't exist
+    if (!isSANB(this[config.userFields.apiToken]))
+      this[config.userFields.apiToken] = await cryptoRandomString.async({
+        length: 24
+      });
 
-  // set the user's display name to their email address
-  // but if they have a name or surname set then use that
-  this[fields.displayName] = this.email;
-  if (isSANB(this[fields.givenName]) || isSANB(this[fields.familyName])) {
-    this[fields.displayName] = `${this[fields.givenName] || ''} ${this[
-      fields.familyName
-    ] || ''}`;
+    // set the user's display name to their email address
+    // but if they have a name or surname set then use that
+    this[fields.displayName] = this.email;
+    if (isSANB(this[fields.givenName]) || isSANB(this[fields.familyName])) {
+      this[fields.displayName] = `${this[fields.givenName] || ''} ${
+        this[fields.familyName] || ''
+      }`;
+    }
+
+    // set the user's full email address (incl display name)
+    this[config.userFields.fullEmail] =
+      this[fields.displayName] && this[fields.displayName] !== this.email
+        ? `${this[fields.displayName]} <${this.email}>`
+        : this.email;
+
+    // if otp authentication values no longer valid
+    // then disable it completely
+    if (
+      !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
+      !this[config.userFields.otpRecoveryKeys] ||
+      this[config.userFields.otpRecoveryKeys].length === 0 ||
+      !this[config.passport.fields.otpToken]
+    )
+      this[fields.otpEnabled] = false;
+
+    if (
+      !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
+      this[config.userFields.otpRecoveryKeys].length === 0
+    )
+      this[config.userFields.otpRecoveryKeys] = await Promise.all(
+        new Array(10).fill().map(() => cryptoRandomString.async(options))
+      );
+
+    if (!this[config.passport.fields.otpToken])
+      this[config.passport.fields.otpToken] = authenticator.generateSecret();
+
+    next();
+  } catch (err) {
+    next(err);
   }
-
-  // set the user's full email address (incl display name)
-  this[config.userFields.fullEmail] =
-    this[fields.displayName] && this[fields.displayName] !== this.email
-      ? `${this[fields.displayName]} <${this.email}>`
-      : this.email;
-
-  // if otp authentication values no longer valid
-  // then disable it completely
-  if (
-    !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
-    !this[config.userFields.otpRecoveryKeys] ||
-    this[config.userFields.otpRecoveryKeys].length === 0 ||
-    !this[config.passport.fields.otpToken]
-  )
-    this[fields.otpEnabled] = false;
-
-  if (
-    !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
-    this[config.userFields.otpRecoveryKeys].length === 0
-  )
-    this[config.userFields.otpRecoveryKeys] = new Array(10)
-      .fill()
-      .map(() => cryptoRandomString(options));
-
-  if (!this[config.passport.fields.otpToken])
-    this[config.passport.fields.otpToken] = authenticator.generateSecret();
-
-  next();
 });
 
 //
@@ -240,7 +259,7 @@ User.pre('validate', function(next) {
 // instead you should use the helper located at
 // `../helpers/send-verification-email.js`
 //
-User.methods.sendVerificationEmail = async function(ctx, reset = false) {
+User.methods.sendVerificationEmail = async function (ctx, reset = false) {
   if (
     this[config.userFields.hasVerifiedEmail] &&
     boolean(!this[config.userFields.pendingRecovery])
@@ -289,7 +308,7 @@ User.methods.sendVerificationEmail = async function(ctx, reset = false) {
         phrase: config.i18n.phrases.EMAIL_VERIFICATION_INTERVAL,
         locale: this[config.lastLocaleField]
       },
-      moment
+      dayjs
         .duration(config.verificationPinEmailIntervalMs - diff)
         .locale(this[config.lastLocaleField])
         .humanize()
@@ -309,7 +328,7 @@ User.methods.sendVerificationEmail = async function(ctx, reset = false) {
     this[config.userFields.verificationPinExpiresAt] = new Date(
       Date.now() + config.verificationPinTimeoutMs
     );
-    this[config.userFields.verificationPin] = cryptoRandomString(
+    this[config.userFields.verificationPin] = await cryptoRandomString.async(
       config.verificationPin
     );
   }
@@ -333,14 +352,14 @@ User.plugin(mongooseCommonPlugin, {
 
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
 
-User.post('init', doc => {
+User.post('init', (doc) => {
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
     doc[`__${fieldName}`] = doc[fieldName];
   }
 });
 
-User.pre('save', function(next) {
+User.pre('save', function (next) {
   // filter by allowed field updates (otp enabled, profile updates, etc)
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);

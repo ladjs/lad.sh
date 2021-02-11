@@ -2,6 +2,7 @@ const $ = require('jquery');
 const Popper = require('popper.js');
 const Clipboard = require('clipboard');
 const { randomstring } = require('@sidoshi/random-string');
+const debounce = require('lodash/debounce');
 
 // load jQuery and Bootstrap
 // <https://stackoverflow.com/a/34340392>
@@ -34,7 +35,7 @@ const {
 // Resize navbar padding on load, window resize, and navbar collapse/show
 resizeNavbarPadding($);
 
-// import waypoints (see below example for how to use + `yarn add waypoints`)
+// import waypoints (see below example for how to use + `npm install waypoints`)
 // require('waypoints/lib/jquery.waypoints.js');
 
 // highlight.js
@@ -154,7 +155,7 @@ function successHandler(ev) {
 }
 
 if (Clipboard.isSupported()) {
-  $body.on('mouseenter', 'code', function() {
+  $body.on('mouseenter', 'code', function () {
     let $container = $(this).parents('pre:first');
     if ($container.length === 0) $container = $(this);
     $container
@@ -166,7 +167,7 @@ if (Clipboard.isSupported()) {
       })
       .tooltip('show');
   });
-  $body.on('mouseleave', 'code', function() {
+  $body.on('mouseleave', 'code', function () {
     let $container = $(this).parents('pre:first');
     if ($container.length === 0) $container = $(this);
     $container.tooltip('dispose').css('cursor', 'initial');
@@ -188,7 +189,7 @@ if (Clipboard.isSupported()) {
 //
 // <https://en.wikipedia.org/wiki/Email_address#Local-part>
 //
-$body.on('click', '.generate-random-alias', function() {
+$body.on('click', '.generate-random-alias', function () {
   const target = $(this).data('target');
   if (!target) return;
   const $target = $(target);
@@ -199,3 +200,9 @@ $body.on('click', '.generate-random-alias', function() {
   });
   $target.val(string);
 });
+
+function keyup() {
+  if ($(this).val().length >= 6) $(this).parents('form').first().submit();
+}
+
+$body.on('keyup', '.verification-form', debounce(keyup, 500));

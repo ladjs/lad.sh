@@ -8,26 +8,19 @@
 
 > Lad demo
 
-
 ## Table of Contents
 
-* [Contributors](#contributors)
-* [License](#license)
+
+## Install
+
+
+## Usage
 
 
 ## Contributors
 
-| Name             | Website                    |
-| ---------------- | -------------------------- |
-| **Nick Baugh**   | <http://niftylettuce.com/> |
-| **Shaun Warman** | <https://shaunwarman.com/> |
-
 
 ## License
 
-[Unlicensed](LICENSE) © [Nick Baugh](http://niftylettuce.com/)
 
-
-## 
-
-<a href="#"><img src="https://raw.githubusercontent.com/ladjs/lad/master/media/lad-footer.png" alt="#" /></a>
+##

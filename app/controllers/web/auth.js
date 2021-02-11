@@ -2,7 +2,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const qrcode = require('qrcode');
 const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
@@ -16,7 +16,9 @@ const sendVerificationEmail = require('../../../helpers/send-verification-email'
 const config = require('../../../config');
 const { Inquiries } = require('../../models');
 
-const sanitize = string =>
+const options = { length: 10, type: 'numeric' };
+
+const sanitize = (string) =>
   sanitizeHtml(string, {
     allowedTags: [],
     allowedAttributes: []
@@ -84,7 +86,7 @@ async function registerOrLogin(ctx) {
   ctx.state.verb =
     ctx.pathWithoutLocale === '/register' ? 'sign up' : 'sign in';
 
-  await ctx.render('register-or-login');
+  return ctx.render('register-or-login');
 }
 
 async function homeOrDashboard(ctx) {
@@ -102,7 +104,8 @@ async function homeOrDashboard(ctx) {
     ),
     description: sanitize(ctx.request.t(config.pkg.description))
   };
-  await ctx.render('home');
+
+  return ctx.render('home');
 }
 
 async function login(ctx, next) {
@@ -152,9 +155,9 @@ async function login(ctx, next) {
     }
 
     let greeting = 'Good morning';
-    if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
+    if (dayjs().format('HH') >= 12 && dayjs().format('HH') <= 17)
       greeting = 'Good afternoon';
-    else if (moment().format('HH') >= 17) greeting = 'Good evening';
+    else if (dayjs().format('HH') >= 17) greeting = 'Good evening';
 
     if (user) {
       await ctx.login(user);
@@ -253,7 +256,7 @@ async function recoveryKey(ctx) {
 
   // remove used key from recovery key list
   recoveryKeys = recoveryKeys.filter(
-    key => key !== ctx.request.body.recovery_key
+    (key) => key !== ctx.request.body.recovery_key
   );
 
   const emptyRecoveryKeys = recoveryKeys.length === 0;
@@ -264,8 +267,9 @@ async function recoveryKey(ctx) {
 
   // handle case if the user runs out of keys
   if (emptyRecoveryKeys) {
-    const options = { length: 10, characters: '1234567890' };
-    recoveryKeys = new Array(10).fill().map(() => cryptoRandomString(options));
+    recoveryKeys = await Promise.all(
+      new Array(10).fill().map(() => cryptoRandomString.async(options))
+    );
   }
 
   ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
@@ -370,33 +374,26 @@ async function forgotPassword(ctx) {
   if (
     user[config.userFields.resetTokenExpiresAt] &&
     user[config.userFields.resetToken] &&
-    moment(user[config.userFields.resetTokenExpiresAt]).isAfter(
-      moment().subtract(30, 'minutes')
+    dayjs(user[config.userFields.resetTokenExpiresAt]).isAfter(
+      dayjs().subtract(30, 'minutes')
     )
   )
     throw Boom.badRequest(
       ctx.translateError(
         'PASSWORD_RESET_LIMIT',
-        moment(user[config.userFields.resetTokenExpiresAt]).fromNow()
+        dayjs(user[config.userFields.resetTokenExpiresAt]).fromNow()
       )
     );
 
   // set the reset token and expiry
-  user[config.userFields.resetTokenExpiresAt] = moment()
+  user[config.userFields.resetTokenExpiresAt] = dayjs()
     .add(30, 'minutes')
     .toDate();
-  user[config.userFields.resetToken] = cryptoRandomString({ length: 32 });
+  user[config.userFields.resetToken] = await cryptoRandomString.async({
+    length: 32
+  });
 
   user = await user.save();
-
-  if (ctx.accepts('html')) {
-    ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
-    ctx.redirect('back');
-  } else {
-    ctx.body = {
-      message: ctx.translate('PASSWORD_RESET_SENT')
-    };
-  }
 
   // queue password reset email
   try {
@@ -415,8 +412,27 @@ async function forgotPassword(ctx) {
         }`
       }
     });
+
+    if (ctx.accepts('html')) {
+      ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
+      ctx.redirect('back');
+    } else {
+      ctx.body = {
+        message: ctx.translate('PASSWORD_RESET_SENT')
+      };
+    }
   } catch (err) {
     ctx.logger.error(err);
+    // reset if there was an error
+    try {
+      user[config.userFields.resetToken] = null;
+      user[config.userFields.resetTokenExpiresAt] = null;
+      user = await user.save();
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+
+    throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
   }
 }
 
@@ -449,6 +465,55 @@ async function resetPassword(ctx) {
   user = await user.save();
   await ctx.login(user);
   const message = ctx.translate('RESET_PASSWORD');
+  const redirectTo = ctx.state.l();
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = {
+      message,
+      redirectTo
+    };
+  }
+}
+
+async function changeEmail(ctx) {
+  const { body } = ctx.request;
+
+  if (!isSANB(body.password))
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+  if (!isSANB(ctx.params.token))
+    throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
+
+  // lookup the user that has this token and if it matches the email passed
+  const query = { email: body.email };
+  query[config.userFields.changeEmailToken] = ctx.params.token;
+  // ensure that the reset token expires at value is in the future (hasn't expired)
+  query[config.userFields.changeEmailTokenExpiresAt] = { $gte: new Date() };
+  const user = await Users.findOne(query);
+
+  try {
+    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
+
+    const auth = await user.authenticate(body.password);
+    if (!auth.user)
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+    const newEmail = user[config.userFields.changeEmailNewAddress];
+    user[config.passportLocalMongoose.usernameField] = newEmail;
+    await user.save();
+
+    // reset change email info
+    user[config.userFields.changeEmailToken] = null;
+    user[config.userFields.changeEmailTokenExpiresAt] = null;
+    user[config.userFields.changeEmailNewAddress] = null;
+    await user.save();
+  } catch (err) {
+    ctx.throw(err);
+  }
+
+  const message = ctx.translate('CHANGE_EMAIL');
   const redirectTo = ctx.state.l();
   if (ctx.accepts('html')) {
     ctx.flash('success', message);
@@ -517,7 +582,7 @@ async function verify(ctx) {
       // wrap with try/catch to prevent redirect looping
       // (even though the koa redirect loop package will help here)
       if (!err.isBoom) return ctx.throw(err);
-      ctx.logger.warn(err);
+      ctx.logger.error(err);
       if (ctx.accepts('html')) {
         ctx.flash('warning', err.message);
         ctx.redirect(redirectTo);
@@ -622,6 +687,7 @@ module.exports = {
   forgotPassword,
   resetPassword,
   recoveryKey,
+  changeEmail,
   catchError,
   verify,
   parseReturnOrRedirectTo
