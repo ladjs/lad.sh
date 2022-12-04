@@ -115,7 +115,7 @@
     "prepare-stack-trace": "^0.0.4",
     "pug": "^3.0.0",
     "qrcode": "^1.4.4",
-    "qs": "^6.9.6",
+    "qs": "^6.9.7",
     "reserved-email-addresses-list": "0.0.8",
     "rev-hash": "^3.0.0",
     "sanitize-html": "^2.3.2",
